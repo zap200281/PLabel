@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.VideoCountTaskDao">
+	
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.VideoCountTask" >
+		<result column="id" property="id"/>
+		<result column="task_name" property="task_name"/>
+		<result column="dataset_id" property="dataset_id"/>
+		<result column="task_add_time" property="task_add_time"/>
+		<result column="task_finish_time" property="task_finish_time"/>
+		<result column="zip_object_name" property="zip_object_name"/>
+		<result column="zip_bucket_name" property="zip_bucket_name"/>
+		<result column="task_status" property="task_status"/>
+		<result column="user_id" property="user_id"/>
+		<result column="assign_user_id" property="assign_user_id"/>
+		<result column="task_status_desc" property="task_status_desc"/>
+		<result column="verify_user_id" property="verify_user_id"/>
+		<result column="mainVideoInfo" property="mainVideoInfo"/>
+	</resultMap>
+  
+
+     <insert id="addVideoCountTask"  parameterType="com.pcl.pojo.mybatis.VideoCountTask">
+        insert into tasks_videocounttask(id,task_name,dataset_id,task_add_time,task_finish_time,task_status,user_id,assign_user_id,task_status_desc,zip_bucket_name,zip_object_name,verify_user_id,mainVideoInfo)
+         values (#{id}, #{task_name},#{dataset_id},#{task_add_time},#{task_finish_time},#{task_status},#{user_id},#{assign_user_id},#{task_status_desc},#{zip_bucket_name},#{zip_object_name},#{verify_user_id},#{mainVideoInfo})
+    </insert>
+    
+     <delete id="deleteVideoCountTask" parameterType="String">    
+        delete FROM tasks_videocounttask where id=#{id};
+    </delete>  
+    
+   
+    <select id="queryVideoCountTask" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_videocounttask  where id=#{id}
+    </select> 
+    
+    
+     <select id="queryVideoCountTaskPage" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_videocounttask 
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id}
+        </if>
+         order by task_add_time desc   limit #{currPage}, #{pageSize}
+    </select>  
+    
+    <select id="queryVideoCountTaskPageCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_videocounttask 
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id}
+        </if>
+     </select> 
+     
+      <update id="updateVideoCountLabelTaskStatus" parameterType="Map">
+       update tasks_videocounttask set 
+       task_status= #{task_status}
+       where id= #{id}
+      </update>
+
+    
+</mapper>

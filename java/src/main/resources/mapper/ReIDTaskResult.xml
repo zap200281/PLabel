@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.ReIDTaskResultDao">
+
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.ReIDTaskResult" >
+		<result column="id" property="id"/>
+		<result column="src_image_info" property="src_image_info"/>
+		<result column="label_task_name" property="label_task_name"/>
+		<result column="label_task_id" property="label_task_id"/>
+		<result column="related_info" property="related_info"/>
+	</resultMap>
+  
+  
+   <select id="queryReIDTaskResult" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_reidtask_result where id = #{id}
+         <if test="src_image_info !=null and src_image_info !=''">
+           and src_image_info = #{src_image_info}
+        </if>
+    </select>  
+  
+ 
+    <delete id="deleteByReIDTaskId" parameterType="String">    
+        delete FROM tasks_reidtask_result where id=#{id};
+    </delete>  
+  
+    
+     <insert id="addBatchTaskItem"  parameterType="java.util.List">
+        insert into tasks_reidtask_result(id,src_image_info,label_task_name,label_task_id,related_info)
+         values 
+         <foreach collection="list" item="item" index="index" separator=",">
+         (
+         #{item.id}, 
+         #{item.src_image_info},
+         #{item.label_task_name},
+         #{item.label_task_id},
+         #{item.related_info}
+         )
+    	</foreach>
+    </insert>
+    
+</mapper>

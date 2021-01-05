@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.PrePredictTaskResultDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.PrePredictTaskResult" >
+		<result column="id" property="id"/>
+		<result column="pic_url" property="pic_url"/>
+		<result column="pic_object_name" property="pic_object_name"/>
+		<result column="label_info" property="label_info"/>
+		<result column="item_add_time" property="item_add_time"/>
+		<result column="pre_predict_task_id" property="pre_predict_task_id"/>
+	</resultMap>
+  
+  <!--  
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_prepredictresult${user_id} limit #{currPage}, #{pageSize}
+    </select>  
+    -->
+    
+     <select id="selectByPrePredictTaskId" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_prepredictresult${user_id} where pre_predict_task_id=#{pre_predict_task_id};
+    </select>  
+    
+    <delete id="deletePrePredictTaskResultById"  parameterType="String">    
+        delete FROM tasks_prepredictresult${user_id} where pre_predict_task_id=#{pre_predict_task_id};
+    </delete>  
+    
+    <insert id="addPrePredictTaskResult"  parameterType="com.pcl.pojo.mybatis.PrePredictTaskResult">
+        insert into tasks_prepredictresult${user_id}(id,pic_url,pic_object_name,label_info,item_add_time,pre_predict_task_id,pic_image_field)
+         values (#{id}, #{pic_url},#{pic_object_name},#{label_info},#{item_add_time},#{pre_predict_task_id},#{pic_image_field})
+    </insert>
+    
+    
+     <select id="queryPredictTaskItemPageByTaskId" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_prepredictresult${user_id} where pre_predict_task_id=#{pre_predict_task_id}  order by pic_image_field asc limit #{currPage}, #{pageSize}
+    </select> 
+    
+    <select id="queryPredictTaskItemPageCountByTaskId" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_prepredictresult${user_id} where pre_predict_task_id=#{pre_predict_task_id}
+     </select>
+     
+    <update id="updatePrePredictTaskResult"  parameterType="Map">    
+        update tasks_prepredictresult${user_id} set label_info=#{label_info} 
+         where id=#{id}
+     </update>  
+    
+     <update id="createTable" parameterType="String">  
+	   CREATE TABLE  ${tableName} (
+		  id varchar(32) NOT NULL,
+		  pic_url varchar(256) DEFAULT NULL,
+		  pic_object_name varchar(128) DEFAULT NULL,
+		  label_info TEXT(65535) NULL,
+		  item_add_time datetime(6) NOT NULL,
+		  pre_predict_task_id varchar(32) NOT NULL,
+		  pic_image_field varchar(400) DEFAULT NULL,
+		  PRIMARY KEY (id)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+     </update> 
+    
+     <select id="existTable" parameterType="String" resultType="Integer">  
+       select count(*)  
+       from information_schema.TABLES  
+       where table_name=#{tableName} 
+     </select>
+   
+</mapper>

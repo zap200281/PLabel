@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.ReIDTaskDao">
+
+
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.ReIDTask" >
+		<result column="id" property="id"/>
+		<result column="task_name" property="task_name"/>
+		<result column="src_predict_taskid" property="src_predict_taskid"/>
+		<result column="dest_predict_taskid" property="dest_predict_taskid"/>
+		<result column="task_start_time" property="task_start_time"/>
+		<result column="task_finish_time" property="task_finish_time"/>
+		<result column="task_status" property="task_status"/>
+		<result column="user_id" property="user_id"/>
+		<result column="alg_model_id" property="alg_model_id"/>
+		<result column="task_status_desc" property="task_status_desc"/>
+		<result column="src_bucket_name" property="src_bucket_name"/>
+		<result column="dest_bucket_name" property="dest_bucket_name"/>
+		<result column="assign_user_id" property="assign_user_id"/>
+		<result column="relate_other_label_task" property="relate_other_label_task"/>
+		<result column="task_flow_type" property="task_flow_type"/>
+		<result column="task_type" property="task_type"/>
+		<result column="task_label_type_info" property="task_label_type_info"/>
+		<result column="total_picture" property="total_picture"/>
+		<result column="finished_picture" property="finished_picture"/>
+		<result column="reid_obj_type" property="reid_obj_type"/>
+		
+		<result column="verify_user_id" property="verify_user_id"/>
+		
+	</resultMap>
+  
+  
+  <select id="queryReIDTaskById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_reidtask where id = #{id}
+    </select>  
+    
+    <select id="queryReIDTaskByStatus" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_reidtask  where
+        task_status = #{task_status}
+        <if test="task_type !=null and task_type !=''">
+          and task_type = #{task_type}
+        </if>
+         
+    </select> 
+    
+    
+  
+   <select id="queryReIDTask" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_reidtask 
+        <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id}
+        </if>
+         order by task_start_time desc   limit #{currPage}, #{pageSize}
+    </select>  
+    
+     <select id="queryReIDTaskByUser" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT id,task_name FROM tasks_reidtask 
+        <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id}
+        </if>
+         order by task_start_time desc
+    </select>  
+    
+    
+     <select id="queryReIDTaskCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_reidtask 
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id}
+        </if>
+     </select>  
+
+
+     <delete id="deleteReIDTask" parameterType="String">    
+        delete FROM tasks_reidtask where id=#{id};
+    </delete>  
+  
+    
+    <insert id="addReIDTask"  parameterType="com.pcl.pojo.mybatis.ReIDTask">
+        insert into tasks_reidtask(
+        id,
+        task_name,
+        src_predict_taskid,
+        dest_predict_taskid,
+        task_start_time,
+        task_finish_time,
+        task_status,
+        user_id,
+        alg_model_id,
+        task_status_desc,
+        src_bucket_name,
+        dest_bucket_name,
+        assign_user_id,
+        relate_other_label_task,
+        task_flow_type,
+        task_type,
+        task_label_type_info,
+        total_picture,
+        finished_picture,
+        reid_obj_type,
+        verify_user_id
+        )
+         values (#{id}, #{task_name}, #{src_predict_taskid}, #{dest_predict_taskid}, #{task_start_time}, #{task_finish_time},
+          #{task_status}, #{user_id}, #{alg_model_id}, #{task_status_desc}, #{src_bucket_name}, #{dest_bucket_name},
+           #{assign_user_id}, #{relate_other_label_task}, #{task_flow_type}, #{task_type}, #{task_label_type_info},
+            #{total_picture}, #{finished_picture},#{reid_obj_type},#{verify_user_id})
+    </insert>
+    
+    
+    
+    <update id="updateReIDTaskSelfDefineInfo" parameterType="Map">
+        update tasks_reidtask set task_label_type_info = #{task_label_type_info}  where id= #{id}
+     </update>
+    
+   
+     <update id="updateReIDTask" parameterType="Map">
+        update tasks_reidtask set 
+        <if test="task_status_desc !=null and task_status_desc !=''">
+            task_status_desc = #{task_status_desc},
+        </if>
+        
+        task_status= #{task_status} 
+        where id= #{id}
+     </update>
+    
+</mapper>

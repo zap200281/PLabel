@@ -1,0 +1,850 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>PCL数据标注平台V1.6</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <meta name="description" content="Developed By M Abdur Rokib Promy">
+        <meta name="keywords" content="Admin, Bootstrap 3, Template, Theme, Responsive">
+        <!-- bootstrap 3.0.2 -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Awesome -->
+        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <!-- Ionicons -->
+        <link href="css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <!-- google font -->
+        
+        <!-- Theme style -->
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        <link href="https://cdn.bootcss.com/jScrollPane/2.1.3-rc.1/style/jquery.jscrollpane.css" rel="stylesheet" />
+        <link rel="stylesheet" href="css/jquery.range.css" />
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          
+          
+        <![endif]-->
+		 <style>
+
+  
+
+#annotation_editor { display:table; margin-bottom:3em; border-collapse:collapse; font-size:inherit; position: absolute; background-color:white; z-index:10024;}
+
+.display_area_content { } /* this class is used to clear the display area content */
+.force_small_font { font-size:small !important; }
+
+ul.region_shape          { font-size:xx-large; list-style-type:none; overflow:hidden; padding:0.4em 0; margin:0; }
+/*ul.region_shape li       { float:left; padding:0 0.2em; fill:#ffffff; stroke:#000000; }*/
+ul.region_shape li       { float:right; padding:0 0.2em; fill:#ffffff; stroke:#000000; }
+ul.region_shape li:hover { cursor:pointer; fill:#ffffff; stroke:#ff0000; }
+ul.region_shape .selected { fill:#ffffff; stroke:#ff0000; }
+
+/*.toolbar { display:inline-block; margin-left:1rem; }*/
+.toolbar { display:inline-block; margin-right:1rem; }
+.toolbar svg { fill:white; margin: 0.2rem 0.1rem; height:1.2rem;  -moz-user-select:none; -webkit-user-select:none; -ms-user-select:none;}
+.toolbar svg:hover { fill:yellow; cursor:pointer; }
+.toolbar svg:active { fill:white; }
+.toolbar ul { display:inline-block; padding:0.2rem; margin:0; }
+/*.toolbar li { display:inline; float:left; padding:0rem 0.3rem; border:1px solid white;} *//* main menu items */
+.toolbar li { display:inline; float:right; padding:0rem 0.3rem; border:1px solid white;} 
+.toolbar li:hover { color:red; cursor:pointer; }
+
+/* Top panel : #navbar, #toolbar */
+.top_panel { font-size:0.9rem; display:block; background-color:#212121; color:#ffffff; z-index:1001; margin-bottom:1rem;}
+
+/* Navigation menu bar that appear at the top */
+.menubar { display:inline-block; height:1.8rem; } /* height needed to avoid extra bottom border */
+.menubar a:link { color:#eeeeee; text-decoration:none; }
+.menubar a:visited { color:#eeeeee; text-decoration:none; }
+.menubar ul { display:block; padding:0; margin:0; }
+/*.menubar li { display:inline; float:left; padding:0.45rem 1rem; }*/
+.menubar li { display:inline; float:right; padding:0.45rem 1rem; }
+.menubar li:hover { background-color:#616161; cursor:default; }
+
+.menubar li ul { display:none; background-color:#212121; border:1px solid #616161; min-width:10rem; position:absolute; z-index:100; margin:0.4rem -1rem;}
+.menubar li ul li { display:block; float:none; color:#eeeeee; margin:0; padding:0.6rem 1rem; }
+.menubar li ul li:hover { cursor:pointer; }
+.menubar li ul li.submenu_divider { margin:0 0.4rem; padding:0; height:1px; border-bottom:1px solid #424242; }
+.menubar li:hover ul { display:block; }
+
+/* toolbar containing small icons for tools */
+.toolbar { display:inline-block; margin-right:1rem; }
+/*.toolbar { display:inline-block; margin-left:1rem; }*/
+.toolbar svg { fill:white; margin: 0.2rem 0.1rem; height:1.2rem;  -moz-user-select:none; -webkit-user-select:none; -ms-user-select:none;}
+.toolbar svg:hover { fill:yellow; cursor:pointer; }
+.toolbar svg:active { fill:white; }
+.toolbar ul { display:inline-block; padding:0.2rem; margin:0; }
+/*.toolbar li { display:inline; float:left; padding:0rem 0.3rem; border:1px solid white;} *//* main menu items */
+.toolbar li { display:inline; float:right; padding:0rem 0.3rem; border:1px solid white;} 
+.toolbar li:hover { color:red; cursor:pointer; }
+
+/* Middle panel: containing #image_panel, #leftsidebar */
+/*.middle_panel { display:table; table-layout:fixed; width:100%; z-index:1; padding:0;}*/
+.middle_panel { display:table; table-layout:fixed; right:0px,width:100%; z-index:1; padding:0;}
+/*#leftsidebar { display:none; z-index:10; vertical-align:top;}*/
+#leftsidebar { display:none; z-index:10; vertical-align:top;}
+/*#rightsidebar { z-index:-10; vertical-align:left;}*/
+/*#display_area { display:table-cell; width:100%; z-index:1; margin:0; padding-left:1em; vertical-align:top; }*/
+#display_area { display:table-cell; width:100%; z-index:1; margin:0; padding-right:1em; vertical-align:top; }
+/* layers of canvas */
+/*#image_panel        { position:relative; outline:none; }
+#image_panel img    { visibility:hidden; opacity:0; position:absolute; top:0px; left:0px; width:100%; height:100%; outline:none; }*/
+#image_panel        { position:relative; outline:none; }
+#image_panel img    { visibility:hidden; opacity:0; position:absolute; top:0px; right:0px; width:100%; height:100%; outline:none; }
+#image_panel canvas { position:absolute; top:0px; left:0px; outline:none;}
+#image_panel .visible { visibility:visible !important; opacity:1 !important; }
+#image_panel label>img { visibility:visible; opacity:1; position:relative; width:auto; height:4em; outline:none; }
+
+
+
+#leftsidebar_collapse_panel { display:none; position:relative; z-index:10; vertical-align:top; }
+/*#leftsidebar_show_button { font-size:large; margin-left:0.1rem; }*/
+#leftsidebar_show_button { font-size:large; margin-right:0.1rem; }
+#leftsidebar_show_button:hover { color:red; cursor: pointer; }
+
+/* Left sidebar accordion */
+button.leftsidebar_accordion { font-size:large; background-color:#f2f2f2; cursor:pointer; padding:0.5em 0.5em; width:100%; text-align:left; border:0; outline:none; }
+button.leftsidebar_accordion:focus { outline: none; }
+button.leftsidebar_accordion.active, button.leftsidebar_accordion:hover { background-color: #e6e6e6; }
+button.leftsidebar_accordion:after { content:'\02795'; color:#4d4d4d; float:right; }
+button.leftsidebar_accordion.active:after { content: '\2796'; }
+.leftsidebar_accordion_panel {  display:none; padding:0 0.5em; font-size:small; border-right:0px solid #f2f2f2; border-bottom:0px solid #f2f2f2; }
+.leftsidebar_accordion_panel.show { display:block; }
+
+/* Keyboard shortcut panel */
+.leftsidebar_accordion_panel table { border-collapse:collapse; }
+.leftsidebar_accordion_panel td { border:1px solid #f2f2f2; padding:0.2rem 0.4rem; }
+
+/* buttons */
+/*.button_panel { display:inline-block; width:100%; margin:0.2rem 0; }*/
+            .button_panel { display:inline-block; width:80%; margin:0.2rem 0; }
+.button_panel .text_button, .text_button { color: #0000ff; padding: 0.2rem 0.2rem; -moz-user-select:none; -webkit-user-select:none; -ms-user-select:none; }
+.button_panel .flush_right { float:right; }
+.button_panel .text_button:hover, .text_button:hover { cursor:pointer; }
+.button_panel .text_button:active, .text_button:active { color: #000000; }
+.button_panel .active { border-bottom:1px solid black; }
+.button_panel .button { display:inline-block; padding:0.35rem 0.5rem; margin:0 0.05rem; cursor:pointer; background-color:#cccccc; border-radius:0.2rem; -moz-user-select:none; -webkit-user-select:none; -ms-user-select:none; }
+.button_panel .button:hover { background-color:black; color:white; }
+
+/* Attributes properties: name, description, type, ... */
+#attribute_properties { display:table; right:200;width:100%; border-collapse:collapse; margin:1rem 0; border:1px solid #cccccc; }
+/*#attribute_properties { display:table;  border-collapse:collapse; margin:1rem 0; border:1px solid #cccccc; }*/
+#attribute_properties .property { display:table-row;}
+#attribute_properties .property span { display:table-cell; padding: 0.2rem 0.4rem; }
+#attribute_properties .property span input { width: 100%; border:1px solid #cccccc; margin: 0;}
+#attribute_properties .property span input:focus { border:1px solid black; }
+#attribute_properties .property span select { width: 100%; border:1px solid #cccccc; margin: 0;}
+
+/* Attributes options: options for attribute type={checkbox,radio,...} */
+#attribute_options { display:table; width:100%; border-collapse:collapse; margin:1rem 0; border:1px solid #cccccc; table-layout:fixed; }
+#attribute_options .new_option_id_entry { display:inline-block; padding:1rem 0.2rem; }
+#attribute_options .new_option_id_entry input {border:none; border-bottom:1px solid #cccccc; margin: 0; font-size: 1.3rem;}
+#attribute_options .property { display:table-row;}
+#attribute_options .property span { display:table-cell; padding: 0.2rem 0.2rem; font-weight:bold; }
+/*#attribute_options .property input { display:table-cell; width:100%; border:none; border-bottom:1px solid #cccccc; margin: 0; font-size: 0.8rem;}*/
+#attribute_options .property input { display:table-cell; width:100%; border:none; border-bottom:1px solid #cccccc; margin: 0; font-size: 1.3rem;}
+#attribute_options .property input:focus { border-bottom:1px solid #000000; background-color:#f2f2f2; color:#000000; }
+#attribute_options .property span input[type=checkbox] { vertical-align:middle; }
+#attribute_options .property span input[type=radio] { vertical-align:middle; }
+
+
+#user_input_panel { position:fixed; display:none; width:100%; height:100%; top:0; left:50; right:0; bottom:0; background-color: rgba(0,0,0,0.6); z-index:1002; }
+/*#user_input_panel .content { position:fixed; background-color:white; top:50%; left:50%; transform:translate(-50%,-50%);  -webkit-transform: translate(-50%, -50%); -moz-transform: translate(-50%, -50%);  -o-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); padding:2rem 4rem;}*/
+#user_input_panel .content { position:fixed; background-color:white; top:50%; left:50%; transform:translate(-50%,-50%);  -webkit-transform: translate(-50%, -50%); -moz-transform: translate(-50%, -50%);  -o-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); padding:2rem 4rem;}
+#user_input_panel .content .title { font-size:large; font-weight:bold; }
+#user_input_panel .content .user_inputs { display:table; width:100%; border-collapse:collapse;}
+#user_input_panel .content .user_inputs .row { display:table-row; }
+#user_input_panel .content .user_inputs .cell { display:table-cell; padding:1rem 0.5rem; vertical-align:middle; border:1px solid #f2f2f2; }
+#user_input_panel .content .user_confirm { display:table; width:100%; text-align:center; margin:2rem 0;}
+#user_input_panel .content .user_confirm .ok { display:table-cell; width:48%; }
+#user_input_panel .content .user_confirm .cancel { display:table-cell; width:48%; }
+#user_input_panel .content .warning { color:red; }
+
+/* Attribute editor */
+#annotation_editor_panel { position:fixed; display:none; width:100%; right:0; bottom:0; background-color:white; border-top:2px solid #cccccc; padding:0.2em 1em; overflow:auto; z-index:1001; box-shadow: 0 0 1em #cccccc;}
+/*#annotation_editor { display:table; margin-bottom:3em; border-collapse:collapse; font-size:inherit; position: absolute; top:500px;left:800px; background-color:white; }*/
+#annotation_editor { display:table; margin-bottom:3em; border-collapse:collapse; font-size:inherit; background-color:white;  z-index:10024;}
+            #annotation_editor .row { display:table-row; width: 100%;height: 20px}
+#annotation_editor .highlight .col { background-color:#e6e6e6;}
+
+#annotation_editor .col { display:table-cell; padding:0.4em 0.6em; border:1px solid #000000; vertical-align:middle; font-size:inherit; }
+            #annotation_editor .header { font-weight:bold; white-space:nowrap}
+#annotation_editor .id { font-weight:bold; }
+#annotation_editor .col input[type=checkbox] { vertical-align:middle; }
+#annotation_editor .col input[type=radio] { vertical-align:middle; font-size:inherit; }
+#annotation_editor .col label { vertical-align:middle; font-size:inherit; }
+#annotation_editor .col textarea { border:0.1em solid #cccccc; padding:0; margin:0; font-size:inherit; background-color:#ffffff;height:20px;width: 80px}
+#annotation_editor .col textarea:focus { border:0.1em dashed #cccccc; }
+#annotation_editor .col span { display:block; }
+#annotation_editor .col horizontal_container { display:inline-block; }
+
+#annotation_editor .col .img_options { display:inline; }
+#annotation_editor .col .img_options .imrow { display:block; }
+#annotation_editor .col .img_options span { display:inline-block; margin: 0.2rem 0.4rem;}
+#annotation_editor .col .img_options span img { height:4em; }
+#annotation_editor .col .img_options p { margin:0; padding:0; font-size:inherit; }
+#annotation_editor .col .img_options input[type=radio] { display:none; }
+#annotation_editor .col .img_options input[type=radio] + label { display:block; cursor:pointer; text-align:center;}
+#annotation_editor .col .img_options input[type=radio]:checked + label { border: 0.1em solid black; background-color:#cccccc; cursor:default; font-size:inherit; }
+
+/* Region shape selection panel inside leftsidebar */
+ul.region_shape          { font-size:xx-large; list-style-type:none; overflow:hidden; padding:0.4em 0; margin:0; }
+ul.region_shape li       { float:left; padding:0 0.2em; fill:#ffffff; stroke:#000000; }
+/*ul.region_shape li       { float:right; padding:0 0.2em; fill:#ffffff; stroke:#000000; }*/
+ul.region_shape li:hover { cursor:pointer; fill:#ffffff; stroke:#ff0000; }
+ul.region_shape .selected { fill:#ffffff; stroke:#ff0000; }
+
+/* cursor coordinates inside region shape selection panel in leftsidebar */
+#region_info { font-size:0.8em; margin-bottom:0.4em; }
+
+/*#message_panel         { display:block; width:100%; position:fixed; bottom:300px; z-index:9999; text-align:center; }*/
+#message_panel         { display:none; width:100%; position:fixed; bottom:30px; right:0;z-index:9999; text-align:center; }
+#message_panel .content { display:none; margin:auto; background-color:#000000; color:#ffff00; font-size:small; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:2rem; padding: 0.5rem 2rem;}
+
+.text_panel    { display:none; margin:auto; font-size:medium; line-height:1.3em; margin: 0; max-width:700px; }
+/*.text_panel li { margin:1em 0; text-align:left; }
+.text_panel p  { text-align:left; }*/
+.text_panel li { margin:1em 0; text-align:right; }
+.text_panel p  { text-align:right; }
+
+.svg_button:hover { cursor:pointer; }
+
+/* Loading spinbar */
+.loading_spinbox        { display:inline-block; border:0.4em solid #cccccc; border-radius:50%; border-top:0.4em solid black; border-bottom:0.4em solid black;-webkit-animation:spin 2s linear infinite; animation:spin 2s linear infinite; }
+@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin         { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+#invisible_file_input { width:0.1px; height:0.1px; opacity:0; overflow:hidden; position:absolute; z-index:-1; }
+
+.display_none  { display:none !important; }
+.display_block { display:block !important; }
+
+.display_area_content { } /* this class is used to clear the display area content */
+.narrow_page_content li { font-size:0.9rem; margin: 0.4rem 0; }
+.narrow_page_content { width:60%; }
+
+.force_small_font { font-size:small !important; }
+.key { font-family:monospace; padding:1px 6px; background:linear-gradient(to bottom,#f0f0f0,#fcfcfc);; border:1px solid #e0e0e0; white-space:nowrap; color:#303030; border-bottom-width:2px; border-radius:3px; font-size:1.2em; }
+
+/*
+#slideTool{
+    width: 305px;
+    height: 3px;
+    position: relative;
+    background-color: lightgray;
+    display: inline-block;
+}*/
+#slideLeft{width: 100px;height: 5px;background: #ab6969;z-index: 20;margin-top: 10px;}
+#slideRight{width:100%;height:5px;background: #ab6969;margin-top: -5px;}
+#slider1{height: 15px;width: 15px;background:red;border: 1px solid #ab6969;display: block;border-radius: 10px;top:-6px;z-index: 20000}
+/*#slider2{height: 15px;width: 15px;background: red;border: 1px solid #ab6969;display: block;border-radius: 10px;margin-top: -6px;z-index: 20;margin-left: 90%}*/
+#value1{
+    margin-top: -25px;
+    position: absolute;
+    width: 30px;
+    background-color: black;
+    color: white;
+    text-align: center;
+    margin-left: -20px;
+    border-radius: 3px;
+}
+#value2{
+    margin-top: -25px;
+    position: absolute;
+    width: 30px;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 3px;
+}
+/*#slideToolBorder{
+    margin-left: 80px;
+    margin-top: 50px;
+    background-color: white;
+    width: 400px;
+    border: solid 1px brown;
+}
+#slideTitle{
+    display: inline-block;
+    background-color: #ab6969;
+    height: 30px;
+    width: 70px;
+    text-align: center;
+    line-height: 30px;
+    border-right: solid 1px brown;
+}*/
+#titleSpan{
+    color: white;
+}
+
+    </style>
+		
+    </head>
+    <body class="skin-black">
+	    <svg style="display:none;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <symbol id="via_logo">
+          <!-- Logo designed by Abhishek Dutta <adutta@robots.ox.ac.uk>, May 2018 -->
+          <title>VGG Image Annotator Logo</title>
+          <rect width="400" height="160" x="0" y="0" fill="#212121"></rect>
+
+          <text x="56" y="130" font-family="Serif" font-size="100" fill="white">V</text>
+          <text x="180" y="130" font-family="Serif" font-size="100" fill="white">I</text>
+          <text x="270" y="130" font-family="Serif" font-size="100" fill="white">A</text>
+
+          <rect width="80" height="100" x="52" y="40" stroke="yellow" fill="none" stroke-width="2"></rect>
+          <text x="72" y="30" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">VGG</text>
+
+          <rect width="50" height="100" x="175" y="45" stroke="yellow" fill="none" stroke-width="2"></rect>
+          <text x="175" y="35" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">Image</text>
+
+          <rect width="80" height="100" x="265" y="40" stroke="yellow" fill="none" stroke-width="2"></rect>
+          <text x="265" y="30" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">Annotator</text>
+        </symbol>
+        <symbol id="shape_rectangle">
+          <rect width="20" height="12" x="6" y="10" stroke-width="2"></rect>
+        </symbol>
+        <symbol id="shape_circle">
+          <title>Circular region shape</title>
+          <circle r="10" cx="16" cy="16" stroke-width="2"></circle>
+        </symbol>
+        <symbol id="shape_ellipse">
+          <title>Elliptical region shape</title>
+          <ellipse rx="12" ry="8" cx="16" cy="16" stroke-width="2"></ellipse>
+        </symbol>
+        <symbol id="shape_polygon">
+          <path d="M 15.25,2.2372 3.625,11.6122 6,29.9872 l 20.75,-9.625 2.375,-14.75 z" stroke-width="2"></path>
+        </symbol>
+        <symbol id="shape_point">
+     
+          <circle r="3" cx="16" cy="16" stroke-width="2"></circle>
+        </symbol>
+        <symbol id="shape_polyline">
+          <title>Polyline region shape</title>
+          <path d="M 2,12 10,24 18,12 24,18" stroke-width="2"></path>
+          <circle r="1" cx="2" cy="12" stroke-width="2"></circle>
+          <circle r="1" cx="10" cy="24" stroke-width="2"></circle>
+          <circle r="1" cx="18" cy="12" stroke-width="2"></circle>
+          <circle r="1" cx="24" cy="18" stroke-width="2"></circle>
+        </symbol>
+
+        <!-- Material icons downloaded fromhttp://material.io/icons -->
+        <symbol id="icon_settings">
+          <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path>
+        </symbol>
+        <symbol id="icon_save">
+          <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"></path>
+        </symbol>
+        <symbol id="icon_open">
+          <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"></path>
+        </symbol>
+        <symbol id="icon_gridon">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"></path>
+        </symbol>
+        <symbol id="icon_gridoff">
+          <path d="M8 4v1.45l2 2V4h4v4h-3.45l2 2H14v1.45l2 2V10h4v4h-3.45l2 2H20v1.45l2 2V4c0-1.1-.9-2-2-2H4.55l2 2H8zm8 0h4v4h-4V4zM1.27 1.27L0 2.55l2 2V20c0 1.1.9 2 2 2h15.46l2 2 1.27-1.27L1.27 1.27zM10 12.55L11.45 14H10v-1.45zm-6-6L5.45 8H4V6.55zM8 20H4v-4h4v4zm0-6H4v-4h3.45l.55.55V14zm6 6h-4v-4h3.45l.55.54V20zm2 0v-1.46L17.46 20H16z"></path>
+        </symbol>
+        <symbol id="icon_next">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
+        </symbol>
+        <symbol id="icon_prev">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </symbol>
+        <symbol id="icon_list">
+          <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"></path>
+        </symbol>
+        <symbol id="icon_zoomin">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+          <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+        </symbol>
+        <symbol id="icon_zoomout">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"></path>
+        </symbol>
+        <symbol id="icon_copy">
+          <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path>
+        </symbol>
+        <symbol id="icon_paste">
+          <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+        </symbol>
+        <symbol id="icon_pasten">
+          <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+          <text x="8" y="18">n</text>
+        </symbol>
+        <symbol id="icon_pasteundo">
+          <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+          <text x="8" y="18">x</text>
+        </symbol>
+        <symbol id="icon_selectall">
+          <path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2zM7 17h10V7H7v10zm2-8h6v6H9V9z"></path>
+        </symbol>
+        <symbol id="icon_close">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+        </symbol>
+        <symbol id="icon_insertcomment">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"></path>
+        </symbol>
+        <symbol id="icon_checkbox">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+        </symbol>
+        <symbol id="icon_fileupload">
+          <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"></path>
+        </symbol>
+        <symbol id="icon_filedownload">
+          <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path>
+        </symbol>
+
+		
+      </defs>
+    </svg>
+
+	
+	
+        <!-- header logo: style can be found in header.less -->
+        <header class="header">
+            <a href="index.html" class="logo" id="logotitle">
+                PCL数据标注平台V1.6
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button"  id="hiddenLeft">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+				<span style="font-size:28px">CT影像标注</span>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                      
+                      
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user"></i>
+                                <span id="userNickName_bar"><i class="caret"></i></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
+                              
+                                    
+                                <li>
+                                            <a href="login.html"><i class="fa fa-ban fa-fw pull-right"></i> Logout</a>
+                                </li>
+										
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </nav>
+        </header>
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside class="left-side sidebar-offcanvas">
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+                    <!-- Sidebar user panel -->
+                    <div class="user-panel">
+                        <div class="pull-left image">
+                            <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+                        </div>
+                        <div class="pull-left info">
+                            <p id="userNickName"></p>
+                            <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                        </div>
+                    </div>
+                    <!-- search form -->
+                    <form action="#" method="get" class="sidebar-form">
+                        <div class="input-group">
+<!--                             <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                            <span class="input-group-btn">
+                                <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span> -->
+                        </div>
+                    </form>
+                    <ul class="sidebar-menu">
+                                <li>
+                                   <a href="index.html">
+                                     <i class="fa fa-dashboard"></i> <span>主面板</span>
+                                   </a>
+                                 </li>
+						         <li>
+                                     <a href="dataSetManage.html">
+                                          <i class="fa fa-database"></i> <span>数据集管理</span>
+                                     </a>
+                                </li>
+                                <li>
+                                    <a href="predictTaskPage.html">
+                                         <i class="fa fa-chevron-circle-right"></i> <span>自动标注</span>
+                                     </a>
+                                </li>
+                                <li class="active">
+                                     <a href="labelTaskPage.html">
+                                          <i class="fa fa-check-circle"></i> <span>人工标注</span>
+                                     </a>
+                                </li>
+                                <li >
+                                    <a href="reIdTaskPage.html" >
+                                        <i class="fa fa-gavel"></i> <span>ReID标注</span>
+                                    </a>
+                                </li>
+								                <li >
+                                    <a href="videoTaskPage.html">
+                                        <i class="fa fa-university"></i> <span>车流统计</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a href="videoTaskPageBox.html">
+                                        <i class="fa fa-camera"></i> <span>视频标注</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a href="bigImgTaskPage.html">
+                                        <i class="fa fa-picture-o"></i> <span>超大图像标注</span>
+                                    </a>
+                                </li> 
+                                <li>
+                                    <a href="retrainTask.html">
+                                         <i class="fa fa-line-chart"></i> <span>模型重训</span>
+                                     </a>
+                                </li>
+
+                                <li >
+                                    <a href="userManage.html">
+                                         <i class="fa fa-user-circle"></i> <span>用户管理</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a href="reportManage.html">
+                                         <i class="fa fa-bar-chart"></i> <span>报表管理</span>
+                                    </a>
+                                </li>
+								<li>
+                                    <a href="logManage.html">
+                                         <i class="fa fa-file-text-o"></i><span>操作日志管理</span>
+                                    </a>
+                                </li>
+                    </ul>
+                </section>
+                <!-- /.sidebar -->
+            </aside>
+
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+
+                        <div class="col-md-9" >
+                            <nav class="navbar navbar-default" role="navigation" id="tool0">
+							<div class="leftsidebar_accordion_panel show">
+                               <ul class="region_shape">
+                                  <li id="region_shape_rect" class="selected" onclick="createRectLabel()" title="新建矩形标注(W)"><svg height="28" viewbox="0 0 28 28"><use xlink:href="#shape_rectangle"></use></svg></li>
+                                  
+                                  <li id="region_shape_polygon" onclick="createMaskLabel()" title="新建多边形标注"><svg height="28" viewbox="0 0 28 28"><use xlink:href="#shape_polygon"></use></svg></li>
+								  
+								  <li id="region_shape_point" onclick="createPointLabel()" title="新建点标注"><svg height="28" viewbox="0 0 28 28"><use xlink:href="#shape_point"></use></svg></li>
+								  
+								  <li id="delete_shape" onclick="deleterect()" title="删除选中的标注"><svg height="24" viewbox="0 0 28 28"><use xlink:href="#icon_close"></use></svg></li>
+								  
+								  <li id="save_shape" onclick="save()" title="保存标注(S)"><svg height="24" viewbox="0 0 28 28"><use xlink:href="#icon_save"></use></svg></li>
+								  
+								  <li id="previous_shape" onclick="last()" title="上一张(Q)"><svg height="24" viewbox="0 0 28 28"><use xlink:href="#icon_prev"></use></svg></li>
+								  
+								  <li id="next_shape" onclick="next()" title="下一张(E)"><svg height="24" viewbox="0 0 28 28"><use xlink:href="#icon_next"></use></svg></li>
+								  
+								  <li id="copy_shape" onclick="copy()" title="复制所有的标注"><svg height="24" viewbox="0 0 28 28"><use xlink:href="#icon_copy"></use></svg></li>
+								  
+								  <li id="paste_shape" onclick="paste()" title="粘贴复制的标注"><svg height="24" viewbox="0 0 28 28"><use xlink:href="#icon_pasten"></use></svg></li>
+								  
+								  <li id="arrow-left" style="font-size: 26px" onclick="moveLeftOnePx()" title="标注左移一个像素"><i  class="fa fa-long-arrow-left" aria-hidden="true"  ></i></li>
+								  <li id="arrow-right" style="font-size: 26px" onclick="moveRightOnePx()" title="标注右移一个像素"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></li>
+								 
+								  <li id="arrow-up" style="font-size: 26px" onclick="moveUpOnePx()" title="标注上移一个像素"><i class="fa fa-long-arrow-up" aria-hidden="true"></i></li>
+								  
+								  <li id="arrow-down" style="font-size: 26px" onclick="moveDownOnePx()" title="标注下移一个像素"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></li>
+								  
+<!-- 								  <li id="setting" onclick="updateSetting()" title="设置"  href="#labeldefine"><svg height="24" viewbox="0 0 28 28"><use xlink:href="#icon_settings"></use></svg></li> -->
+                                  <li id="setting" onclick="updateSetting()" title="设置"  href="#labeldefine" data-toggle="modal" data-target="#firstModal"><svg height="24" viewbox="0 0 28 28"><use xlink:href="#icon_settings"></use></svg></li>
+                                
+                                  <li id="skip" style="font-size: 24px" onclick="skipLast()" title="跳转至上次标注的地方"><i class="fa fa-share" aria-hidden="true"></i></li>
+								  
+								  <li  style="font-size: 26px" onclick="setAutoModel()" title="自动标注"  href="#autoLabel" data-toggle="modal" ><i class="fa fa-tag" aria-hidden="true"></i></li>
+
+                                  <li  style="font-size: 26px" onclick="set3DModel()" title="切换到3D显示"  ><i class="fa fa-crosshairs" aria-hidden="true"></i></li>  
+                                  <li  style="font-size: 26px" onclick="setLightContrast()" title="亮度对比度调整"  href="#labeldefine"> <i class="fa fa-adjust" aria-hidden="true"></i></li> 
+                               </ul>
+ 
+                             </div>
+
+                             <div id=labeldefine>
+                                 
+                             </div>
+							 <!--
+                                <div class="container-fluid">
+                                  <ul class="nav navbar-nav">
+                                    <li><a href="javascript:void(0);" onclick="createlabel()">新建标注(W)</a></li>   
+                                    <li><a href="javascript:void(0);" onclick="cancel()">取消新建(ESC)</a></li>         
+                                    <li><a href="javascript:void(0);" onclick="deleterect()">删除(D)</a></li>
+                                    <li><a href="javascript:void(0);" onclick="save()">保存(S)</a></li>         
+                                    <li><a href="javascript:void(0);" onclick="clearCanvas()">清除画布</a></li>  
+                                    <li><a href="javascript:void(0);" onclick="last()">上一张(Q)</a></li>
+                                    <li><a href="javascript:void(0);" onclick="next()">下一张(E)</a></li>
+
+                                    <li><a href="javascript:void(0);">待开发</a></li>
+                                </ul>
+                                </div>
+								-->
+								
+                            </nav>
+                            <div id="labelwin" width="1140" height="642" style="display: inline-block;border: none;">
+                               <div id = "show_region"   style="position: absolute;width: 0px;height: 0px;">                              
+                                </div>
+                                <div id='divMyCanvas' style="display: inline-block;border:1px solid #5a5a5a;border: none;background: #000000">
+                                 <canvas id="myCanvas" width="1140" height="642" style=";display: inline-block;">
+                                 </canvas>
+                                </div>
+
+                                <div id ='divRender' style="display: inline-block;border:1px solid #5a5a5a;">
+                                </div> 
+                                <div id='divRadial'style="display: inline-block;border:1px solid #5a5a5a;vertical-align:text-bottom;border: none;background: #000000" >
+                                  <canvas id="radialCanvas" width="1140" height="642" style="">
+                                  </canvas> 
+                                </div> 
+
+                                 <div id ='divChord' style="display: inline-block;border:1px solid #5a5a5a;vertical-align:text-bottom;border: none;background:#000000">
+                                 <canvas id="chordCanvas" width="1140" height="642" style="position: relative;vertical-align: middle;margin:auto;display: block; " >
+                                  </canvas>  
+                                </div>  
+                          
+<!--                                  <canvas id="myCanvas" width="1140" height="642" style="border:1px solid #5a5a5a;">
+                                 </canvas> -->
+                            <div id="task_flow_verify">
+							   
+							</div>
+                        </div>
+                             <!-- 其他标注工具 -->
+                            <div id ='CTtools' style="display: inline-block;vertical-align:text-bottom;">
+<!--                                <div id = "LinearContrast" style="border: 2px solid #5a5a5a;border-radius:4px;width: 100%;height: 100px; ">
+                                <a style="margin:10px">Linear Contrast Adjustment</a><br>
+                                <label  style="margin: 10px" ">最小值</label> <input type="text" id = "minCT" value="-3000"  maxlength="7" onchange="changeValue()" style="border-radius:4px;width: 20%"> 
+                                <br>
+                                <label style="margin: 10px" >最大值</label> <input id ="maxCT" type="text" value="4000" maxlength="7" onchange="changeValue()" style="border-radius:4px;width: 20%"     
+                               </div>
+
+                                <div id = "slideContrast" style="border: 1px solid #5a5a5a;border-radius:4px;width: 100%;height: 50px;margin-top: 20px; ">
+                                 <div style="margin-top: 15px;">
+                                    <input id= 'rangeContrast' style="vertical-align:middle;margin-top:20px" class="range-slider" type="hidden" value="10,89" />
+                                </div>>
+
+                               </div> -->
+
+
+                            </div>
+                            
+                        </div><!-- /.col -->
+                        <div class="col-md-3">
+                            <div class="panel" id = "panel_light">
+                                <header class="panel-heading">
+                                    <p><span>任务名称:&nbsp;&nbsp;&nbsp;&nbsp;</span> <span id="task_info"></span></p>
+									<p><span>完成进度:&nbsp;&nbsp;&nbsp;&nbsp;</span> <span id="task_progress"></span></p>
+                                </header>
+                                   <div  id = 'showLightConstrast' style="border: 2px solid #5a5a5a;border-radius:4px;width:100%;height: 150px;display: none;";>
+                                       <div id = "slideLight" style="margin-left: 10px">
+                                           <label  style="margin: 10px;width: 50px" >亮度:</label>
+                                           <input id= 'rangeLight' style="vertical-align:middle;margin-left:150px" class="range-slider-light" type="hidden" value="0" />
+                                       </div>
+                                       <div id = "slideContrast" style="margin-left: 10px;margin-top: 10px">
+                                           <label  style="margin: 10px;width: 50px" >对比度:</label>
+                                           <input id= 'rangeContrast' style="vertical-align:middle;margin-left:150px" class="range-slider-contrast" type="hidden" value="1" />
+                                       </div>
+                                 </div>
+								
+                            </div><!-- /.panel -->
+							 <div class="panel">
+                                <header class="panel-heading">
+                                    文件列表(第<span  id="startIndex">0</span>至<span id="endIndex">0</span>条,&nbsp;共<span id="totalNum">0</span>条.&nbsp;&nbsp;)
+                                </header>
+
+                                
+                                     <div > 
+                                                       <span>   
+                                                       <a id="prePage" href="">上一页</a>
+                                                        <span>  &nbsp;当前:<span id="displayPage1">1</span>&nbsp;   </span>
+                                                        <a id="nextPage" href="">下一页</a>
+                                                        <span>
+                                                          &nbsp;共<span id="totalPageNum"></span>页&nbsp;
+                                                        </span>
+                                                        <span>&nbsp;跳转:<input type="text" id="goNum" style="width: 50px;border-radius: 6px" maxlength="5" oninput="value=value.replace(/[^\d]/g,'')"><a id="goHref" href="javascript:goPage()">&nbsp;GO</a></span>
+                                                        </span>
+                                    </div>
+                                <div class="panel-body no-padding" id="filepanel" style="overflow: auto;">
+                                    <table class="table table-condensed" id="filelist" style="overflow: auto;word-break: break-all;word-wrap: break-word">
+
+                                        
+                                    </table>
+								
+                                    
+                                         
+                                </div><!-- /.panel-body -->
+                            </div><!-- /.panel -->
+							
+                           
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                    
+                </section><!-- /.content -->
+                <div class="footer-main">
+                    Copyright &copy PCL, 2019-2021
+                </div>
+            </aside><!-- /.right-side -->
+        </div><!-- ./wrapper -->
+
+        <!-- <div class="middle_panel"> -->
+        <div id="message_panel">
+            <div id="message_panel_content" class="content"></div>
+        </div>
+
+    <div class="modal fade" id="firstModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+                <div  class="panel" id="set_attributes" class="force_small_font display_area_content" style="display:none;">
+            <!--           <header></header>  style="position:absolute ;left:300px;top:185px"  style="display:none;" -->
+                  <button class="close"  onclick="close_attribute()" style=" padding: .3em 0.8em;" data-dismiss="modal"> × </button>
+                  <!-- <div id="user_input_panel"></div> -->
+
+               <!-- <div class="middle_panel"> -->
+                    <!-- <div id="message_panel">
+                      <div id="message_panel_content" class="content"></div>
+                    </div> -->
+
+                          <div id="leftsidebar_collapse_panel">
+                          <span class="text_button" onclick="leftsidebar_toggle()" title="Show left sidebar">&rtrif;</span>
+                        </div>
+                      <div id="leftsidebar">
+<!--  -->
+                          <div class="leftsidebar_accordion_panel show" id="attributes_editor_panel">
+                            <div class="button_panel" style="padding:1rem 0;">
+                              <h4 class="modal-title">新建属性值</h4>
+                            </div>
+                            <div id="attributes_update_panel">
+                              <div class="button_panel">
+                                <input style="width:50%" type="text" placeholder="attribute name" id="user_input_attribute_id"  value="">
+                                <span id="button_add_new_attribute" class="button" onclick="add_new_attribute_from_user_input()" title="Add new attribute">&plus;</span>
+                              </div>
+                              <div class="button_panel" style="margin:0.1rem 0;width:70%;" >
+                                <table class="table table-hover" id="attributes_name_list">
+                                    
+                                </table>
+                              </div>
+
+                                  <div  id="atttibute_child">
+                                      <div id="attribute_properties"> </div>
+                                      <div id="attribute_options"></div>
+                                      <p style="text-align:center">
+                                      </p>
+
+                                  </div>
+                            </div>
+                            <div>
+                              <button type="button" class="btn btn-default"  onclick="save_attribute()" id="save" style=" margin:0.5rem 0.3rem " data-dismiss="modal"> 保存属性值</button>
+                            </div>
+
+                          </div>
+
+              </div> <!-- leftsidebar -->
+              <div style="width: 100%;" id="vertical_space"></div>
+          </div><!-- /.panel -->
+	    </div>
+    </div>
+    <div id="user_input_panel" style="z-index: 9999;"></div>
+                                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="autoLabel" class="modal fade">
+                                      <div class="modal-dialog">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                  <h4 class="modal-title">自动标注</h4>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <form role="form">
+                                                      <div class="form-group">
+                                                          <label for="exampleInputPassword1">自动标注任务使用的模型</label>
+                                                          
+                                                            <select class="form-control" name="预检模型" id="predict_model">
+                                                            <option value="" >请选择</option>
+                                                            <!--<option value="1" selected="">Faster RCNN</option> -->
+                                                            </select>
+                                                      </div>
+                                                      
+                                                      
+                                                      <button type="button" class="btn btn-default" onclick="submit_predtask();">提交</button>
+                                                  </form>
+                                              </div>
+                                          </div>
+                                      </div>
+                            </div>   
+<!-- 		<div id="annotation_editor" class="force_small_font display_area_content" style="display:none;">
+		         <input type="" value="" id="hiderectIndex" style="display:none;">
+				 <input type="" value="" id="hiderectType" style="display:none;">
+		         <table  id="annotation_editor_table"  style="border: 1px solid black">
+                                        <tr>
+                                            <th style="border: 1px solid black">id</th>
+                                            <th style="border: 1px solid black">type</th>
+                                           
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black">
+											     <input type="" class="form-control" id="idvalue"  onchange="annotation_editor_on_metadata_update(this)" style="width: 100px">
+										    </td>
+                                            <td style="border: 1px solid black">
+                                                <select id="type__1"  onchange="annotation_editor_on_metadata_update(this)">
+														<option value="inflammation">inflammation</option>
+														<option value="vessel">vessel</option>
+												</select>
+                                            </td>
+                                        </tr> -
+                                        
+                    </table>
+		
+			
+		</div> -->
+
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script src="js/func.js" type="text/javascript"></script>
+
+        <script src="three.js-master/build/three.js" type="text/javascript"></script> 
+        <script src="three.js-master/examples/js/controls/OrbitControls.js" type="text/javascript"></script>
+        <script src="js/Director/labelDcmSelfDefine.js" type="text/javascript"></script>
+        <script src="js/Director/labelingDcm.js" type="text/javascript" ></script>
+        <!-- jQuery 2.0.2 -->
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+        <script src="js/jquery.mousewheel.js" type="text/javascript"></script>
+        <script src="js/jquery.jscrollpane.js" type="text/javascript"></script>
+
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- Director App -->
+        <script src="js/Director/app.js" type="text/javascript"></script>
+
+        <script src="js/jquery.range.js" type="text/javascript"></script>
+        <script  type="text/javascript">
+
+           
+            $('#filepanel').slimScroll({
+                height: '650px',
+                // width:"300px"
+                BorderRadius: '5px',
+            });
+           $("select").bind("focus", function(){
+                if(this.blur){
+                  this.blur();
+                }
+            });
+            
+        </script>
+    </body>
+</html>

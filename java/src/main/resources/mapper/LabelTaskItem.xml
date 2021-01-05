@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.LabelTaskItemDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.LabelTaskItem" >
+		<result column="id" property="id"/>
+		<result column="pic_url" property="pic_url"/>
+		<result column="pic_object_name" property="pic_object_name"/>
+		<result column="label_info" property="label_info"/>
+		<result column="label_task_id" property="label_task_id"/>
+		<result column="item_add_time" property="item_add_time"/>
+		<result column="pic_image_field" property="pic_image_field"/>
+		<result column="label_status" property="label_status"/>
+		<result column="display_order1" property="display_order1"/>
+		<result column="display_order2" property="display_order2"/>
+		<result column="verify_status" property="verify_status"/>
+		<result column="verify_desc" property="verify_desc"/>
+		
+	</resultMap>
+	
+  <!-- 
+    <insert id="addLabelTaskItem"  parameterType="com.pcl.pojo.mybatis.LabelTaskItem">
+        insert into tasks_labeltaskitem(id,pic_url,pic_object_name,label_info,label_task_id,item_add_time,pic_image_field,label_status,display_order1,display_order2,verify_status,verify_desc)
+         values (#{id}, #{pic_url},#{pic_object_name},#{label_info},#{label_task_id},#{item_add_time},#{pic_image_field},#{label_status},#{display_order1},#{display_order2},#{verify_status},#{verify_desc})
+    </insert>
+    
+    
+    <insert id="addBatchLabelTaskItem"  parameterType="java.util.List">
+        insert into tasks_labeltaskitem(id,pic_url,pic_object_name,label_info,label_task_id,item_add_time,pic_image_field,label_status,display_order1,display_order2,verify_status,verify_desc)
+         values 
+         <foreach collection="list" item="item" index="index" separator=",">
+         (
+         #{item.id}, 
+         #{item.pic_url},
+         #{item.pic_object_name},
+         #{item.label_info},
+         #{item.label_task_id},
+         #{item.item_add_time},
+         #{item.pic_image_field},
+         #{item.label_status},
+         #{item.display_order1},
+         #{item.display_order2},
+         #{item.verify_status},
+         #{item.verify_desc}
+         )
+    	</foreach>
+    </insert> -->
+    
+    
+    <insert id="addBatchLabelTaskItemMap"  parameterType="Map">
+        insert into tasks_labeltaskitem${user_id}(id,pic_url,pic_object_name,label_info,label_task_id,item_add_time,pic_image_field,label_status,display_order1,display_order2,verify_status,verify_desc)
+         values 
+         <foreach collection="list" item="item" index="index" separator=",">
+         (
+         #{item.id}, 
+         #{item.pic_url},
+         #{item.pic_object_name},
+         #{item.label_info},
+         #{item.label_task_id},
+         #{item.item_add_time},
+         #{item.pic_image_field},
+         #{item.label_status},
+         #{item.display_order1},
+         #{item.display_order2},
+         #{item.verify_status},
+         #{item.verify_desc}
+         )
+    	</foreach>
+    </insert>
+    
+   
+    <select id="queryLabelTaskItemByLabelTaskId" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_labeltaskitem${user_id} where label_task_id=#{label_task_id}  order by pic_image_field asc
+    </select>  
+    
+    
+    
+    
+    <select id="queryLabelTaskItemByLabelTaskIdAndPicImage" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_labeltaskitem${user_id} where label_task_id=#{label_task_id}  
+        and
+        pic_image_field in (
+        <foreach collection="picList" item="item" index="index" separator=",">
+    		#{item}
+    	</foreach>
+        )
+        order by 
+        label_status desc,
+        pic_image_field asc
+    </select>  
+    
+    <select id="queryLabelTaskStatusByLabelTaskId" resultType="java.util.Map" parameterType="Map">    
+        SELECT label_task_id,count(1) as total,sum(label_status) as label_not_finished,sum(verify_status) as verify_finished FROM tasks_labeltaskitem${user_id}  
+        where  
+        label_task_id in 
+        (
+    	<foreach collection="list" item="item" index="index" separator=",">
+    		#{item}
+    	</foreach>
+    	)
+        GROUP BY label_task_id
+    </select> 
+    
+ 
+ 
+    <delete id="deleteLabelTaskItemById" parameterType="String">    
+        delete FROM tasks_labeltaskitem${user_id} where id=#{id};
+    </delete> 
+ 
+    <delete id="deleteLabelTaskById" parameterType="String">    
+        delete FROM tasks_labeltaskitem${user_id} where label_task_id=#{label_task_id};
+    </delete>  
+    
+     <select id="queryLabelTaskItemById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_labeltaskitem${user_id} where id=#{id};
+    </select>  
+    
+    <!--  
+    <select id="queryLabelTaskItemAfterTime" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_labeltaskitem where unix_timestamp(item_add_time) >= unix_timestamp(#{item_add_time}) and label_info is not null;
+    </select> 
+    -->
+    
+     <update id="updateLabelTaskItem"  parameterType="Map">    
+        update tasks_labeltaskitem${user_id} set 
+        <if test="label_info !=null">
+        	label_info=#{label_info},
+        </if>
+        <if test="label_status !=null">
+        	label_status=#{label_status},
+        </if>
+        <if test="verify_status !=null">
+        	verify_status=#{verify_status},
+        </if>
+        item_add_time=#{item_add_time} 
+        where id=#{id}
+    </update> 
+    
+    
+    
+    <select id="queryLabelTaskItemPageByLabelTaskId" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_labeltaskitem${user_id} where 
+        label_task_id=#{label_task_id}  
+        order by 
+         <if test="orderType !=null and orderType == 0">
+           label_status desc,
+        </if>
+        pic_image_field asc 
+        limit #{currPage}, #{pageSize}
+    </select> 
+    
+    <select id="queryLabelTaskItemPageCountByLabelTaskId" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_labeltaskitem${user_id} where label_task_id=#{label_task_id}
+    </select>
+     
+   <select id="existTable" parameterType="String" resultType="Integer">  
+     select count(*)  
+     from information_schema.TABLES  
+     where table_name=#{tableName} 
+   </select>
+     
+    <update id="createTable" parameterType="String">  
+		 CREATE TABLE ${tableName} (
+		     id varchar(32) NOT NULL,
+		     pic_url varchar(256) DEFAULT NULL,
+		     pic_object_name varchar(128) DEFAULT NULL,
+		     label_info TEXT(65535) NULL,
+		     label_task_id varchar(32) NOT NULL,
+		     item_add_time datetime(6) NOT NULL,
+		     pic_image_field varchar(400) DEFAULT NULL,
+		     label_status int(11) NOT NULL,
+		     display_order1 INT(11) NULL,
+		     display_order2 INT(11) NULL,
+		     verify_status INT(11) NULL,
+		     verify_desc VARCHAR(400) NULL,
+		     PRIMARY KEY (id)
+		 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
+  </update> 
+</mapper>

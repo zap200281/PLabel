@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.DataSetVideoInfoDao">
+	
+	
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.VideoInfo" >
+		<result column="id" property="id"/>
+		<result column="dataset_id" property="dataset_id"/>
+		<result column="minio_url" property="minio_url"/>
+		<result column="video_info" property="video_info"/>
+		<result column="camera_number" property="camera_number"/>
+		<result column="camera_gps" property="camera_gps"/>
+		<result column="camera_date" property="camera_date"/>
+		<result column="duration" property="duration"/>
+		<result column="startTime" property="startTime"/>
+		<result column="bitrate" property="bitrate"/>
+		<result column="videoCode" property="videoCode"/>
+		<result column="videoFormat" property="videoFormat"/>
+		<result column="resolutionRatio" property="resolutionRatio"/>
+		<result column="audioCode" property="audioCode"/>
+		<result column="audioFrequncy" property="audioFrequncy"/>
+		<result column="fps" property="fps"/>
+	</resultMap>
+  
+ 
+     <delete id="deleteVideoInfoById" parameterType="String">    
+        delete FROM tasks_dataset_videoinfo where id=#{id};
+    </delete>  
+    
+     <delete id="deleteVideoInfoByDataSetId" parameterType="String">    
+        delete FROM tasks_dataset_videoinfo where dataset_id=#{id};
+    </delete>  
+    
+   
+    <insert id="addVideoInfo"  parameterType="com.pcl.pojo.mybatis.VideoInfo">
+        insert into tasks_dataset_videoinfo
+        (id,dataset_id,minio_url,video_info,camera_number,camera_gps,camera_date,duration,startTime,bitrate,videoCode,videoFormat,resolutionRatio,audioCode,audioFrequncy,fps)
+         values 
+         (#{id},#{dataset_id},#{minio_url},#{video_info},#{camera_number},#{camera_gps},#{camera_date},#{duration},#{startTime},#{bitrate},#{videoCode},#{videoFormat},#{resolutionRatio},#{audioCode},#{audioFrequncy},#{fps})
+    </insert>
+    
+    
+     <insert id="addBatchVideoInfo"  parameterType="java.util.List">
+        insert into tasks_dataset_videoinfo
+        (id,dataset_id,minio_url,video_info,camera_number,camera_gps,camera_date,duration,startTime,bitrate,videoCode,videoFormat,resolutionRatio,audioCode,audioFrequncy,fps)
+         values 
+         <foreach collection="list" item="item" index="index" separator=",">
+         (
+         #{item.id},
+         #{item.dataset_id},
+         #{item.minio_url},
+         #{item.video_info},
+         #{item.camera_number},
+         #{item.camera_gps},
+         #{item.camera_date},
+         #{item.duration},
+         #{item.startTime},
+         #{item.bitrate},
+         #{item.videoCode},
+         #{item.videoFormat},
+         #{item.resolutionRatio},
+         #{item.audioCode},
+         #{item.audioFrequncy},
+         #{item.fps}
+         )
+    	</foreach>
+    </insert>
+    
+     <select id="queryVideoInfoByDataSetId" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_dataset_videoinfo where dataset_id=#{dataset_id};
+    </select> 
+    
+    <select id="queryVideoInfoById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_dataset_videoinfo where id=#{id};
+    </select> 
+    
+    
+</mapper>

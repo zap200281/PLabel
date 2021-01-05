@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.PrePredictTaskDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.PrePredictTask" >
+		<result column="id" property="id"/>
+		<result column="task_name" property="task_name"/>
+		<result column="task_start_time" property="task_start_time"/>
+		<result column="task_finish_time" property="task_finish_time"/>
+		<result column="task_status" property="task_status"/>
+		<result column="user_id" property="user_id"/>
+		<result column="alg_model_id" property="alg_model_id"/>
+		<result column="task_status_desc" property="task_status_desc"/>
+		<result column="dataset_id" property="dataset_id"/>
+		<result column="delete_no_label_picture" property="delete_no_label_picture"/>
+		<result column="delete_similar_picture" property="delete_similar_picture"/>
+		<result column="score_threshhold" property="score_threshhold"/>
+		
+	</resultMap>
+  
+    <select id="queryPrePredictTask" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_prepredicttasks 
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id}
+        </if>
+        order by task_start_time desc limit #{currPage}, #{pageSize}
+    </select>  
+    
+      <select id="queryPrePredictTaskById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_prepredicttasks where id=#{id}
+    </select>  
+    
+    <select id="queryAllPrePredictTask"  resultMap="BaseResultMap">    
+        SELECT * FROM tasks_prepredicttasks order by task_start_time desc
+     </select>  
+     
+     <select id="queryPrePredictTaskByIdList"  resultMap="BaseResultMap" parameterType="java.util.List">    
+        SELECT * FROM tasks_prepredicttasks 
+        where id in (
+         <foreach collection="list" item="item" index="index" separator=",">
+         #{item}
+         </foreach>
+         )
+     </select> 
+     
+     <select id="queryAllPrePredictTaskByUser"  resultMap="BaseResultMap" parameterType="int">    
+        SELECT * FROM tasks_prepredicttasks  where user_id = #{user_id}  order by task_start_time desc
+     </select>
+    
+ 
+     <select id="queryPrePredictTaskCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_prepredicttasks
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id}
+        </if>
+     </select>  
+     
+     <delete id="deletePrePredictTaskById" parameterType="String">    
+        delete FROM tasks_prepredicttasks where id=#{id}
+     </delete>  
+    
+    <select id="queryPrePredictTaskByStatus" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_prepredicttasks  where task_status=#{task_status}
+         
+         order by task_start_time asc
+    </select> 
+    
+     <update id="updatePrePredictTaskStatus"  parameterType="Map">    
+        update tasks_prepredicttasks set task_status = #{task_status},task_status_desc=#{task_status_desc} 
+         where id=#{id}
+     </update>  
+     
+     <update id="updatePrePredictTaskStatusDesc"  parameterType="Map">    
+        update tasks_prepredicttasks set task_status_desc=#{task_status_desc} 
+         where id=#{id}
+     </update>  
+    
+    <insert id="addPrePredictTask"  parameterType="com.pcl.pojo.mybatis.PrePredictTask">
+        insert into tasks_prepredicttasks(id,task_name,task_start_time,task_finish_time,task_status,user_id,alg_model_id,dataset_id,delete_no_label_picture,delete_similar_picture,score_threshhold)
+         values (#{id}, #{task_name},#{task_start_time},#{task_finish_time},#{task_status},#{user_id},#{alg_model_id},#{dataset_id},#{delete_no_label_picture},#{delete_similar_picture},#{score_threshhold})
+    </insert>
+    
+</mapper>

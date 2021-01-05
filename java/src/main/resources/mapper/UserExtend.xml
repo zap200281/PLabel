@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.UserExtendDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.UserExtend" >
+		<result column="user_id" property="user_id"/>
+		<result column="func_table_name" property="funcTableName"/>
+		<result column="properties" property="properties"/>
+		<result column="oper_time" property="operTime"/>
+	</resultMap>
+  
+
+  	<insert id="addUserExtend"  parameterType="com.pcl.pojo.mybatis.UserExtend">
+        insert into user_extend(user_id,func_table_name,properties,oper_time)
+         values (#{user_id}, #{funcTableName}, #{properties}, #{operTime})
+    </insert>
+    
+  
+    <delete id="deleteUserExtend" parameterType="java.lang.Integer">
+        DELETE  FROM user_extend WHERE user_id=#{user_id}
+    </delete>
+  
+ 
+    <select id="queryUserExtend" resultMap="BaseResultMap" parameterType="java.lang.Integer">    
+        SELECT * FROM user_extend where user_id = #{user_id}
+    </select>  
+    
+      <update id="updateUserExtendFuncTableName" parameterType="com.pcl.pojo.mybatis.UserExtend">
+        UPDATE user_extend set 
+        func_table_name=#{funcTableName},
+        oper_time=#{operTime}
+        WHERE user_id=#{user_id}
+    </update>
+    
+     <update id="updateUserExtendProperties" parameterType="com.pcl.pojo.mybatis.UserExtend">
+        UPDATE user_extend set 
+        properties=#{properties},
+        oper_time=#{operTime}
+        WHERE user_id=#{user_id}
+    </update>
+    
+    
+     
+    
+</mapper>

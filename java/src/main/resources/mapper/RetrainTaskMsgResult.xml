@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.RetrainTaskMsgResultDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.RetrainTaskMsgResult">
+		<result column="id" property="id"/>
+		<result column="loss_train" property="loss_train"/>
+		<result column="epoch_num" property="epoch_num"/>
+		<result column="epoch_total" property="epoch_total"/>
+		<result column="step_num" property="step_num"/>
+		<result column="step_total" property="step_total"/>
+		<result column="learning_rate" property="learning_rate"/>
+		<result column="accuracy_rate_train" property="accuracy_rate_train"/>
+		<result column="item_add_time" property="item_add_time"/>
+		<result column="item_cur_time" property="item_cur_time"/>
+		<result column="alg_model_id" property="alg_model_id"/>
+		<result column="lr" property="lr"/>
+	
+	</resultMap>
+  
+     <select id="queryRetrainTaskMsgResultById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_retrainresult  where id=#{id}
+    </select>  
+    
+    <delete id="deleteRetrainTaskMsgResultById"  parameterType="String">    
+        delete FROM tasks_retrainresult  where id=#{id}
+    </delete>  
+   
+     <insert id="addRetrainTaskMsgResult"  parameterType="com.pcl.pojo.mybatis.RetrainTaskMsgResult">
+        insert into tasks_retrainresult(id,loss_train,epoch_num,epoch_total,step_num,step_total,learning_rate,accuracy_rate_train,item_add_time,item_cur_time,alg_model_id,lr)
+         values (#{id}, #{loss_train},#{epoch_num},#{epoch_total},#{step_num},#{step_total},#{learning_rate},#{accuracy_rate_train},#{item_add_time},#{item_cur_time},#{alg_model_id},#{lr})
+    </insert>
+    
+       <update id="updateRetrainTaskMsgResult"  parameterType="Map">    
+        update tasks_retrainresult set 
+        <if test="loss_train != null and loss_train != ''">
+        	loss_train=#{loss_train},
+        </if>
+        <if test="epoch_num != null and epoch_num != ''">
+        	epoch_num=#{epoch_num},
+        </if>
+         <if test="step_num != null and step_num != ''">
+        	step_num=#{step_num},
+        </if>
+        <if test="lr != null and lr != ''">
+        	lr=#{lr},
+        </if>
+        item_cur_time=#{item_cur_time}
+        where id=#{id}
+    </update> 
+</mapper>

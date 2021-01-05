@@ -1,0 +1,117 @@
+.yhh-data-table-frame{
+	color:inherit;font-family:inherit;font-size:14px;font-weight:normal;
+	border:0;margin:0;padding:0;background-color:#FFFFFF;
+}
+/*table样式*/
+.yhh-data-table-frame>table.yhh-data-table{
+	width:100%;border-collapse:collapse;border-spacing:0;empty-cells:show;
+}
+.yhh-data-table-frame>table.yhh-data-table td,
+.yhh-data-table-frame>table.yhh-data-table th{
+	vertical-align:middle;text-align:left;border:1px solid #DDDDDD;
+}
+.yhh-data-table-frame>table.yhh-data-table.dataTable-theme-a td,
+.yhh-data-table-frame>table.yhh-data-table.dataTable-theme-a th{
+	border:0;
+}
+.yhh-data-table-frame>table.yhh-data-table.dataTable-theme-a tr{
+	border-bottom:1px solid #DDDDDD;
+}
+.yhh-data-table-frame>table.yhh-data-table td{
+	background-color:#FFFFFF;color:inherit;
+}
+.yhh-data-table-frame>table.yhh-data-table th,
+.yhh-data-table-frame>table.yhh-data-table thead td,
+.yhh-data-table-frame>table.yhh-data-table tfoot td{
+	background-color:#DDDDDD;color:inherit;font-weight:bold;
+}
+.yhh-data-table-frame>table.yhh-data-table.dataTable-theme-a th,
+.yhh-data-table-frame>table.yhh-data-table.dataTable-theme-a thead td,
+.yhh-data-table-frame>table.yhh-data-table.dataTable-theme-a tfoot td{
+	background-color:#FFFFFF;
+}
+.yhh-data-table-frame>table.yhh-data-table tbody th,
+.yhh-data-table-frame>table.yhh-data-table tbody td{
+	padding:10px 10px;
+}
+.yhh-data-table-frame>table.yhh-data-table thead th,
+.yhh-data-table-frame>table.yhh-data-table thead td,
+.yhh-data-table-frame>table.yhh-data-table tfoot th,
+.yhh-data-table-frame>table.yhh-data-table tfoot td{
+	padding:10px 10px;
+}
+.yhh-data-table-frame>table.yhh-data-table tr.odd td{}
+.yhh-data-table-frame>table.yhh-data-table tr.even td{background-color:#F6F6F6;}
+.yhh-data-table-frame>table.yhh-data-table tr.hover-row td{
+	background-color:#F0F8FF;color:#00BFFF;
+}
+.yhh-data-table-frame>table.yhh-data-table tr.selected-row td{
+	background-color:#E6E6FA;
+}
+/*table上下功能行公共样式*/
+.yhh-data-table-frame>.data-table-top-box,
+.yhh-data-table-frame>.data-table-bottom-box{
+	position:relative;
+}
+.yhh-data-table-frame>.data-table-top-box,
+.yhh-data-table-frame>.data-table-bottom-box,
+.yhh-data-table-frame>.data-table-top-box>.per-length-box,
+.yhh-data-table-frame>.data-table-bottom-box>.info-box,
+.yhh-data-table-frame>.data-table-bottom-box>.paginate-box{
+	height:35px;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box,
+.yhh-data-table-frame>.data-table-bottom-box>.info-box,
+.yhh-data-table-frame>.data-table-bottom-box>.paginate-box{
+	line-height:35px;position:absolute;
+}
+/*改变每页显示数目功能样式*/
+.yhh-data-table-frame>.data-table-top-box>.per-length-box{
+	top:0;right:2px;padding-right:50px;z-index:8;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box>.per-length-select{
+	position:absolute;top:1.5px;right:0;width:50px;margin:0;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box dt.sel-choosen-box,
+.yhh-data-table-frame>.data-table-top-box>.per-length-box dd.sel-list{
+	border:1px solid #DDDDDD;border-radius:0;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box dt.sel-choosen-box{
+	height:30px;line-height:30px;cursor:pointer;background-color:#F0F8FF;
+	position:relative;padding-right:13px;padding-left:8px;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box dt.sel-choosen-box.expand{
+	border-radius:0;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box dd.sel-list.expand{
+	border-radius:0;border-top:0;margin:0;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box i.sel-icon{
+	height:30px;line-height:30px;position:absolute;top:0;right:2px;color:#AAAAAA;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box dd.sel-list{
+	z-index:10;max-height:200px;height:auto;
+	border-radius:0;border-top:0;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box .sel-option{
+	display:block;border-bottom:1px solid #CCCCCC;line-height:normal;
+	background-color:#FFFFFF;padding:6.5px 0;padding-left:8px;cursor:pointer;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box .sel-option:hover{
+	background-color:#DDE4FE;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box .sel-option:active{
+	background-color:#DA70D6;
+}
+.yhh-data-table-frame>.data-table-top-box>.per-length-box .sel-option.last-option{
+	border-bottom:0;
+}
+/*显示数据信息功能样式*/
+.yhh-data-table-frame>.data-table-bottom-box>.info-box{
+	top:0;left:2px;
+}
+.yhh-data-table-frame>.data-table-bottom-box>.info-box .info-num{color:#F5A523;padding:0 5px;}
+/*翻页按钮功能样式*/
+.yhh-data-table-frame>.data-table-bottom-box>.paginate-box{
+	top:3px;right:0;overflow:hidden;
+}

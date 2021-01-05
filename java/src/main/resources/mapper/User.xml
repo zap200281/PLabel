@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.UserDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.User" >
+		<result column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="nick_name" property="nick_name"/>
+		
+		<result column="is_superuser" property="is_superuser"/>
+		<result column="is_staff" property="is_staff"/>
+		<result column="is_active" property="is_active"/>
+		<result column="date_joined" property="date_joined"/>
+		
+		<result column="password" property="password"/>
+		<result column="last_login" property="last_login"/>
+		<result column="first_name" property="first_name"/>
+		<result column="last_name" property="last_name"/>
+		<result column="email" property="email"/>
+		<result column="address" property="address"/>
+		<result column="mobile" property="mobile"/>
+		<result column="company" property="company"/>
+	</resultMap>
+  
+  
+  	<insert id="addUser"  parameterType="com.pcl.pojo.mybatis.User">
+        insert into users_userprofile(username,nick_name,is_superuser,is_staff,is_active,date_joined,password,last_login,first_name,last_name,email,address,mobile,company)
+         values (#{username}, #{nick_name},#{is_superuser},#{is_staff},#{is_active},#{date_joined}, #{password}, #{last_login}, #{first_name}, #{last_name}, #{email}, #{address}, #{mobile}, #{company})
+    </insert>
+    
+     <update id="updateUser" parameterType="com.pcl.pojo.mybatis.User">
+        UPDATE users_userprofile set nickName=#{nickName} WHERE id=#{id}
+    </update>
+    
+    <update id="updateUserPassword" parameterType="com.pcl.pojo.mybatis.User">
+        UPDATE users_userprofile set password=#{password} WHERE id=#{id}
+    </update>
+    
+    <delete id="deleteUser" parameterType="Integer">
+        DELETE  FROM users_userprofile WHERE id=#{id}
+    </delete>
+  
+    <select id="queryUser" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM users_userprofile where username = #{userName}   
+    </select>  
+    
+ 
+     <select id="queryUserPage" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM users_userprofile order by date_joined desc limit #{currPage}, #{pageSize}
+    </select>  
+
+    
+     <select id="queryUserCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM users_userprofile 
+     </select>  
+    
+    
+    <select id="queryAll" resultMap="BaseResultMap">    
+        SELECT * FROM users_userprofile 
+    </select> 
+    
+    <select id="queryAllIdOrName" resultMap="BaseResultMap">    
+        SELECT id,username FROM users_userprofile 
+    </select> 
+    
+     <select id="queryUserById" resultMap="BaseResultMap">    
+        SELECT * FROM users_userprofile where id = #{id} 
+    </select> 
+    
+     <select id="queryVerifyUser" resultMap="BaseResultMap">    
+        SELECT * FROM users_userprofile where is_superuser = 2 
+    </select> 
+    
+  
+    
+</mapper>

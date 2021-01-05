@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>PCL数据标注平台V1.6</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <meta name="description" content="Developed By M Abdur Rokib Promy">
+        <meta name="keywords" content="Admin, Bootstrap 3, Template, Theme, Responsive">
+        <!-- bootstrap 3.0.2 -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Awesome -->
+        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <!-- Ionicons -->
+        <link href="css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <!-- google font -->
+        
+        <!-- Theme style -->
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        <link href="css/jquery.yhhDataTable.css" rel="stylesheet" type="text/css" />
+        <link href="css/fselect.css" rel="stylesheet" type="text/css" />
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          
+          
+        <![endif]-->
+       <style  type="text/css">
+       *{margin:0;padding:0;}
+       .group {background: #FAFAFA;border-radius: 4px;width: 100%;height: 45px;border-bottom: 1px solid #ccc;}
+       .group span { display: inline-block; text-align: center;font-size: 14px; cursor: pointer;border: 0px ;padding: 0px;margin: 0px;height: 35px; line-height: 45px;}
+        .group span.active{background: #ffff;display: inline-block;height: 45px;border-bottom:none;}
+         /*.dataShow {margin-top: 20px; background: #ffff;padding: 10px}*/
+
+
+
+          .fs-wrap {
+          position: relative;
+          display: inline-block;
+          /*display: block;*/
+          width: 15%;
+          font-size: 12px;
+          line-height: 1.2;
+          border-radius:4px;
+          /*margin-left: 10px;*/
+          vertical-align:middle;
+          margin-left: 10px;
+
+      }
+
+      .fs-label-wrap {
+          position: relative;
+          border: 1px solid #ccc;
+          cursor: default;
+          border-radius:4px;
+          height: 30px;
+          line-height: 1.4;
+          /*padding: 6px 12px;*/
+      }
+
+      .fs-arrow {
+          width: 0;
+          height: 0;
+          border-left: 3px solid transparent;
+          border-right: 3px solid transparent;
+          border-top: 6px solid #555;
+          position: absolute;
+          top: 0;
+          right: 5px;
+          bottom: 0;
+          margin: auto;
+
+      }
+      </style>
+
+    </head>
+    <body class="skin-black">
+        <!-- header logo: style can be found in header.less -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                PCL数据标注平台V1.6
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                       
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user"></i>
+                                <span id="userNickName_bar"><i class="caret"></i></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
+                                
+                                <li>
+                                            <a href="login.html"><i class="fa fa-ban fa-fw pull-right"></i> Logout</a>
+                                </li>
+                                    
+                            </ul>
+					    </li>
+				    </ul>
+                </div>
+            </nav>
+        </header>
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+                    <!-- Left side column. contains the logo and sidebar -->
+                    <aside class="left-side sidebar-offcanvas">
+                        <!-- sidebar: style can be found in sidebar.less -->
+                        <section class="sidebar">
+                            <!-- Sidebar user panel -->
+                            <div class="user-panel">
+                                <div class="pull-left image">
+                                    <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+                                </div>
+                                <div class="pull-left info">
+                                    <p id="userNickName"></p>
+
+                                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                                </div>
+                            </div>
+                            <!-- search form -->
+                            <form action="#" method="get" class="sidebar-form">
+                                <div class="input-group">
+<!--                                     <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                                    <span class="input-group-btn">
+                                        <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span> -->
+                                </div>
+                            </form>
+                    <ul class="sidebar-menu">
+                            <li>
+                                <a href="index.html">
+                                    <i class="fa fa-dashboard"></i> <span>主面板</span>
+                                </a>
+                            </li>
+							<li>
+                                     <a href="dataSetManage.html">
+                                          <i class="fa fa-database"></i> <span>数据集管理</span>
+                                     </a>
+                                </li>
+                                 <li>
+                                    <a href="predictTaskPage.html">
+                                         <i class="fa fa-chevron-circle-right"></i> <span>自动标注</span>
+                                     </a>
+                                </li>
+                                <li>
+                                     <a href="labelTaskPage.html">
+                                          <i class="fa fa-check-circle"></i> <span>人工标注</span>
+                                     </a>
+                                </li>
+                                <li >
+                                    <a href="reIdTaskPage.html">
+                                        <i class="fa fa-gavel"></i> <span>ReID标注</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a href="videoTaskPage.html">
+                                        <i class="fa fa-university"></i> <span>车流统计</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a href="videoTaskPageBox.html">
+                                        <i class="fa fa-camera"></i> <span>视频标注</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a href="bigImgTaskPage.html">
+                                        <i class="fa fa-picture-o"></i> <span>超大图像标注</span>
+                                    </a>
+                                </li> 
+                                <li>
+                                    <a href="retrainTask.html">
+                                         <i class="fa fa-line-chart"></i> <span>模型重训</span>
+                                     </a>
+                                </li>
+                                
+                                <li >
+                                    <a href="userManage.html">
+                                         <i class="fa fa-user-circle"></i> <span>用户管理</span>
+                                    </a>
+                                </li>
+								                <li class="active">
+                                    <a href="reportManage.html" >
+                                         <i class="fa fa-bar-chart"></i> <span>报表管理</span>
+                                    </a>
+                                </li>
+								<li>
+                                    <a href="logManage.html">
+                                         <i class="fa fa-file-text-o"></i><span>操作日志管理</span>
+                                    </a>
+                               </li>
+                    </ul>
+                </section>
+                <!-- /.sidebar -->
+            </aside>
+
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+
+                <!-- Main content -->
+
+
+
+                <section class="content">
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+
+                          <div  id = "message" style=" display: none;background: #ffff;padding: 5px;margin: 0 auto; "> 
+                            <strong>
+                            <p style="font-size: 30px; text-align: center;line-height:2em; padding: 20px 10px">
+                                没有权限<br>
+                                请联系管理员
+                              </p>
+                              </strong>
+                          </div>
+
+
+                          <div class="panel" id = "messageInfo">
+                                <header class="panel-heading" >
+                                    报表管理
+                                </header>
+
+                                <div class="group">
+                                   <span  class="active" style="width: 10%">首页</span>
+                                   <span style="width: 10%">工作度量</span>
+                                </div>
+
+                               <div class="pubPart"  style="display: block;" >
+                                  <div class="panel-body table-responsive">
+                                      <div class="box-tools m-b-15" style="height: 15px;">
+                                      </div>
+
+                                      <!-- <div > -->
+                                        <div style="margin-bottom: 55px;margin-top: 30px" id = "fron_page">
+                                         <label style="display: inline-block;">请选择查询时间:</label>
+                                         <select id ="selectTime" style=" width: 15%; height: 30px;border-radius: 4px;padding: 6px;border: 1px solid #ccc;margin-left: 5px;line-height: 1.2;font-size: 12px" onchange="showHideDefTime(this.options[this.options.selectedIndex].value)">
+                                              <option value=""> 请选择</option>
+                                              <option value="1" > 近一天 </option>
+                                              <option value="2"> 近一周</option>
+                                              <option value="3" selected = "selected" > 近一个月</option>
+                                              <option value="4" > 自定义时间</option>
+                                          </select> 
+
+                                          <div style="display:none; margin-right: 0px;height: 25px;" id = "selfDefTime" >
+                                            <label for="start" style="margin-left: 15px;display: inline-block;">开始日期:</label>
+                                            <input id="startTime" class="Wdate" type="text" onFocus="var endDate=$dp.$('endTime');WdatePicker({minDate:'#F{$dp.$D(\'endTime\',{y:-1})}' , maxDate:'#F{$dp.$D(\'endTime\')}'})" style="height: 25px;border-radius: 4px;width: 92px;display: inline-block;margin-left: 0px"/>
+                                            <label for="end" style="margin-left: 5px;display: inline-block;">结束日期:</label>
+                                            <input id="endTime" class="Wdate" type="text" onFocus="WdatePicker({minDate:'#F{$dp.$D(\'startTime\')}',  maxDate:'#F{$dp.$D(\'startTime\',{y:1})}' })" style="height: 25px;border-radius: 4px;width: 92px;display: inline-block;margin-left: 2px"/>
+                                          </div>
+
+                                          <label for="exampleInputPassword1" style="display: inline-block;margin-left: 2%">请选择用户:</label>
+                                          <select id="user_name" multiple="multiple" style="margin-left:10px" >      
+                                          </select>  
+                                          <button style="margin-left: 2%; border-radius:5px;padding: 2px" onclick="selectData()">点击查询</button>
+                                      </div>
+                                      <!-- </div> -->
+
+
+                                      <table class="table table-hover" id="reportDataTable">
+
+                                      </table>
+                                              
+                                      <div style="height: 30px;">
+                                              <div style="float:right">  
+                                                 显示<span  id="startIndex">0</span>到<span id="endIndex">0</span>条，共<span id="totalNum">0</span>条。&nbsp;&nbsp;   
+                                                 <span >   
+                                                 <a id="prePage" href="">上一页</a>
+                                                 <span >
+                                                    &nbsp;当前页：<span id="displayPage1">1</span>&nbsp;
+                                                 </span>
+                                                  <a id="nextPage" href="">下一页</a>
+                                                   <span>
+                                                       &nbsp;共<span id="totalPageNum"></span>页&nbsp;
+                                                      </span>
+                                                  <span>&nbsp;跳转到：<input type="text" id="goNum" style="width: 50px;border-radius:6px" maxlength="5" oninput="value=value.replace(/[^\d]/g,'')"><a id="goHref" href="javascript:goPage()">&nbsp;GO</a></span>
+                                                  </span>
+                                              </div>
+                                              
+                                       </div>
+                                  </div><!-- /.box-body -->                                            
+                               </div>
+                               <div class="pubPart" style="display: none" >
+
+                                 <div style="margin-bottom: 55px;margin-top: 30px" id = "next_page">
+                                         <label style="display: inline-block;">请选择度量方式:</label>
+                                         <select id ="selectType" style=" width: 15%; height: 30px;border-radius: 4px;padding: 6px;border: 1px solid #ccc;margin-left: 5px;line-height: 1.2;font-size: 12px" onchange="getMeasType()">
+                                              <option value=""> 请选择</option>
+                                              <option value="1" selected = "selected" > 按天 </option>
+                                              <option value="2"> 按周</option>
+                                              <option value="3" > 按月</option>
+                                              <!-- <option value="4" > 自定义时间</option> -->
+                                          </select> 
+                                          <label style="margin-left: 15px" >请输入数量</label>
+                                          <input type="text" name="" id = "measNum" placeholder = "最大值为30" value="30" style="border-radius: 4px" /> 
+
+                                          <label for="exampleInputPassword1" style="display: inline-block;margin-left: 2%">请选择用户:</label>
+                                          <select id="user_name_next" multiple="multiple" style="margin-left:10px" >      
+                                          </select>  
+                                          <button style="margin-left: 2%; border-radius:5px;padding: 2px" onclick="selectDataNext()">点击查询</button>
+                                  </div>
+                                    <div id="displayDataRect" style="width:45%;height:370px;display: inline-block;margin-left: 3%">
+          
+                                    </div>
+									<div id="displayDataNotValideRect" style="width:45%;height:370px;display: inline-block;margin-left: 3%">
+          
+                                    </div>
+                                    <div id="displayDataPicture" style="width:45%;height:370px;display: inline-block;margin-left: 3%">
+          
+                                    </div>
+                                    <div id="displayDataProperties" style="width:45%;height:370px;display: inline-block;margin-left: 3%">
+          
+                                    </div>                           
+                              </div>
+                          </div>  <!-- panel -->
+                      </div><!--  col-xs-12 -->
+                    </div> <!-- row -->
+                  
+             
+                    
+                </section><!-- /.content -->
+                <div class="footer-main">
+                    Copyright &copy PCL, 2019-2021
+                </div>
+            </aside><!-- /.right-side -->
+        </div><!-- ./wrapper -->
+    
+        <!-- jQuery 2.0.2 -->
+        <!--  -->
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+        <script src="js/func.js" type="text/javascript"></script>
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- Director App -->
+        <script src="js/Director/reportManage.js" type="text/javascript"></script>
+        <script src="js/Director/app.js" type="text/javascript"></script>
+        <script src="js/fselect.js" type="text/javascript"></script>
+        <script type="text/javascript" src="js/plugins/My97DatePicker/WdatePicker.js"></script> 
+        <script  type="text/javascript">
+            window.onload=function(){
+                    console.log("onload tasks/detect/userManage.html");
+                    var token = getCookie("token");
+                    if(typeof token == "undefined" || token == null || token == ""){
+                        console.log("token=" + token);
+                        window.location.href = "login.html";
+                    }else{
+                        var nickName = getCookie("nickName");
+                        console.log("nickName=" + nickName);
+                        $("#userNickName").text(nickName);
+                        $("#userNickName_bar").text(nickName);
+                    }
+            }
+        </script>
+        <script src="js/echarts.min.js" type="text/javascript"></script>
+    </body>
+</html>

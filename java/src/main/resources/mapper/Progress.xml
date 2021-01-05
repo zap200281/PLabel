@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.ProgressDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.Progress" >
+		<result column="id" property="id"/>
+		<result column="taskId" property="taskId"/>
+		<result column="progress" property="progress"/>
+		<result column="status" property="status"/>
+		<result column="startTime" property="startTime"/>
+		<result column="totalTime" property="totalTime"/>
+		<result column="exceedTime" property="exceedTime"/>
+		<result column="relatedFileName" property="relatedFileName"/>
+		<result column="info" property="info"/>
+	</resultMap>
+  
+  
+  	<insert id="addProgress"  parameterType="com.pcl.pojo.Progress">
+        insert into tasks_progress(id,taskId,progress,status,startTime,totalTime,exceedTime,relatedFileName,info)
+         values (#{id}, #{taskId}, #{progress},#{status},#{startTime},#{totalTime},#{exceedTime},#{relatedFileName},#{info})
+    </insert>
+    
+  
+    <delete id="deleteProgress" parameterType="java.lang.String">
+        DELETE  FROM tasks_progress WHERE id=#{id}
+    </delete>
+  
+  
+    <select id="queryProgressByIdList" resultMap="BaseResultMap" parameterType="List">    
+        SELECT * FROM tasks_progress where id in
+        (
+    	    <foreach collection="list" item="item" index="index" separator=",">
+    		     #{item}
+    	    </foreach>
+        )
+        order by task_start_time asc
+    </select>  
+    
+    
+    <select id="queryProgressById" resultMap="BaseResultMap" parameterType="java.lang.String">    
+        SELECT * FROM tasks_progress where  id=#{id}
+    </select>  
+    
+    <update id="updateProgress" parameterType="Map">
+        update tasks_progress set 
+        <if test="status !=null">
+           status=#{status},  
+        </if>
+         <if test="progress !=null">
+           progress=#{progress}  
+        </if>
+        where id= #{id}
+    </update>
+    
+</mapper>

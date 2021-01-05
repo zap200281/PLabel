@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.ClassManageDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.ClassManage" >
+		<result column="id" property="id"/>
+		<result column="class_name" property="class_name"/>
+		<result column="super_class_name" property="super_class_name"/>
+		<result column="class_desc" property="class_desc"/>
+	</resultMap>
+  
+  	<insert id="addClassManage"  parameterType="com.pcl.pojo.mybatis.ClassManage">
+        insert into class_manage(id,class_name,class_desc,super_class_name)
+         values (#{id}, #{class_name},#{class_desc},#{super_class_name})
+    </insert>
+    
+    <select id="queryAll" resultMap="BaseResultMap">    
+        SELECT * FROM class_manage 
+    </select> 
+    
+</mapper>

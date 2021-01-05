@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.AlgInstanceDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.AlgInstance" >
+		<result column="id" property="id"/>
+		<result column="alg_name" property="alg_name"/>
+		<result column="add_time" property="add_time"/>
+		
+		<result column="alg_type_name" property="alg_type_name"/>
+		<result column="alg_root_dir" property="alg_root_dir"/>
+		
+	</resultMap>
+  
+
+  	<insert id="addAlgInstance"  parameterType="com.pcl.pojo.mybatis.AlgInstance">
+        insert into alg_warehouse_alginstance(alg_name,add_time,alg_type_name,alg_root_dir)
+         values (#{alg_name}, #{add_time},#{alg_type_name},#{alg_root_dir})
+    </insert>
+    
+    <delete id="delete" parameterType="Integer">
+        DELETE  FROM alg_warehouse_alginstance WHERE id=#{id}
+    </delete>
+  
+    <select id="queryAlgInstance" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM alg_warehouse_alginstance where alg_name= #{alg_name}   
+    </select>  
+    
+    
+    <select id="queryAlgInstanceById" resultMap="BaseResultMap" parameterType="Integer">    
+        SELECT * FROM alg_warehouse_alginstance where id= #{id}   
+    </select> 
+    
+</mapper>

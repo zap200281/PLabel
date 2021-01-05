@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.LoginInfoDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.LoginInfo" >
+		<result column="user_id" property="user_id"/>
+		<result column="login_error_time" property="login_error_time"/>
+		<result column="last_login_time" property="last_login_time"/>
+		<result column="extend1" property="extend1"/>
+
+	</resultMap>
+  
+  
+  	<insert id="addLoginInfo"  parameterType="com.pcl.pojo.mybatis.LoginInfo">
+        insert into login_info(user_id,login_error_time,last_login_time,extend1)
+         values (#{user_id}, #{login_error_time}, #{last_login_time},#{extend1})
+    </insert>
+    
+  
+    <delete id="deleteLoginInfo" parameterType="java.lang.Integer">
+        DELETE  FROM login_info WHERE user_id=#{user_id}
+    </delete>
+  
+ 
+    <select id="queryLoginInfo" resultMap="BaseResultMap" parameterType="java.lang.Integer">    
+        SELECT * FROM login_info where user_id = #{user_di}
+    </select>  
+    
+      <update id="updateLoginInfo" parameterType="com.pcl.pojo.mybatis.LoginInfo">
+        UPDATE login_info set login_error_time=#{login_error_time},last_login_time=#{last_login_time} WHERE user_id=#{user_id}
+    </update>
+     
+    
+</mapper>

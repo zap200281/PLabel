@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.LogSecInfoDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.LogSecInfo" >
+		<result column="id" property="id"/>
+		<result column="oper_type" property="oper_type"/>
+		<result column="oper_id" property="oper_id"/>
+		<result column="user_id" property="user_id"/>
+		<result column="oper_name" property="oper_name"/>
+		<result column="log_info" property="log_info"/>
+		<result column="oper_time_start" property="oper_time_start"/>
+		<result column="oper_time_end" property="oper_time_end"/>
+		<result column="record_id" property="record_id"/>
+		<result column="extend1" property="extend1"/>
+		<result column="extend2" property="extend2"/>
+	</resultMap>
+  
+  
+  	<insert id="addLogSecInfo"  parameterType="com.pcl.pojo.mybatis.LogSecInfo">
+        insert into log_sec_info(id,oper_id,oper_type,user_id,oper_name,log_info,oper_time_start,oper_time_end,record_id,extend1,extend2)
+         values (#{id}, #{oper_id}, #{oper_type},#{user_id},#{oper_name},#{log_info},#{oper_time_start},#{oper_time_end},#{record_id},#{extend1},#{extend2})
+    </insert>
+    
+  
+    <delete id="deleteLogSecInfo" parameterType="java.lang.String">
+        DELETE  FROM log_sec_info WHERE id=#{id}
+    </delete>
+  
+  
+     <select id="queryLogSecInfoPageForDay" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM log_sec_info where 1=1
+        <if test="day !=null and day !=''">
+          and TO_DAYS(NOW())-TO_DAYS(oper_time_start) &lt;= #{day}
+        </if>
+         <if test="user_id !=null and user_id !=''">
+          and user_id=#{user_id}
+        </if>
+        order by oper_time_start desc limit #{currPage}, #{pageSize}
+    </select>  
+    
+    <select id="queryLogSecInfoPageForDayCount" resultType="java.lang.Integer" parameterType="Map">    
+       SELECT count(*) FROM log_sec_info where 1=1
+        <if test="day !=null and day !=''">
+          and TO_DAYS(NOW())-TO_DAYS(oper_time_start) &lt;= #{day}
+        </if>
+         <if test="user_id !=null and user_id !=''">
+          and user_id=#{user_id}
+        </if>
+     </select>  
+    
+     <select id="queryLogSecInfoPageForBeforeDay" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM log_sec_info where 1=1
+        <if test="day !=null and day !=''">
+          and TO_DAYS(NOW())-TO_DAYS(oper_time_start) >= #{day}
+        </if>
+         <if test="user_id !=null and user_id !=''">
+          and user_id=#{user_id}
+        </if>
+        order by oper_time_start desc limit #{currPage}, #{pageSize}
+    </select>  
+    
+    <select id="queryLogSecInfoPageForBeforeDayCount" resultType="java.lang.Integer" parameterType="Map">    
+       SELECT count(*) FROM log_sec_info where 1=1
+        <if test="day !=null and day !=''">
+          and TO_DAYS(NOW())-TO_DAYS(oper_time_start) >= #{day}
+        </if>
+         <if test="user_id !=null and user_id !=''">
+          and user_id=#{user_id}
+        </if>
+     </select>  
+    
+    <select id="queryLogSecInfoByIdList" resultMap="BaseResultMap" parameterType="List">    
+        SELECT * FROM log_sec_info where id in
+        (
+    	    <foreach collection="list" item="item" index="index" separator=",">
+    		     #{item}
+    	    </foreach>
+        )
+        order by oper_time_start asc
+    </select>  
+    
+    
+     
+    
+</mapper>

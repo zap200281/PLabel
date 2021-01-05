@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PCL数据标注平台V1.6</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <meta name="description" content="Developed By M Abdur Rokib Promy">
+    <meta name="keywords" content="Admin, Bootstrap 3, Template, Theme, Responsive">
+    <!-- bootstrap 3.0.2 -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- font Awesome -->
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- Ionicons -->
+    <link href="css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <!-- Morris chart -->
+    <link href="css/morris/morris.css" rel="stylesheet" type="text/css" />
+    <!-- jvectormap -->
+    <link href="css/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+    <!-- Date Picker -->
+    <link href="css/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
+    <!-- fullCalendar -->
+    <!-- <link href="css/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" /> -->
+    <!-- Daterange picker -->
+    <link href="css/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link href="css/iCheck/all.css" rel="stylesheet" type="text/css" />
+    <!-- bootstrap wysihtml5 - text editor -->
+    <!-- <link href="css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" /> -->
+    
+    <!-- Theme style -->
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+
+      </head>
+      <body class="skin-black">
+        <!-- header logo: style can be found in header.less -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                PCL数据标注平台V1.6
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                       
+                       
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user"></i>
+                                <span id="userNickName_bar"> <i class="caret"></i></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
+                               
+                                <li>
+                                            <a href="login.html"><i class="fa fa-ban fa-fw pull-right"></i> Logout</a>
+                                </li>
+ 
+                            </ul>
+					    </li>
+				    </ul>
+                </div>
+            </nav>
+        </header>
+                
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+                    <!-- Left side column. contains the logo and sidebar -->
+                    <aside class="left-side sidebar-offcanvas">
+                        <!-- sidebar: style can be found in sidebar.less -->
+                        <section class="sidebar">
+                            <!-- Sidebar user panel -->
+                            <div class="user-panel">
+                                <div class="pull-left image">
+                                    <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+                                </div>
+                                <div class="pull-left info">
+                                    <p id="userNickName"></p>
+                                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                                </div>
+                            </div>
+                            <!-- search form -->
+                            <form action="#" method="get" class="sidebar-form">
+                                <div class="input-group">
+<!--                                     <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                                    <span class="input-group-btn">
+                                        <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span> -->
+                                </div>
+                            </form>
+                            <!-- /.search form -->
+                            <!-- sidebar menu: : style can be found in sidebar.less -->
+                            <ul class="sidebar-menu">
+                                <li class="active">
+                                    <a href="index.html">
+                                        <i class="fa fa-dashboard"></i> <span>主面板</span>
+                                    </a>
+                                </li>
+								<li>
+                                     <a href="dataSetManage.html">
+                                          <i class="fa fa-database"></i> <span>数据集管理</span>
+                                     </a>
+                                </li>
+                                <li>
+                                    <a href="predictTaskPage.html">
+                                         <i class="fa fa-chevron-circle-right"></i> <span>自动标注</span>
+                                     </a>
+                                </li>
+                                <li>
+                                     <a href="labelTaskPage.html">
+                                          <i class="fa fa-check-circle"></i> <span>人工标注</span>
+                                     </a>
+                                </li>
+                                <li >
+                                    <a href="reIdTaskPage.html">
+                                        <i class="fa fa-gavel"></i> <span>ReID标注</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a href="videoTaskPage.html">
+                                        <i class="fa fa-university"></i> <span>车流统计</span>
+                                    </a>
+                                </li>
+                               <li >
+                                    <a href="videoTaskPageBox.html">
+                                        <i class="fa fa-camera"></i> <span>视频标注</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a href="bigImgTaskPage.html">
+                                        <i class="fa fa-picture-o"></i> <span>超大图像标注</span>
+                                    </a>
+                                </li> 
+                                <li>
+                                    <a href="retrainTask.html">
+                                         <i class="fa fa-line-chart"></i> <span>模型重训</span>
+                                     </a>
+                                </li>
+                                
+                                <li >
+                                    <a href="userManage.html">
+                                         <i class="fa fa-user-circle"></i> <span>用户管理</span>
+                                    </a>
+                                </li>
+								<li >
+                                    <a href="reportManage.html">
+                                         <i class="fa fa-bar-chart"></i> <span>报表管理</span>
+                                    </a>
+                                </li>
+								<li>
+                                    <a href="logManage.html">
+                                         <i class="fa fa-file-text-o"></i><span>操作日志管理</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </section>
+                        <!-- /.sidebar -->
+                    </aside>
+
+                    <aside class="right-side">
+
+                <!-- Main content -->
+                <section class="content" >
+
+                   
+
+                    <!-- Main row -->
+                    <div class="row">
+                        <div class="col-md-12">
+     
+                                <div class="sm-st clearfix" align="center">
+                                    <img src="img/yujiantubiao.png" alt>
+                                    <!-- <canvas id="flowsheet" width="1600" height="150"></canvas> -->
+                                </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="alert alert-info">                      
+                              <strong>【数据集管理】</strong> 对图片（仅支持jpg格式）、视频、医疗数据进行上传，管理。对视频可以按照指定策略进行抽帧，合并。
+                        </div>
+						<div class="alert alert-success">                      
+                              <strong>【自动标注】</strong> 选择图片或者抽帧后的视频数据集进行自动标注，可选算法Freeachor，仅用来标注人；Retinanet算法，可以用来标注人、车。在自动标注的时候，可以选择删除未检测到目标的图片，还可以自动标注完成后，进行在线预览结果。
+                        </div>
+                        <div class="alert alert-warning">                  
+                              <strong>【人工标注】</strong> 对自动标注结果进行人工校验，也可以对数据集图片（仅支持jpg格式）、抽帧后的视频图片、医疗数据直接进行人工标注。标注信息可以自定义。但标注信息id及type两个属性必须保留。标注结果支持Json，XML、COCO格式导出。
+                        </div>  
+                        <div class="alert alert-block alert-danger">                   
+                              <strong>【ReID标注】</strong> 可以选择自动标注结果进行ReID标注，也可以直接对数据集中图片、抽帧后的视频图片进行ReID标注。标注结果可以导出。
+                        </div>
+  						 <div class="alert alert-info">                      
+                              <strong>【车流统计】</strong> 对视频进行车流统计，暂停视频后，按照视频上车的行驶方向进行标注。
+                        </div>  
+                        <div class="alert alert-success">                      
+                              <strong>【视频标注】</strong> 选择视频进行播放，在播放的过程暂停视频对视频进行直接标注，也可以选择指定算法进行自动标注。
+                        </div>
+						 <div class="alert alert-warning">                      
+                              <strong>【模型重训】</strong> 选择指定数据集进行模型重训，需要较好的机器，带多个GPU。
+                        </div>  
+                         <div class="alert alert-block alert-danger">                    
+                              <strong>【用户管理】</strong> 管理员用户可以创建、删除用户，其它用户无权限操作。
+                        </div>
+						<div class="alert alert-info">                      
+                              <strong>【报表管理】</strong> 统计标注人员的每天标注情况，可以作各个维度的对比。
+                        </div>
+                   </div>
+                   
+              <!-- row end -->
+                </section><!-- /.content -->
+                <div class="footer-main">
+                    Copyright &copy PCL, 2019-2021
+                </div>
+            </aside><!-- /.right-side -->
+
+        </div><!-- ./wrapper -->
+
+        <script src="js/func.js" type="text/javascript"></script>
+        <!-- jQuery 2.0.2 -->
+        <!--  -->
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+
+        <!-- jQuery UI 1.10.3 -->
+        <script src="js/jquery-ui-1.10.3.min.js" type="text/javascript"></script>
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- daterangepicker -->
+
+
+        <!-- Director App -->
+        <script src="js/Director/app.js" type="text/javascript"></script>
+
+    
+        <!-- 流程图显示 -->
+        <script src="js/Director/index.js" type="text/javascript"></script>
+        <!-- Director for demo purposes -->
+   
+        <script  type="text/javascript">
+            window.onload=function(){
+            console.log("onload index.html");
+            var token = getCookie("token");
+            if(typeof token == "undefined" || token == null || token == ""){
+                console.log("token=" + token);
+                window.location.href = "login.html";
+            }else{
+                var nickName = getCookie("nickName");
+                console.log("nickName=" + nickName);
+                $("#userNickName").text(nickName);
+                $("#userNickName_bar").text(nickName);
+            }
+        }
+  
+
+</script>
+
+</body>
+</html>

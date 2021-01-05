@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>PCL数据标注平台V1.6</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <meta name="description" content="Developed By M Abdur Rokib Promy">
+        <meta name="keywords" content="Admin, Bootstrap 3, Template, Theme, Responsive">
+        <!-- bootstrap 3.0.2 -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Awesome -->
+        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <!-- Ionicons -->
+        <link href="css/ionicons.min.css" rel="stylesheet" type="text/css" />
+		<link href="css/fselect.css" rel="stylesheet" type="text/css" />
+        <!-- google font -->
+        
+        <!-- Theme style -->
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        <link href="css/jquery.yhhDataTable.css" rel="stylesheet" type="text/css" />
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          
+          
+        <![endif]-->
+     <style>
+		 #progress{
+            width: 100%;
+            height: 20px;
+            background: rgb(255, 255, 255);
+         }
+        #bar{
+            width: 1%;
+            height: 20px;
+            margin-top: 1px;             
+			background: green;
+         }
+		</style>
+    </head>
+    <body class="skin-black">
+        <!-- header logo: style can be found in header.less -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                PCL数据标注平台V1.6
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                       
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user"></i>
+                                <span id="userNickName_bar"><i class="caret"></i></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
+                                
+                                <li>
+                                            <a href="login.html"><i class="fa fa-ban fa-fw pull-right"></i> Logout</a>
+                                </li>
+                                   
+                            </ul>
+					    </li>
+				    </ul>
+                </div>
+            </nav>
+        </header>
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+                    <!-- Left side column. contains the logo and sidebar -->
+                    <aside class="left-side sidebar-offcanvas">
+                        <!-- sidebar: style can be found in sidebar.less -->
+                        <section class="sidebar">
+                            <!-- Sidebar user panel -->
+                            <div class="user-panel">
+                                <div class="pull-left image">
+                                    <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+                                </div>
+                                <div class="pull-left info">
+                                    <p id="userNickName"></p>
+
+                                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                                </div>
+                            </div>
+                            <!-- search form -->
+                            <form action="#" method="get" class="sidebar-form">
+                                <div class="input-group">
+      <!--                               <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                                    <span class="input-group-btn">
+                                        <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span> -->
+                                </div>
+                            </form>
+                    <ul class="sidebar-menu">
+                            <li>
+                                <a href="index.html">
+                                    <i class="fa fa-dashboard"></i> <span>主面板</span>
+                                </a>
+                            </li>
+							<li>
+                                     <a href="dataSetManage.html">
+                                          <i class="fa fa-database"></i> <span>数据集管理</span>
+                                     </a>
+                            </li>
+                            <li>
+                                <a href="predictTaskPage.html">
+                                        <i class="fa fa-chevron-circle-right"></i> <span>自动标注</span>
+                                 </a>
+                            </li>
+                    
+                            <li>
+                                <a href="labelTaskPage.html">
+                                        <i class="fa fa-check-circle"></i> <span>人工标注</span>
+                                </a>
+                            </li>
+                             <li class="active">
+                                <a href="reIdTaskPage.html">
+                                    <i class="fa fa-gavel"></i> <span>ReID标注</span>
+                                </a>
+                            </li>
+                            <li >
+                                    <a href="videoTaskPage.html">
+                                        <i class="fa fa-university"></i> <span>车流统计</span>
+                                    </a>
+                            </li>
+                            <li >
+                                <a href="videoTaskPageBox.html">
+                                    <i class="fa fa-camera"></i> <span>视频标注</span>
+                                </a>
+                            </li>
+                            <li >
+                                    <a href="bigImgTaskPage.html">
+                                        <i class="fa fa-picture-o"></i> <span>超大图像标注</span>
+                                    </a>
+                            </li> 
+                            <li>
+                                    <a href="retrainTask.html">
+                                        <i class="fa fa-line-chart"></i> <span>模型重训</span>
+                                    </a>
+                            </li>
+
+                            <li>
+                                    <a href="userManage.html">
+                                        <i class="fa fa-user-circle"></i> <span>用户管理</span>
+                                    </a>
+                            </li>
+							<li >
+                                    <a href="reportManage.html">
+                                         <i class="fa fa-bar-chart"></i> <span>报表管理</span>
+                                    </a>
+                            </li>
+							<li>
+                                    <a href="logManage.html">
+                                         <i class="fa fa-file-text-o"></i><span>操作日志管理</span>
+                                    </a>
+                            </li>
+                    </ul>
+                </section>
+                <!-- /.sidebar -->
+            </aside>
+
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+
+                <!-- Main content -->
+                
+                <section class="content">
+                    
+                        <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="panel">
+                                        <header class="panel-heading">
+                                            ReID标注
+                                        </header>
+                                        <div class="panel-body">
+                                          <div class="panel-body table-responsive">
+                                            <div class="box-tools m-b-15">
+                                            </div>
+                                            <table class="table table-hover" id="reid_task_list"></table>
+
+                                            <div style="height: 20px;"></div>
+                                            
+                                            <div style="height: 30px;">
+                                                    <div style="float:right">  
+                                                       显示<span  id="startIndex">0</span>到<span id="endIndex">0</span>条，共<span id="totalNum">0</span>条。&nbsp;&nbsp;   
+                                                       <span >   
+                                                       <a id="prePage" href="">上一页</a>
+                                                       <span >
+                                                          &nbsp;当前页：<span id="displayPage1">1</span>&nbsp;
+                                                       </span>
+                                                        <a id="nextPage" href="">下一页</a>
+                                                          &nbsp;共<span id="totalPageNum"></span>页&nbsp;
+                                                       </span>
+                                                        <span>&nbsp;跳转到：<input type="text" id="goNum" style="width: 50px;border-radius: 6px" maxlength="5" oninput="value=value.replace(/[^\d]/g,'')"><a id="goHref" href="javascript:goPage()">&nbsp;GO</a></span>
+                                                        </span>
+                                                    </div>
+                                                    
+                                             </div>
+
+                                             <div style="height: 30px;">
+                                                <button type="button" href="#reIdAutoDataModal" onclick="setReIDAutoTask();" data-toggle="modal" class="btn btn-primary" data-backdrop="static" style="float:left">新建自动标注结果ReID标注</button>
+                                                <button  type="button" href="#reIdDataModal" onclick="setDataSetTask();" data-toggle="modal" class="btn btn-primary" data-backdrop="static" style="float:left;margin-left:20px;">新建数据集ReID标注</button>
+                                                
+												<button type="button"  data-toggle="modal" class="btn btn-primary" onclick="multi_export();" data-backdrop="static" style="float:right">批量导出ReID结果</button>
+												<button type="button" data-toggle="modal" class="btn btn-primary" onclick="delete_reidtask();" style="float:right">删除ReID标注</button>
+                                            </div>
+
+
+                                            <!-- 增加新建数据集人工标注-->
+                                          <div aria-hidden="true" aria-labelledby="myModalLabelc" role="dialog" tabindex="-1" id="reIdDataModal" class="modal fade">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                      <div class="modal-header">
+                                                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                          <h4 class="modal-title">新建数据集ReID标注</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                          <form role="form">
+                                                             <div class="form-group">
+                                                                 <label for="exampleInputPassword1">选择源数据集对象<font color=red>*</font></label>
+                                                                 <select class="form-control" name="src_dataset_taskid" id="src_dataset_taskid" onchange="dataset_sele_Change(this)">
+                                                                        <option value="">请选择</option>
+                                                                 </select>
+                                                             </div>
+															 
+															 <div class="form-group">
+															    <label for="exampleInputPassword1">选择对照数据集对象<font color=red>*</font></label>
+																<div></div>
+															    <select id="dest_dataset_taskid" multiple="multiple">  
+																 
+															    </select>  
+															 </div>
+															 
+										
+                                                             <div class="form-group">
+                                                                  <label for="exampleInputEmail1">ReID标注任务名称<font color=red>*</font></label>
+                                                                  <input type="" class="form-control" id="reid_dataset_taskname" placeholder="标注任务名称，不超过32个字符" maxlength="32">
+                                                             </div>
+															 <div class="form-group">
+                                                                    <label for="exampleInputPassword1">选择标注对象<font color=red>*</font></label>
+                                                                     <select class="form-control" name="reid_dataset_obj_type" id="reid_dataset_obj_type">
+																	    <option value="0">标注人</option> 
+																		<option value="1">标注车</option> 
+                                                                     </select>
+                                                             </div>
+                                                             <div class="form-group">
+                                                                  <label for="exampleInputEmail2">任务指派给</label>                                          
+                                                                  <select class="form-control" name="任务指派给" id="dataset_assign_user">
+                                                                       <option value=""> 请选择</option>         
+                                                                  </select>
+                                                             </div>
+															 
+															 
+                                                             <button type="button"  onclick="submit_dataset_reidtask();">提交</button>
+                                                          </form>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div> <!-- /.box-body -->
+    
+
+                                          <div aria-hidden="true" aria-labelledby="myModalLabelc" role="dialog" tabindex="-1" id="reIdAutoDataModal" class="modal fade">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                      <div class="modal-header">
+                                                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                          <h4 class="modal-title">新建自动标注结果ReID标注</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                          <form role="form">
+                                                                <div class="form-group">
+                                                                     <label for="exampleInputPassword1">选择源自动标注结果<font color=red>*</font></label>
+                                                                     <select class="form-control" name="src_auto_taskid" id="src_auto_taskid" onchange="sele_Change(this)">
+                                                                     </select>
+                                                                </div>
+																
+															    <div class="form-group">
+															        <label for="exampleInputPassword1">选择对照自动标注结果<font color=red>*</font></label>
+																	<!-- <div  style="border-radius: 4px;line-height: 1.4;"> -->
+															        <select id="dest_auto_taskid" multiple="multiple" >  
+															        </select> 
+																	<!-- </div> -->
+															   </div>
+																
+																
+																
+                                                              <div class="form-group">
+                                                                  <label for="exampleInputEmail1">ReID标注任务名称<font color=red>*</font></label>
+                                                                  <input type="" class="form-control" id="reid_auto_taskname" placeholder="ReID标注任务名称，不超过32个字符" maxlength="32">
+                                                              </div>
+                                                             
+															 <div class="form-group">
+                                                                     <label for="exampleInputPassword1">选择标注对象<font color=red>*</font></label>
+                                                                     <select class="form-control" name="reid_obj_type" id="reid_obj_type">
+																	    <option value="0">标注人</option> 
+																		<option value="1">标注车</option> 
+                                                                     </select>
+                                                             </div>
+															 
+															 
+															 <div class="form-group">
+                                                                  <label for="exampleInputEmail2">任务指派给</label>                                          
+                                                                  <select class="form-control" name="任务指派给" id="auto_assign_user">
+                                                                              
+                                                                  </select>
+                                                             </div>
+															 
+															 <div class="form-group">
+                                                                     <label for="exampleInputPassword1">是否自动进行ReID标注<font color=red>*</font></label>
+                                                                     <select class="form-control" name="reid_auto_type" id="reid_auto_type">
+																	    <option value="0" selected="">否</option> 
+																		<option value="1">是</option> 
+                                                                     </select>
+                                                             </div>
+                                        
+                                                              <button type="button"  onclick="submit_auto_reidtask();">提交</button>
+                                                          </form>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div> <!-- /.box-body -->
+                                          </div><!-- /.box-body -->
+                                        </div>
+                                        <!-- </div> -->
+        
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+               <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="labeltaskexport"  class="modal fade" data-backdrop="static">
+                                      <div class="modal-dialog">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                  <h4 class="modal-title">标注结果批量导出</h4>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <form role="form">
+												      
+													  <div class="form-group">
+                                                          <label for="exampleInputPassword1">请选择任务进行导出</label>
+														  <select id="multi_labeltaskid" multiple="multiple">
+														  
+														  </select> 
+                                                      </div>													  
+                                                      <div class="form-group">
+                                                          <label for="exampleInputPassword1">是否扣图导出</label>
+                                                           <select class="form-control" name="是否扣图导出" id="isNeedPicture">
+                                                              <option value="1" selected="">导出抠图及ReID信息</option>
+															  <option value="2">导出原图及标注</option>
+															  <option value="3">导出抠图及ReID信息并以数据集名称重命名</option>
+                                                           </select>
+                                                      </div>
+                                                      
+                                                      <div id="progress">
+                                                            <div id="bar"></div>
+                                                      </div>
+                                                      <div><h5 id="text-progress">0%</h3></div>
+                                                      <button id="predtask_id" type="button"  onclick="downloadMultiFile();">提交</button>
+                                                  </form>
+                                              </div>
+                                          </div>
+                                      </div>
+               </div> 
+                    
+                </section><!-- /.content -->
+                <div class="footer-main">
+                    Copyright &copy PCL, 2019-2021
+                </div>
+            </aside><!-- /.right-side -->
+        </div><!-- ./wrapper -->
+    
+
+        <!-- jQuery 2.0.2 -->
+        <!--  -->
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+        <script src="js/func.js" type="text/javascript"></script>
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- Director App -->
+        <script src="js/Director/reIdTaskPage.js" type="text/javascript"></script>
+        <script src="js/Director/app.js" type="text/javascript"></script>
+		<script src="js/fselect.js" type="text/javascript"></script>
+        <script  type="text/javascript">
+            window.onload=function(){
+                    console.log("onload index.html");
+                    var token = getCookie("token");
+                    if(typeof token == "undefined" || token == null || token == ""){
+                        console.log("token=" + token);
+                        window.location.href = "login.html";
+                    }else{
+                        var nickName = getCookie("nickName");
+                        console.log("nickName=" + nickName);
+                        $("#userNickName").text(nickName);
+                        $("#userNickName_bar").text(nickName);
+                    }
+            }
+			
+        </script>
+
+    </body>
+</html>

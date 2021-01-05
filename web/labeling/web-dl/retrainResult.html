@@ -1,0 +1,438 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PCL数据标注平台V1.6</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <meta name="description" content="Developed By M Abdur Rokib Promy">
+    <meta name="keywords" content="Admin, Bootstrap 3, Template, Theme, Responsive">
+    <!-- bootstrap 3.0.2 -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- font Awesome -->
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- Ionicons -->
+    <link href="css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <!-- Morris chart -->
+    <link href="css/morris/morris.css" rel="stylesheet" type="text/css" />
+    <!-- jvectormap -->
+    <link href="css/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+    <!-- Date Picker -->
+    <link href="css/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
+    <!-- fullCalendar -->
+    <!-- <link href="css/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" /> -->
+    <!-- Daterange picker -->
+    <link href="css/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link href="css/iCheck/all.css" rel="stylesheet" type="text/css" />
+    <!-- bootstrap wysihtml5 - text editor -->
+    <!-- <link href="css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" /> -->
+    
+    <!-- Theme style -->
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          
+          
+          <![endif]-->
+
+          <style type="text/css">
+
+          </style>
+      </head>
+      <body class="skin-black">
+        <!-- header logo: style can be found in header.less -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                PCL数据标注平台V1.6
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                        
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user"></i>
+                                <span id="userNickName_bar"> <i class="caret"></i></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
+                               
+  
+                                <li>
+                                            <a href="login.html"><i class="fa fa-ban fa-fw pull-right"></i> Logout</a>
+                                </li>
+                                   
+                            </ul>
+					    </li>
+				    </ul>
+                </div>
+            </nav>
+         </header>
+                
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+                    <!-- Left side column. contains the logo and sidebar -->
+                    <aside class="left-side sidebar-offcanvas">
+                        <!-- sidebar: style can be found in sidebar.less -->
+                        <section class="sidebar">
+                            <!-- Sidebar user panel -->
+                            <div class="user-panel">
+                                <div class="pull-left image">
+                                    <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+                                </div>
+                                <div class="pull-left info">
+                                    <p id="userNickName"></p>
+
+                                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                                </div>
+                            </div>
+                            <!-- search form -->
+                            <form action="#" method="get" class="sidebar-form">
+                                <div class="input-group">
+<!--                                     <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                                    <span class="input-group-btn">
+                                        <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span> -->
+                                </div>
+                            </form>
+                            <!-- /.search form -->
+                            <!-- sidebar menu: : style can be found in sidebar.less -->
+                            <ul class="sidebar-menu">
+                                <li>
+                                    <a href="index.html">
+                                        <i class="fa fa-dashboard"></i> <span>主面板</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </section>
+                        <!-- /.sidebar -->
+                    </aside>
+
+                    <aside class="right-side">
+                    <section class="content">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="panel-body table-responsive">
+                                    <div id="loss" style="width: 100%;height:390px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="panel-body table-responsive">
+                                    <div id="acc" style="width: 100%;height:390px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="panel">
+                                <header class="panel-heading">
+                                实时标注结果
+                                </header>
+                                <div class="panel-body">
+                                    <div class="panel-body table-responsive">
+                                        <div  style="width: 100%;height:820px;">
+                                            <div class="panel-body">
+                                            <button type="button" class="btn btn-primary" onclick="display();">实时标注结果</button>
+                                            </div>
+                                            <div class="panel-body" id="v_dl">
+                                            <video src="" width="720" height="405" controls="controls" autoplay="autoplay">
+                                            </video>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                     <div class="row">
+                        <div class="col-xs-12">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="panel-body table-responsive">
+                                    <div id="acc" style="width: 100%;height:390px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    </section>
+                <!-- Main content -->
+                
+                <div class="footer-main">
+                    Copyright &copy PCL, 2019-2021
+                </div>
+            </aside><!-- /.right-side -->
+
+        </div><!-- ./wrapper -->
+
+
+        <!-- jQuery 2.0.2 -->
+        <!--  -->
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+
+        <!-- jQuery UI 1.10.3 -->
+        <script src="js/jquery-ui-1.10.3.min.js" type="text/javascript"></script>
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- daterangepicker -->
+        <script src="js/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
+
+        <script src="js/plugins/chart.js" type="text/javascript"></script>
+
+        <!-- datepicker
+        <script src="js/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>-->
+        <!-- Bootstrap WYSIHTML5
+        <script src="js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>-->
+        <!-- iCheck -->
+        <script src="js/plugins/iCheck/icheck.min.js" type="text/javascript"></script>
+        <!-- calendar -->
+        <script src="js/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
+
+        <!-- Director App -->
+        <script src="js/Director/app.js" type="text/javascript"></script>
+
+        <!-- Director dashboard demo (This is only for demo purposes) -->
+        <script src="js/Director/dashboard.js" type="text/javascript"></script>
+        
+
+
+        <!-- Director for demo purposes -->
+        <script src="js/echarts.min.js" type="text/javascript"></script>
+        <script src="js/func.js" type="text/javascript"></script>
+        
+
+<script type="text/javascript">  
+
+    window.onload=function(){
+                    console.log("onload index.html");
+                    var token = getCookie("token");
+                    if(typeof token == "undefined" || token == null || token == ""){
+                        console.log("token=" + token);
+                        window.location.href = "login.html";
+                    }else{
+                        var nickName = getCookie("nickName");
+                        console.log("nickName=" + nickName);
+                        $("#userNickName").text(nickName);
+                        $("#userNickName_bar").text(nickName);
+                    }
+    }
+
+var vindex=0;
+function display(){
+    var html="<video src=\"video/model_"+vindex+".mp4\" width=\"720\" controls=\"controls\" autoplay=\"autoplay\" loop=\"loop\">";
+    document.getElementById('v_dl').innerHTML=html;
+    if (vindex<2){vindex+=1;}
+}
+</script>
+
+
+<script type="text/javascript">  
+var lossChart = echarts.init(document.getElementById('loss'));  // 直接开始初始化，还是要用原生javascript  
+var accChart = echarts.init(document.getElementById('acc'));  // 直接开始初始化，还是要用原生javascript  
+var loss,acc;
+$.getJSON("json/log.json", function (data){
+    acc = data.acc;
+    loss = data.loss;
+})
+function displayloss(lossarr, minlength=10){
+var iters = [];
+for (var i=0;i<Math.max(lossarr.length,minlength);i++){iters.push(i);}
+var option = {
+    title : {
+        text: 'Loss变化曲线',
+        subtext: ''
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            name: "迭代次数",
+            type : 'category',
+            boundaryGap : false,
+            data : iters
+        }
+    ],
+    yAxis : [
+        {
+            name:"loss",
+            type : 'value',
+        }
+    ],
+    series : [
+        {
+            name:'loss',
+            type:'line',
+            data:lossarr,
+            // itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+            markLine : {
+                data : [
+                    {type : 'average', name: '平均值'}
+                ]
+            }
+        },
+    ]
+};                
+lossChart.setOption(option); // 加载图表   
+}
+
+function displayacc(accarr, minlength=10){
+var iters = [];
+for (var i=0;i<Math.max(accarr.length,minlength);i++){iters.push(i);}
+var option = {
+    title : {
+        text: 'mAP50变化曲线',
+        subtext: ''
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            name: "测试次数",
+            type : 'category',
+            boundaryGap : false,
+            data : iters
+        }
+    ],
+    yAxis : [
+        {
+            name:"准确率/%",
+            type : 'value',
+        }
+    ],
+    series : [
+        {
+            name:'accuracy',
+            type:'line',
+            data:accarr,
+            // areaStyle: {
+            //     normal: {
+            //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            //             offset: 0,
+            //             color: 'rgba(16, 79, 193,1)'
+            //         }, {
+            //             offset: 1,
+            //             color: 'rgba(125, 178, 244,1)'
+            //         }], false)
+            //     }
+            // },
+            itemStyle: {
+                normal: {
+                    color: 'rgba(16, 79, 193,1)'
+                }
+                },
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+            markLine : {
+                data : [
+                    {type : 'average', name: '平均值'}
+                ]
+            }
+        },
+    ]
+};                
+accChart.setOption(option); // 加载图表   
+}
+
+var retrain_task;
+function get_retrain_task_result(retrain_task_id){
+$.ajax({
+  type:"GET",
+  contentType:'application/json',
+  url:ip + "/api/retrain-task-result/",
+  dataType:"json",
+  async:false,
+  headers: {
+     // Accept: "text/html; q=1.0", 
+     authorization:token,
+   },
+  // enctype:"multipart/form-data",
+  data:{'retrain_task_id': retrain_task_id},
+  success:function(res){
+    retrain_task = res;
+    console.log(res)
+ }
+});
+
+}
+
+
+loss_arr = []
+acc_arr = []
+var itersnum=0;
+var ip = getIp();
+var token = sessionStorage.getItem("token");
+var retrain_task_id = sessionStorage.getItem("retrain_task");
+
+
+setInterval(function(){
+    
+	loss_arr.length = 0;
+	acc_arr.length = 0;
+	get_retrain_task_result(retrain_task_id);
+	var trainInfo = retrain_task.trainInfo;
+	for (var i=0;i<trainInfo.length;i++){
+		loss_arr.push(trainInfo[i].loss);
+	}
+	var valInfo = retrain_task.valInfo;
+	for (var i=0;i<valInfo.length;i++){
+		acc_arr.push(valInfo[i].bbox_mAP_50);
+	}
+    displayloss(loss_arr);
+    displayacc(acc_arr);
+
+ },2000)
+</script>
+
+</body>
+</html>

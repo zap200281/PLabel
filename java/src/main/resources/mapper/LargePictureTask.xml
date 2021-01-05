@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.LargePictureTaskDao">
+	
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.LargePictureTask" >
+		<result column="id" property="id"/>
+		<result column="task_name" property="task_name"/>
+		<result column="dataset_id" property="dataset_id"/>
+		<result column="appid" property="appid"/>
+		<result column="task_add_time" property="task_add_time"/>
+		<result column="task_finish_time" property="task_finish_time"/>
+		<result column="zip_object_name" property="zip_object_name"/>
+		<result column="zip_bucket_name" property="zip_bucket_name"/>
+		<result column="task_status" property="task_status"/>
+		<result column="user_id" property="user_id"/>
+		<result column="assign_user_id" property="assign_user_id"/>
+		<result column="task_status_desc" property="task_status_desc"/>
+		<result column="mainVideoInfo" property="mainVideoInfo"/>
+		<result column="task_label_type_info" property="task_label_type_info"/>
+		<result column="verify_user_id" property="verify_user_id"/>
+	</resultMap>
+  
+
+     <insert id="addLargePictureTask"  parameterType="com.pcl.pojo.mybatis.LargePictureTask">
+        insert into tasks_largepicturelabeltask(id,task_name,appid,dataset_id,task_add_time,task_finish_time,task_status,user_id,assign_user_id,task_status_desc,zip_bucket_name,zip_object_name,mainVideoInfo)
+         values (#{id}, #{task_name},#{appid},#{dataset_id},#{task_add_time},#{task_finish_time},#{task_status},#{user_id},#{assign_user_id},#{task_status_desc},#{zip_bucket_name},#{zip_object_name},#{mainVideoInfo})
+    </insert>
+    
+     <delete id="deleteLargePictureTask" parameterType="String">    
+        delete FROM tasks_largepicturelabeltask where id=#{id};
+    </delete>  
+    
+   
+    <select id="queryLargePictureTask" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_largepicturelabeltask  where dataset_id=#{dataset_id}
+    </select> 
+    
+    
+     <select id="queryLargePictureTaskByDataSetId" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_largepicturelabeltask  where id=#{id}
+    </select> 
+    
+    
+    <update id="updateLargePictureTask" parameterType="Map">
+       update tasks_largepicturelabeltask set 
+       
+       task_label_type_info= #{task_label_type_info}
+       
+       where id= #{id}
+    </update>
+    
+    <update id="updateLargePictureTaskStatus" parameterType="Map">
+       update tasks_largepicturelabeltask set 
+       task_status= #{task_status}
+       where id= #{id}
+    </update>
+    
+     <select id="queryLargePictureTaskPage" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_largepicturelabeltask  where 1=1 
+        <if test="user_id !=null and user_id !=''">
+          and (user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id})
+        </if>
+        <if test="appid !=null">
+          and appid = #{appid} 
+        </if>
+         order by task_add_time desc   limit #{currPage}, #{pageSize}
+    </select>  
+    
+    <select id="queryLargePictureTaskPageCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_largepicturelabeltask  where 1=1 
+        <if test="user_id !=null and user_id !=''">
+          and (user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id})
+        </if>
+        <if test="appid !=null">
+          and appid = #{appid} 
+        </if>
+     </select>  
+    
+</mapper>

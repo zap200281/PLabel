@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.DataSetDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.DataSet" >
+		<result column="id" property="id"/>
+		<result column="task_name" property="task_name"/>
+		<result column="task_add_time" property="task_add_time"/>
+		<result column="task_desc" property="task_desc"/>
+		<result column="dataset_type" property="dataset_type"/>
+		<result column="total" property="total"/>
+		<result column="zip_object_name" property="zip_object_name"/>
+		<result column="zip_bucket_name" property="zip_bucket_name"/>
+		<result column="file_bucket_name" property="file_bucket_name"/>
+		<result column="user_id" property="user_id"/>
+		<result column="assign_user_id" property="assign_user_id"/>
+		<result column="task_status" property="task_status"/>
+		<result column="camera_number" property="camera_number"/>
+		<result column="camera_gps" property="camera_gps"/>
+		<result column="camera_date" property="camera_date"/>
+		<result column="videoSet" property="videoSet"/>
+		<result column="mainVideoInfo" property="mainVideoInfo"/>
+		
+	</resultMap>
+  
+  
+  	<select id="queryAllDataSet" resultMap="BaseResultMap">    
+        SELECT * FROM tasks_dataset  order by task_add_time desc
+    </select> 
+    
+    <select id="queryAllDataSetByIdList" resultMap="BaseResultMap"  parameterType="java.util.List">    
+        SELECT * FROM tasks_dataset
+        where id in(
+         <foreach collection="list" item="item" index="index" separator=",">
+         #{item}
+         </foreach>
+        )
+    </select> 
+    
+    
+    
+    <select id="queryDataSetByType" resultMap="BaseResultMap" parameterType="Map">
+        SELECT * FROM tasks_dataset  where dataset_type in 
+        <foreach item="item" collection="datasettypeList" separator="," open="(" close=")" index="index"> 
+             #{item}
+        </foreach>
+        <if test="user_id !=null and user_id !=''">
+           and (user_id = #{user_id} or assign_user_id= #{user_id})
+        </if>
+        <if test="task_status !=null">
+           and task_status=#{task_status}
+        </if>
+        order by task_add_time desc
+    </select>  
+  
+    <select id="queryDataSet" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_dataset 
+        <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id} or assign_user_id= #{user_id}
+        </if>
+        order by task_add_time desc  limit #{currPage}, #{pageSize}
+    </select>
+    
+     <select id="queryDataSetById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_dataset  where id=#{id}
+    </select>  
+    
+     <select id="queryDataSetCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_dataset
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id} or assign_user_id= #{user_id}
+        </if> 
+     </select>  
+     
+     <delete id="deleteDataSetById" parameterType="String">    
+        delete FROM tasks_dataset where id=#{id};
+    </delete>  
+    
+     <update id="updateDataSet"  parameterType="Map">    
+        update tasks_dataset set 
+        <if test="task_name != null and task_name != ''">
+        	task_name=#{task_name},
+        </if>
+        <if test="dataset_type != null and dataset_type != ''">
+        	dataset_type=#{dataset_type},
+        </if>
+         <if test="task_desc != null and task_desc != ''">
+        	task_desc=#{task_desc},
+        </if>
+        <if test="total != null and total != ''">
+        	total=#{total},
+        </if>
+        <if test="assign_user_id != null and assign_user_id != ''">
+        	assign_user_id=#{assign_user_id},
+        </if>
+        <if test="file_bucket_name != null and file_bucket_name != ''">
+        	file_bucket_name=#{file_bucket_name},
+        </if>
+        <if test="camera_gps != null and camera_gps != ''">
+        	camera_gps=#{camera_gps},
+        </if>
+        <if test="camera_date != null and camera_date != ''">
+        	camera_date=#{camera_date},
+        </if>
+         <if test="videoSet != null">
+        	videoSet=#{videoSet},
+        </if>
+        <if test="zip_bucket_name != null and zip_bucket_name != ''">
+        	zip_bucket_name=#{zip_bucket_name},
+        </if>
+        <if test="zip_object_name != null and zip_object_name != ''">
+        	zip_object_name=#{zip_object_name},
+        </if>
+        <if test="mainVideoInfo != null and mainVideoInfo != ''">
+        	mainVideoInfo=#{mainVideoInfo},
+        </if>
+        
+       	 task_status=#{task_status}
+         where id=#{id}
+    </update> 
+    
+    
+     <insert id="addDataSet"  parameterType="com.pcl.pojo.mybatis.DataSet">
+        insert into tasks_dataset
+        (id,task_name,task_add_time,task_desc,dataset_type,total,zip_object_name,zip_bucket_name,user_id,assign_user_id,task_status,file_bucket_name,camera_number,camera_gps,camera_date,videoSet,mainVideoInfo)
+         values 
+         (#{id}, #{task_name},#{task_add_time},#{task_desc},#{dataset_type},#{total},#{zip_object_name},#{zip_bucket_name},#{user_id},#{assign_user_id},#{task_status},#{file_bucket_name},#{camera_number},#{camera_gps},#{camera_date},#{videoSet},#{mainVideoInfo})
+    </insert>
+</mapper>

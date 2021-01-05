@@ -1,0 +1,105 @@
+*{margin:0;padding:0;list-style:none;}
+#footer{clear:all;}
+#itsthetable{
+  font-family:arial,sans-serif;
+  overflow:auto;
+  background:#fff;
+}
+#nav{position:absolute;top:1.6em;left:15em;}
+h1{
+  font-size:180%;
+  color:#060;
+}
+h2{
+  font-size:120%;
+  font-family:calibri,helvetica,arial,sans-serif;
+}
+#header a,#meta a,#intro a{
+  color:#030;
+  text-decoration:underline;
+}
+#textcontent{
+  font-family:helvetica,arial,sans-serif;
+  padding:1em;
+}
+#ads{
+  background:#fff;
+}
+#textcontent h2,#textcontent h3{
+  font-family:calibri,helvetica,arial,sans-serif;
+  font-size:120%;
+  margin:1em 0;
+}
+#textcontent h3{
+  margin:0;
+}
+#textcontent a{
+  color:#030;
+}
+
+#textcontent p{
+  padding-bottom:.5em;
+}
+#ads{
+ text-align:center;
+}
+ul#tla{
+  font-size:.8em;
+  width:740px;
+  padding:1em;
+  font-family:arial,sans-serif;
+  display:block;
+  margin:0 auto;
+}
+#textcontent ul{
+  padding-bottom:.5em;
+}
+#textcontent li{
+  float:none;
+  padding:5px 0;
+}
+#ads{font-family:arial,sans-serif;margin:1em;color:#999;font-size:80%;
+  margin:2em 0;}
+  #dough{padding:1em 0;margin-top:8em;}
+#ads li{padding-right:1em;}
+#ads a{color:#999;}
+#intro{
+  background:#ccc;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  -moz-box-shadow:4px 4px 4px rgba(0,0,0,.3);
+  -webkit-box-shadow:4px 4px 4px rgba(0,0,0,.3);
+  box-shadow:4px 4px 4px rgba(0,0,0,.3);
+  position:absolute;
+  width:500px;
+  right:20px;top:5px;
+}
+#tla{overflow:auto;width:80%;padding:0;margin:0;}
+#header,#footer,#intro{
+  padding:1em;
+  font-family:calibri,arial,sans-serif;
+}
+#header{
+  top:0;
+  margin-left:-2em;
+  background:#fff;
+  position:fixed;
+  width:72%;
+  z-index:200;
+  -moz-box-shadow:0px 0px 2em rgba(0,0,0,.4);
+  -webkit-box-shadow:0px 0px 2em rgba(0,0,0,.4);
+  box-shadow:0px 0px 2em rgba(0,0,0,.4);
+  height:7em;
+}
+#footer{
+  border-top:2px solid #333;
+  text-align:right;
+}
+#boundary{font-size:.9em;
+  margin:0 auto;
+  width:70%;
+  min-width:700px;
+  position:relative;
+}
+#content,#textcontent{background:#fff;}

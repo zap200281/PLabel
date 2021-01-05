@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.LabelTaskDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.LabelTask" >
+		<result column="id" property="id"/>
+		<result column="task_name" property="task_name"/>
+		<result column="task_add_time" property="task_add_time"/>
+		<result column="relate_task_id" property="relate_task_id"/>
+		<result column="relate_task_name" property="relate_task_name"/>
+		<result column="user_id" property="user_id"/>
+		<result column="total_picture" property="total_picture"/>
+		<result column="task_type" property="task_type"/>
+		<result column="task_label_type_info" property="task_label_type_info"/>
+		<result column="assign_user_id" property="assign_user_id"/>
+		<result column="relate_other_label_task" property="relate_other_label_task"/>
+		<result column="task_flow_type" property="task_flow_type"/>
+		<result column="verify_user_id" property="verify_user_id"/>
+		<result column="task_status" property="task_status"/>
+		<result column="task_status_desc" property="task_status_desc"/>
+		<result column="total_label" property="total_label"/>
+		
+	</resultMap>
+  
+   <update id="updateLabelTask" parameterType="Map">
+       update tasks_labeltask set task_label_type_info= #{task_label_type_info} where id= #{id}
+   </update>
+   
+   <update id="updateLabelTaskLabelCount" parameterType="Map">
+       update tasks_labeltask set total_label= #{total_label} where id= #{id}
+   </update>
+   
+   <update id="updateLabelTaskStatus" parameterType="Map">
+       update tasks_labeltask set 
+       <if test="verify_user_id !=null">
+           verify_user_id = #{verify_user_id},
+       </if>
+        <if test="task_label_type_info !=null">
+           task_label_type_info = #{task_label_type_info},
+       </if>
+       task_status= #{task_status} where id= #{id}
+   </update>
+  
+    <select id="queryLabelTask" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_labeltask where 1=1
+         <if test="user_id !=null and user_id !=''">
+           and ( user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id})
+        </if>
+        <if test="relate_task_name !=null">
+           and relate_task_name = #{relate_task_name}
+        </if>
+         order by task_add_time desc   limit #{currPage}, #{pageSize}
+    </select>  
+    
+     <select id="queryLabelTaskByUser" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_labeltask 
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id}
+        </if>
+         order by task_add_time desc 
+    </select>  
+    
+     <select id="queryLabelTaskById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_labeltask  where id=#{id}
+    </select>
+    
+    
+    <select id="queryLabelTaskByIds" resultMap="BaseResultMap" parameterType="List">    
+        SELECT * FROM tasks_labeltask  where id in (
+         <foreach collection="list" item="item" index="index" separator=",">
+            #{item}
+         </foreach>
+         )
+    </select>   
+    
+    
+     <select id="queryLabelTaskByDataSetId" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_labeltask  where relate_task_id=#{relate_task_id}
+    </select> 
+    
+     <select id="queryLabelTaskCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_labeltask where 1=1
+         <if test="user_id !=null and user_id !=''">
+           and (user_id = #{user_id} or assign_user_id = #{user_id} or verify_user_id = #{user_id})
+        </if>
+        <if test="relate_task_name !=null">
+           and relate_task_name = #{relate_task_name}
+        </if>
+     </select>  
+     
+     <delete id="deleteLabelTaskById" parameterType="String">    
+        delete FROM tasks_labeltask where id=#{id};
+    </delete>  
+    
+    
+     <select id="queryLabelTaskAfterTime" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_labeltask where unix_timestamp(task_add_time) >= unix_timestamp(#{task_add_time}) 
+        <if test="user_id !=null and user_id !=''">
+           and user_id = #{user_id}
+        </if>
+    </select> 
+ 
+     <insert id="addLabelTask"  parameterType="com.pcl.pojo.mybatis.LabelTask">
+        insert into tasks_labeltask(id,task_name,task_add_time,relate_task_id,relate_task_name,user_id,total_picture,task_type,task_label_type_info,assign_user_id,relate_other_label_task,task_flow_type,verify_user_id,task_status,task_status_desc)
+         values (#{id}, #{task_name},#{task_add_time},#{relate_task_id},#{relate_task_name},#{user_id},#{total_picture},#{task_type},#{task_label_type_info},#{assign_user_id},#{relate_other_label_task},#{task_flow_type},#{verify_user_id},#{task_status},#{task_status_desc})
+    </insert>
+    
+    
+  
+</mapper>

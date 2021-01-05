@@ -1,0 +1,13 @@
+.content{
+    background: #000066 url(../images/blue.png) no-repeat;
+    border-radius:15px;
+    }
+  .down{
+    padding-top: 260px;
+  }
+  .mt{
+  	margin-top: 5px;
+  }
+  body {
+    position: relative;
+  }

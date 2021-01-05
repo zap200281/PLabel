@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.VideoLabelTaskItemDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.LabelTaskItem" >
+		<result column="id" property="id"/>
+		<result column="pic_url" property="pic_url"/>
+		<result column="pic_object_name" property="pic_object_name"/>
+		<result column="label_info" property="label_info"/>
+		<result column="label_task_id" property="label_task_id"/>
+		<result column="item_add_time" property="item_add_time"/>
+		<result column="pic_image_field" property="pic_image_field"/>
+		<result column="label_status" property="label_status"/>
+		<result column="display_order1" property="display_order1"/>
+		<result column="display_order2" property="display_order2"/>
+		<result column="verify_status" property="verify_status"/>
+		<result column="verify_desc" property="verify_desc"/>
+	</resultMap>
+  
+    <insert id="addLabelTaskItem"  parameterType="com.pcl.pojo.mybatis.LabelTaskItem">
+        insert into tasks_videolabeltaskitem(id,pic_url,pic_object_name,label_info,label_task_id,item_add_time,pic_image_field,label_status,display_order1,display_order2,verify_status,verify_desc)
+         values (#{id}, #{pic_url},#{pic_object_name},#{label_info},#{label_task_id},#{item_add_time},#{pic_image_field},#{label_status},#{display_order1},#{display_order2},#{verify_status},#{verify_desc})
+    </insert>
+    
+    
+    <insert id="addBatchLabelTaskItem"  parameterType="java.util.List">
+        insert into tasks_videolabeltaskitem(id,pic_url,pic_object_name,label_info,label_task_id,item_add_time,pic_image_field,label_status,display_order1,display_order2,verify_status,verify_desc)
+         values 
+         <foreach collection="list" item="item" index="index" separator=",">
+         (
+         #{item.id}, 
+         #{item.pic_url},
+         #{item.pic_object_name},
+         #{item.label_info},
+         #{item.label_task_id},
+         #{item.item_add_time},
+         #{item.pic_image_field},
+         #{item.label_status},
+         #{item.display_order1},
+         #{item.display_order2},
+         #{item.verify_status},
+         #{item.verify_desc}
+         )
+    	</foreach>
+    </insert>
+    
+   
+    <select id="queryLabelTaskItemByLabelTaskId" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_videolabeltaskitem where label_task_id=#{label_task_id}  order by label_status desc,pic_image_field asc;
+    </select>  
+    
+    
+     <select id="queryLabelTaskItemByLabelTaskIdAndPicImage" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_videolabeltaskitem where label_task_id=#{label_task_id}  
+        and
+        pic_image_field in (
+        <foreach collection="picList" item="item" index="index" separator=",">
+    		#{item}
+    	</foreach>
+        )
+        order by label_status desc,pic_image_field asc;
+    </select>  
+    
+    
+    <select id="queryLabelTaskStatusByLabelTaskId" resultType="java.util.Map" parameterType="java.util.List">    
+        SELECT label_task_id,count(label_status) as finished_picture FROM tasks_videolabeltaskitem  
+        where label_status=0  
+        and label_task_id in 
+        (
+    	<foreach collection="list" item="item" index="index" separator=",">
+    		#{item}
+    	</foreach>
+    	)
+        GROUP BY label_task_id
+    </select>  
+    
+    
+    <delete id="deleteLabelTaskById" parameterType="String">    
+        delete FROM tasks_videolabeltaskitem where id=#{id};
+    </delete>  
+    
+     <delete id="deleteLabelTaskByTaskId" parameterType="String">    
+        delete FROM tasks_videolabeltaskitem where label_task_id=#{label_task_id};
+    </delete>  
+    
+     <select id="queryLabelTaskItemById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_videolabeltaskitem where id=#{id};
+    </select>  
+    
+    <select id="queryVideoLabelTaskItemByTime" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_videolabeltaskitem where label_task_id=#{label_task_id} and pic_url=#{pic_url}
+    </select>
+    
+     <update id="updateLabelTaskItem"  parameterType="Map">    
+        update tasks_videolabeltaskitem set 
+        <if test="pic_object_name !=null and pic_object_name !=''">
+           pic_object_name=#{pic_object_name},
+        </if>
+        <if test="pic_image_field !=null and pic_image_field !=''">
+           pic_image_field=#{pic_image_field},
+        </if>
+        label_info=#{label_info},
+        label_status=#{label_status},
+        item_add_time=#{item_add_time}
+        where id=#{id}
+    </update> 
+    
+    
+    <select id="queryLabelTaskItemPageByLabelTaskId" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_videolabeltaskitem where label_task_id=#{label_task_id}  order by pic_image_field desc limit #{currPage}, #{pageSize}
+    </select> 
+    
+     <select id="queryLabelTaskItemPageByLabelTaskIdOrderByStartTime" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_videolabeltaskitem where label_task_id=#{label_task_id}  order by item_add_time desc limit #{currPage}, #{pageSize}
+    </select>
+    
+    <select id="queryLabelTaskItemPageCountByLabelTaskId" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_videolabeltaskitem where label_task_id=#{label_task_id}
+     </select>
+    
+</mapper>

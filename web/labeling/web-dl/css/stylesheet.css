@@ -1,0 +1,100 @@
+@charset "gb2312";
+/* CSS Document */
+
+body,#top td,p {
+	font-family:ËÎÌå;
+	font-size:14px;
+	line-height:2.1em;
+}
+p{
+	margin-bottom: 20px;
+}
+li{
+	margin-left:1em;}
+
+.menu {	
+	font-size:14px;
+	font-weight:bold;
+	/*font-family:ºÚÌå;*/
+	}
+.menu:link {
+	text-decoration:none;
+	}
+.menu:hover {
+	color:white;
+	text-decoration:none;
+	}
+.menu:visited {
+	color:#000;
+	text-decoration:none;
+	}
+	
+.timeschedule{
+	padding-left:0;
+	line-height:1.5em;
+	margin-bottom:10px;
+	}
+	
+.boldtitle{
+	color:#0166b9;
+	font-family:"Î¢ÈíÑÅºÚ","ºÚÌå";
+	font-size:16px;
+}
+.whiteboldtitle{
+	color:#FFFFFF;
+	font-family:"Î¢ÈíÑÅºÚ","ºÚÌå";
+	font-size:15px;
+	width:200px; margin-top:25px; background-color:#8CC63C; padding-left:30px; padding-top:5px; padding-bottom:5px;
+}
+.songTitle{
+	color:#0166b9;
+	font-family:ËÎÌå;
+	font-size:15px;
+	font-weight:bold;
+}
+
+.calendarleft{
+	float:left; width:250px;}
+.calendarright{
+	float:left; width:250px;}
+.namelistleft{
+	float:left; width:100px;}
+.namelistright{
+	float:left; width:450px;}
+.introleft{
+	float:left; width:300px;}
+.introright{
+	float:left; width:450px;}
+.calendar{
+	clear:both; border-bottom:1px #cccccc solid; width:500px;}
+.namelist{
+	clear:both; border-bottom:1px #cccccc solid; width:600px;}
+.introlist{
+	clear:both; border-bottom:1px #cccccc solid; width:900px;}
+	
+.page2top{margin-top:20px; font-size:12px; margin-left:30px;}
+.page2greymenu{padding-left:30px;margin-right:20px; font-size:12px; background-color:#DDD}
+
+.split100{width:100%;background:url(../images/greydot.jpg); background-position:left; background-repeat:repeat-x; height:2px;}
+.splitright20{background:url(../images/greydot.jpg); background-position:left; background-repeat:repeat-x; height:2px;margin-right:20px;}
+	
+h1 {
+	font-size:28px; 
+	font-family:"Î¢ÈíÑÅºÚ","ºÚÌå"; 
+	letter-spacing:-1px; 
+	color:#0093dd; 
+	padding-top:5px; 
+	line-height:120%; 
+	text-align:center;
+}
+h2 {
+	font-size:22px;
+	font-family:ËÎÌå;
+	color:#930;
+	padding-top:5px;
+}
+h3{
+	font-size:16px;
+	color:#063;
+}
+h4{ color:#02076A;}

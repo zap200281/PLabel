@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>PCL数据标注平台V1.6</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <meta name="description" content="Developed By M Abdur Rokib Promy">
+        <meta name="keywords" content="Admin, Bootstrap 3, Template, Theme, Responsive">
+        <!-- bootstrap 3.0.2 -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Awesome -->
+        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <!-- Ionicons -->
+        <link href="css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <!-- google font -->
+        
+        <!-- Theme style -->
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        <link href="css/jquery.yhhDataTable.css" rel="stylesheet" type="text/css" />
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          
+          
+        <![endif]-->
+        <link rel="stylesheet" href="tablesorter-master/css/theme.default.css">
+		<style>
+		#progress{
+            width: 100%;
+            height: 20px;
+            background: rgb(255, 255, 255);
+         }
+        #bar{
+            width: 1%;
+            height: 20px;
+            margin-top: 1px;             
+			background: green;
+         }
+		 
+		 #fileuploadprogress{
+            width: 100%;
+            height: 20px;
+            background: rgb(255, 255, 255);
+         }
+         #fileuploadbar{
+            width: 1%;
+            height: 20px;
+            margin-top: 1px;             
+			background: green;
+         }
+		 
+		 #multifileuploadprogress{
+            width: 100%;
+            height: 20px;
+            background: rgb(255, 255, 255);
+         }
+         #multifileuploadbar{
+            width: 1%;
+            height: 20px;
+            margin-top: 1px;             
+			background: green;
+         }
+	
+		</style>
+    </head>
+    <body class="skin-black">
+        <!-- header logo: style can be found in header.less -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                PCL数据标注平台V1.6
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                        
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user"></i>
+                                <span id="userNickName_bar"><i class="caret"></i></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
+                               
+                                   
+                                <li>
+                                            <a href="login.html"><i class="fa fa-ban fa-fw pull-right"></i> Logout</a>
+                                </li>
+                                  
+                            </ul>
+					    </li>
+				    </ul>
+                </div>
+             </nav>
+        </header>
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+                    <!-- Left side column. contains the logo and sidebar -->
+                    <aside class="left-side sidebar-offcanvas">
+                        <!-- sidebar: style can be found in sidebar.less -->
+                        <section class="sidebar">
+                            <!-- Sidebar user panel -->
+                            <div class="user-panel">
+                                <div class="pull-left image">
+                                    <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+                                </div>
+                                <div class="pull-left info">
+                                    <p id="userNickName"></p>
+
+                                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                                </div>
+                            </div>
+                            <!-- search form -->
+                            <form action="#" method="get" class="sidebar-form">
+                                <div class="input-group">
+         <!--                            <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                                    <span class="input-group-btn">
+                                        <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span> -->
+                                </div>
+                            </form>
+                    <ul class="sidebar-menu">
+                            <li>
+                                <a href="index.html">
+                                    <i class="fa fa-dashboard"></i> <span>主面板</span>
+                                </a>
+                            </li>
+							                  <li class="active">
+                                     <a href="dataSetManage.html" >
+                                          <i class="fa fa-database"></i> <span>数据集管理</span>
+                                     </a>
+                                </li>
+                           <li>
+                                    <a href="predictTaskPage.html">
+                                         <i class="fa fa-chevron-circle-right"></i> <span>自动标注</span>
+                                     </a>
+                                </li>
+                                <li>
+                                     <a href="labelTaskPage.html">
+                                          <i class="fa fa-check-circle"></i> <span>人工标注</span>
+                                     </a>
+                                </li>
+                                <li >
+                                    <a href="reIdTaskPage.html">
+                                        <i class="fa fa-gavel"></i> <span>ReID标注</span>
+                                    </a>
+                                </li>
+ 
+                                <li >
+                                    <a href="videoTaskPage.html">
+                                        <i class="fa fa-university"></i> <span>车流统计</span>
+                                    </a>
+                                </li>
+                                 <li >
+                                    <a href="videoTaskPageBox.html">
+                                        <i class="fa fa-camera"></i> <span>视频标注</span>
+                                    </a>
+                                </li>  
+                                <li >
+                                    <a href="bigImgTaskPage.html">
+                                        <i class="fa fa-picture-o"></i> <span>超大图像标注</span>
+                                    </a>
+                                </li>                             
+                                <li>
+                                    <a href="retrainTask.html">
+                                         <i class="fa fa-line-chart"></i> <span>模型重训</span>
+                                     </a>
+                                </li>
+                                
+                                <li >
+                                    <a href="userManage.html">
+                                         <i class="fa fa-user-circle"></i> <span>用户管理</span>
+                                    </a>
+                                </li>
+								<li >
+                                    <a href="reportManage.html">
+                                         <i class="fa fa-bar-chart"></i> <span>报表管理</span>
+                                    </a>
+                                </li>
+								<li>
+                                    <a href="logManage.html">
+                                         <i class="fa fa-file-text-o"></i><span>操作日志管理</span>
+                                    </a>
+                                </li>
+					</ul>
+                </section>
+                <!-- /.sidebar -->
+            </aside>
+
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+
+                <!-- Main content -->
+                
+                <section class="content">
+                    
+                        <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="panel">
+                                        <header class="panel-heading">
+                                            数据集管理
+                                        </header>
+                                        <div class="panel-body">
+                                          <div class="panel-body table-responsive">
+                                            <div class="box-tools m-b-15">
+                                            </div>
+                                            <table class="table table-hover" id="dataset_list"></table>
+
+                                            <div style="height: 20px;"></div>
+                                            
+                                            <div style="height: 30px;">
+                                                    <div style="float:right">  
+                                                       显示<span  id="startIndex">0</span>到<span id="endIndex">0</span>条，共<span id="totalNum">0</span>条。&nbsp;&nbsp;   
+                                                       <span >   
+                                                       <a id="prePage" href="">上一页</a>
+                                                       <span >
+                                                          &nbsp;当前页：<span id="displayPage1">1</span>&nbsp;
+                                                       </span>
+                                                        <a id="nextPage" href="">下一页</a>
+                                                        <span>
+                                                          &nbsp;共<span id="totalPageNum"></span>页&nbsp;
+                                                        </span>
+                                                        <span>&nbsp;跳转到:<input type="text" id="goNum" style="width: 50px;border-radius: 6px" maxlength="5" oninput="value=value.replace(/[^\d]/g,'')"><a id="goHref" href="javascript:goPage()">&nbsp;GO</a></span>
+                                                        </span>
+                                                    </div>
+                                                    
+                                             </div>
+
+                                             <div style="height: 30px;">
+                                                <button type="button" href="#datasetModal"  onclick = "setUserData(1);" data-toggle="modal" class="btn btn-primary" data-backdrop="static">新建数据集</button>
+												
+												
+												<button type="button" href="#videoDatasetModal"  onclick = "setUserData(2);" data-toggle="modal" class="btn btn-primary" data-backdrop="static">新建视频数据集</button>
+												
+												<button type="button"  onclick="setTaskId();" data-toggle="modal" class="btn btn-primary" data-backdrop="static">导出数据集图片</button>
+												
+												<!--<button type="button" href="#videoHeBingModal"  onclick = "heBing();" data-toggle="modal" class="btn btn-primary">合并视频</button> -->
+												
+                                                
+                                                <button type="button" data-toggle="modal" class="btn btn-primary" onclick="delete_dataset();" style="float:right">删除数据集</button>
+                                            </div>
+        
+                                          <div aria-hidden="true" aria-labelledby="myModalLabelc" role="dialog" tabindex="-1" id="datasetModal" class="modal fade">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                      <div class="modal-header">
+                                                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                          <h4 class="modal-title">新建数据集任务</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                          <form role="form">
+                                                              
+                                                           <div class="form-group">
+                                                                  <label for="exampleInputEmail1">数据集任务名称<font color=red>*</font> </label>
+                                                                  <input type="" class="form-control" id="datasetname" placeholder="数据集任务名称，不超过32个字符" maxlength="32">
+                                                           </div>
+                                                           <div class="form-group">
+                                                                  <label for="exampleInputEmail1">数据集描述</label>
+                                                                  <input type="" class="form-control" id="datasetdesc" placeholder="数据集任务描述，不超过500个字符" maxlength="500">
+                                                           </div>                                                         
+														   <div class="form-group">
+                                                                  <label for="exampleInputEmail2">数据集指派给</label>                                          
+                                                                  <select class="form-control" name="数据集任务指派" id="assign_user">
+                                                                       <option value=""> 请选择</option>         
+                                                                   </select>
+                                                           </div>
+
+														    <div class="form-group">
+                                                                   <label for="exampleInputForRetrain">数据集类型<font color=red>*</font> </label>
+                                                                   <select class="form-control" name="数据集类型" id="dataset_type" onchange="dataset_type_sele_Change(this)">
+                                                                       <option value="1" selected="true">图片</option>
+																	   <option value="2">CT影像</option>
+																	   <option value="3">超大图像</option>
+                                                                   </select>
+                                                            </div>
+															
+															<div id="camera_number_div" class="form-group" >
+															     <label for="exampleInputEmail1">摄像头编号</label>
+                                                                 <input type="" class="form-control" id="camera_number" placeholder="摄像头编号">
+															</div>
+															
+															<div id="camera_gps_div" class="form-group" >
+															     <label for="exampleInputEmail1">摄像头GPS坐标(格式例如:140.2,80.56)</label>
+                                                                 <input type="" class="form-control" id="camera_gps" placeholder="摄像头GPS坐标，经纬度，格式例如:140.2,80.56">
+															</div>
+															
+															
+															<div id="camera_date_div" class="form-group">
+															     <label for="exampleInputEmail1">拍摄日期(如:2020-05-20 14:20:20或者20200520142020)</label>
+                                                                 <input type="" class="form-control" id="camera_date" placeholder="拍摄日期，格式2020-05-20 14:20:20或者20200520142020">
+															</div>  
+															
+                                                           <div class="form-group">
+                                                               <label id = "labelInfo" for="exampleInputFile">请选择文件进行上传(最大3000M)<font color=red>*</font> </label>
+                                                               <form id="predfileform">
+                                                                  <input type="file" id="preInputFile" onchange="uploadfileforpred();">
+                                                               </form>
+                                                               <p id = "fileDescri" class="help-block">"图片/CT影像：zip文件"</p>
+                                                               <p id="uploadstate"></p>
+															   <div id="fileuploadprogress">
+                                                                    <div id="fileuploadbar"></div>
+                                                               </div>
+                                                               <div><h5 id="fileupload-text-progress">0%</h3></div>
+                                                            </div>
+                                                            <button id="btnSubmit" type="button" disabled="disabled"  onclick="submit_dataset();">提交</button>
+                                                          </form>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div> <!-- datasetModal -->
+										  
+										  
+										  
+										  
+										  
+										  <div aria-hidden="true" aria-labelledby="myModalLabelc" role="dialog" tabindex="-1" id="videoDatasetModal" class="modal fade">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                      <div class="modal-header">
+                                                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                          <h4 class="modal-title">新建视频数据集任务</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                          <form role="form">
+                                                              
+                                                           <div class="form-group">
+                                                                  <label for="exampleInputEmail1">数据集任务名称<font color=red>*</font></label>
+                                                                  <input type="" class="form-control" id="mul_video_datasetname" placeholder="数据集任务名称，不超过32个字符" maxlength="32">
+                                                           </div>
+                                                           <div class="form-group">
+                                                                  <label for="exampleInputEmail1">数据集描述</label>
+                                                                  <input type="" class="form-control" id="mul_video_datasetdesc" placeholder="数据集任务描述，不超过500个字符" maxlength="500">
+                                                           </div>                                                         
+														   <div class="form-group">
+                                                                  <label for="exampleInputEmail2">数据集指派给</label>                                          
+                                                                  <select class="form-control" name="数据集任务指派" id="mul_video_assign_user">
+                                                                       <option value=""> 请选择</option>         
+                                                                   </select>
+                                                           </div>
+
+															<div id="camera_number_div" class="form-group">
+															     <label for="exampleInputEmail1">摄像头编号</label>
+                                                                 <input type="" class="form-control" id="mul_video_camera_number" placeholder="摄像头编号">
+															</div>
+															
+															<div id="camera_gps_div" class="form-group">
+															     <label for="exampleInputEmail1">摄像头GPS坐标(格式例如:140.2,80.56)</label>
+                                                                 <input type="" class="form-control" id="mul_video_camera_gps" placeholder="摄像头GPS坐标，经纬度，格式例如:140.2,80.56">
+															</div>
+															<div id="camera_date_div" class="form-group">
+															     <label for="exampleInputEmail1">视频拍摄日期(如:2020-05-20 14:20:20或者20200520142020)</label>
+                                                                 <input type="" class="form-control" id="mul_video_camera_date" placeholder="视频拍摄日期，格式2020-05-20 14:20:20或者20200520142020">
+															</div>  								
+                                                           <div class="form-group">
+                                                               <label for="exampleInputFile">请选择视频(ffmpeg支持,不压缩)文件进行上传，可多选，最多20个，单个文件最大3000M<font color=red>*</font></label>
+                                                               <form id="predfileform">
+                                                                  <input type="file" id="multiVideoFile" multiple="multiple" onchange="upload_multivideo_fileforpred();">
+                                                               </form>
+                                                               <div id="mul_video_uploadstate"></div>
+                                                            </div>
+															
+														    <div id="multifileuploadprogress">
+                                                                    <div id="multifileuploadbar"></div>
+                                                            </div>
+                                                            <div><h5 id="multifileupload-text-progress">0%</h3></div>
+															
+                                                            <button id="btnVideoSubmit" type="button"  disabled="disabled" onclick="submit_video_dataset();">提交</button>
+                                                          </form>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div> <!-- videoDatasetModal -->
+										  
+										  
+										  
+										   <div  role="dialog" tabindex="-1" id="videoHeBingModal" data-backdrop="static" class="modal fade">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                      <div class="modal-header">
+                                                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                          <h4 class="modal-title">视频合并</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                          <form role="form">
+														    <input type="" value="" id="hidevideo_datasetid" style="display:none;">  
+                                                            <div class="form-group">
+                                                                  <label for="exampleInputEmail1">请对视频进行排序，直接打勾，先选择的序号靠前，合并时按照序号从小到大合并。<font color=red>*</font></label>
+																  <label for="exampleInputEmail1">合并成功后，自动删除原始视频。</label>
+                                                            </div>
+															<table id="myTable" class="tablesorter">
+																
+														    </table>
+                                                            <div class="form-group">
+                                                                  <label for="exampleInputEmail1">合并后文件名称<font color=red>*</font></label>
+                                                                  <input type="" class="form-control" id="concat_video_name" placeholder="合并后文件名称，不超过64个字符">
+                                                           </div>
+														   <div class="form-group">
+                                                                  <label for="exampleInputEmail1">点击提交，合并成功后，手动刷新数据集管理界面，合并按钮消失，则表示合并完成。</label>
+                                                           </div>
+                                                          </form>
+														  <button type="button"  onclick="submit_concat_video();">提交</button>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div> <!-- videoDatasetModal -->
+										  
+										  
+										  
+									
+                                          </div><!-- /.box-body -->
+										  
+										  
+										   <div aria-hidden="true" aria-labelledby="myModalLabelc" role="dialog" tabindex="-1" data-backdrop="static" id="modifyDatasetModal" class="modal fade">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                      <div class="modal-header">
+                                                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                          <h4 class="modal-title">修改数据集任务</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                          <form role="form">
+                                                           <input type="" value="" id="hidedatasetid" style="display:none;">  
+                                                           <div class="form-group">
+                                                                  <label for="exampleInputEmail1">数据集描述</label>
+                                                                  <input type="" class="form-control" id="datasetdesc_modify" placeholder="数据集任务描述，不超过500个字符" maxlength="500">
+                                                           </div>                                                         
+														   <div class="form-group">
+                                                                  <label for="exampleInputEmail2">数据集指派给<font color=red>*</font></label>                                          
+                                                                  <select class="form-control" name="数据集任务指派" id="assign_user_modify">
+                                                                       <option value=""> 请选择</option>         
+                                                                   </select>
+                                                           </div>
+                                                            <button type="button"  onclick="submit_modify_dataset();">修改</button>
+                                                          </form>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div> <!-- /.modifyDatasetModal -->
+										  
+										  <div aria-hidden="true" aria-labelledby="myModalLabelc" role="dialog" tabindex="-1" id="chouzhengModal" data-backdrop="static" class="modal fade">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                      <div class="modal-header">
+                                                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                          <h4 class="modal-title">视频抽帧参数</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                          <form role="form">
+                                                           <input type="" value="" id="chou_zhen_hidedatasetid" style="display:none;">    
+
+                                                           <div class="form-group">
+                                                                  <label for="exampleInputEmail1">数据集名称</label>
+                                                                  <input type="" class="form-control" id="chouzhen_datasetname" disabled="true">
+                                                           </div>														   
+														   <div class="form-group">
+                                                                  <label for="exampleInputEmail2">抽帧选项<font color=red>*</font></label>                                          
+                                                                  <select class="form-control"  id="chouzhen_option" onchange="chouzhen_option_sele_Change(this)">
+                                                                       <option value="0">抽关键帧</option>   
+                                                                       <option value="1">每秒抽帧</option> 																	   
+                                                                   </select>
+                                                           </div>
+														   <div class="form-group">
+                                                                  <label for="exampleInputEmail1">每秒抽帧数量</label>
+                                                                  <input type="" class="form-control" id="chouzhen_num_persecond" disabled="true" placeholder="每秒抽帧数量，1代表每秒抽1帧，0.2代表每5秒抽一帧。">
+                                                           </div> 
+                                                          <div class="form-group">
+                                                                  <label for="exampleInputEmail1">抽帧图片命名规则<font color=red>*</font></label>
+                                                                  <select class="form-control"  id="chouzhen_filename_type" onchange="chouzhen_filename_type_sele_Change(this)">
+																       <option value="0">以数字为后缀</option> 
+                                                                       <option value="1">以视频播放时间为后缀</option>   
+                                                                       <option value="2">以拍摄时间加上播放时间为后缀</option> 											   
+                                                                  </select>
+                                                           </div>
+                                                          <div id="camera_date_div" class="form-group" >
+															     <label for="exampleInputEmail1">视频拍摄日期(如:2020-05-20 14:20:20或者20200520142020)</label>
+                                                                 <input type="" class="form-control" id="chouzhen_camera_date" placeholder="视频拍摄日期，格式2020-05-20 14:20:20或者20200520142020">
+															</div>		
+ 
+                                                           <div class="form-group">
+                                                                  <label for="exampleInputEmail1">指定图片分辨率(如：1280x760)</label>
+                                                                  <input type="" class="form-control" id="chouzhen_width_height"  placeholder="指定图片分辨率,中间使用小写x字母分隔。">
+                                                           </div>
+															<div class="form-group">
+                                                                  <label for="exampleInputEmail2">抽帧后删除视频</label>                                          
+                                                                  <select class="form-control"  id="isDeleteVideo">
+                                                                       <option value="0" selected="true">是</option>   
+                                                                       <option value="1">否</option> 																	   
+                                                                   </select>
+                                                           </div>
+														   <div class="form-group">
+                                                                  <label for="exampleInputEmail2">抽帧后创建自动标注任务</label>                                          
+                                                                  <select class="form-control"  id="createAutoLabelTask">
+                                                                       <option value="0" selected="true">请选择</option>   
+                                                                       <option value="1">使用YOLOV3创建自动标注人，并删除空白图像</option> 																	   
+                                                                   </select>
+                                                           </div>
+                                                            <button type="button"  onclick="submit_chouzhen();">开始抽帧</button>
+                                                          </form>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div> <!-- /.modifyDatasetModal -->
+										  
+										  
+										<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" data-backdrop="static" id="labeltaskexport"  class="modal fade">
+                                          <div class="modal-dialog">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                  <h4 class="modal-title">数据集导出</h4>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <form role="form">
+												      <input type="" value="" id="hide_labeltaskid" style="display:none;">  
+                                                     
+                                                      <div id="progress">
+                                                            <div id="bar"></div>
+                                                      </div>
+                                                      <div><h5 id="text-progress">0%</h3></div>
+                                                      <button id="predtask_id" type="button"  onclick="downloadFile();">提交</button>
+                                                  </form>
+                                              </div>
+                                          </div>
+                                      </div>
+                                    </div>   
+										  
+                                          </div><!-- /.box-body -->
+										  
+										  
+                                        </div>
+                                        <!-- </div222> -->
+        
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+             
+                    
+                </section><!-- /.content -->
+                <div class="footer-main">
+                    Copyright &copy PCL, 2019-2021
+                </div>
+            </aside><!-- /.right-side -->
+        </div><!-- ./wrapper -->
+    
+
+        <!-- jQuery 2.0.2 -->
+        <!--  -->
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+        <script src="js/func.js" type="text/javascript"></script>
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- Director App -->
+        
+        <script src="js/Director/app.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" src="tablesorter-master/js/jquery.tablesorter.js"></script>
+
+        <!-- tablesorter widgets (optional) -->
+        <script type="text/javascript" src="tablesorter-master/js/jquery.tablesorter.widgets.js"></script>
+		
+		<script src="js/Director/dataSetManage.js" type="text/javascript"></script>
+		
+        <script  type="text/javascript">
+            window.onload=function(){
+                    console.log("onload tasks/detect/dataSetManage.html");
+                    var token = getCookie("token");
+                    if(typeof token == "undefined" || token == null || token == ""){
+                        console.log("token=" + token);
+                        window.location.href = "login.html";
+                    }else{
+                        var nickName = getCookie("nickName");
+                        console.log("nickName=" + nickName);
+                        $("#userNickName").text(nickName);
+                        $("#userNickName_bar").text(nickName);
+                    }
+            }
+        </script>
+    </body>
+</html>

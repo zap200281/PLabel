@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.ReIDTaskShowResultDao">
+
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.ReIDTaskShowResult" >
+		<result column="label_task_id" property="label_task_id"/>
+		<result column="reid_name" property="reid_name"/>
+		<result column="related_info" property="related_info"/>
+	</resultMap>
+  
+  
+   <select id="queryReIDShowTaskResult" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_reidtask_show_result 
+        where label_task_id = #{label_task_id} and reid_name=#{reid_name}
+         
+    </select>  
+    
+     <select id="queryReIDShowTaskResultPage" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_reidtask_show_result where label_task_id = #{label_task_id}
+         order by reid_name desc   limit #{currPage}, #{pageSize}
+    </select>
+    
+    <select id="queryReIDShowTaskResultById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_reidtask_show_result where label_task_id = #{label_task_id}
+    </select>
+  
+    <select id="queryReIDShowTaskResultPageCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_reidtask_show_result where label_task_id = #{label_task_id}
+    </select> 
+  
+ 
+    <delete id="deleteByReIDTaskId" parameterType="String">    
+        delete FROM tasks_reidtask_show_result where label_task_id=#{label_task_id};
+    </delete>  
+    
+    
+   <delete id="deleteByReIDTaskAndReIdName" parameterType="Map">    
+        delete FROM tasks_reidtask_show_result where label_task_id=#{label_task_id} and reid_name=#{reid_name};
+   </delete>
+    
+     <insert id="addBatchShowResultItem"  parameterType="java.util.List">
+        insert into tasks_reidtask_show_result(label_task_id,reid_name,related_info)
+         values 
+         <foreach collection="list" item="item" index="index" separator=",">
+         (
+         #{item.label_task_id},
+         #{item.reid_name},
+         #{item.related_info}
+         )
+    	</foreach>
+    </insert>
+    
+     <update id="updateShowResult" parameterType="Map">
+        update tasks_reidtask_show_result set related_info = #{related_info}  
+        where label_task_id=#{label_task_id} and reid_name=#{reid_name}
+     </update>
+    
+    
+</mapper>

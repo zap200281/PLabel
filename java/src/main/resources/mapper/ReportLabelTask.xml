@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.ReportLabelTaskDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.ReportLabelTask" >
+		<result column="user_id" property="user_id"/>
+		<result column="oper_time" property="oper_time"/>
+		<result column="rectUpdate" property="rectUpdate"/>
+		<result column="rectAdd" property="rectAdd"/>
+		<result column="properties" property="properties"/>
+		<result column="pictureUpdate" property="pictureUpdate"/>
+		<result column="notValide" property="notValide"/>
+	</resultMap>
+  
+  
+  	<insert id="addReportLabelTask"  parameterType="com.pcl.pojo.mybatis.ReportLabelTask">
+        insert into report_label_task(user_id,oper_time,rectUpdate,rectAdd,properties,pictureUpdate,notValide)
+         values (#{user_id}, #{oper_time}, #{rectUpdate},#{rectAdd},#{properties},#{pictureUpdate},#{notValide})
+    </insert>
+    
+    
+    <select id="queryReportLabelTask" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM report_label_task where 1=1
+        <if test="oper_time !=null and oper_time !=''">
+           and oper_time= #{oper_time}
+        </if>
+        <if test="user_id !=null and user_id !=''">
+           and user_id= #{user_id}
+        </if>
+    </select>  
+  
+    <delete id="deleteReportLabelTask" parameterType="Map">    
+        delete from report_label_task where oper_time= #{oper_time} and user_id= #{user_id};
+    </delete> 
+  
+  
+     <select id="queryAllReportLabelTaskForMeasure" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM report_label_task where 1=1
+        <if test="day !=null and day !=''">
+           and TO_DAYS(NOW())-TO_DAYS(oper_time) &lt; #{day}
+        </if>
+        <if test="user_id_list !=null">
+           and user_id in
+            (
+    	    <foreach collection="user_id_list" item="item" index="index" separator=",">
+    		     #{item}
+    	    </foreach>
+    	    )
+        </if>
+        order by oper_time asc
+    </select>  
+  
+  
+     <select id="queryAllReportLabelTaskPage" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM report_label_task where 1=1
+        <if test="day !=null and day !=''">
+           and TO_DAYS(NOW())-TO_DAYS(oper_time) &lt; #{day}
+        </if>
+        <if test="user_id_list !=null">
+           and user_id in
+            (
+    	    <foreach collection="user_id_list" item="item" index="index" separator=",">
+    		     #{item}
+    	    </foreach>
+    	    )
+        </if>
+        <if test="startTime !=null and startTime !=''">
+           and unix_timestamp(oper_time) >= unix_timestamp(#{startTime})
+        </if>
+        <if test="endTime !=null and endTime !=''">
+           and unix_timestamp(oper_time) &lt;= unix_timestamp(#{endTime})
+        </if>
+        order by oper_time desc limit #{currPage}, #{pageSize}
+    </select>  
+
+    
+     <select id="queryAllReportLabelTaskPageCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM report_label_task where 1=1
+         <if test="day !=null and day !=''">
+           and TO_DAYS(NOW())-TO_DAYS(oper_time) &lt; #{day}
+        </if>
+        <if test="user_id_list !=null">
+           and user_id in
+            (
+    	    <foreach collection="user_id_list" item="item" index="index" separator=",">
+    		     #{item}
+    	    </foreach>
+    	    )
+        </if>
+        <if test="startTime !=null and startTime !=''">
+           and unix_timestamp(oper_time) >= unix_timestamp(#{startTime})
+        </if>
+        <if test="endTime !=null and endTime !=''">
+           and unix_timestamp(oper_time) &lt;= unix_timestamp(#{endTime})
+        </if>
+     </select>  
+    
+</mapper>

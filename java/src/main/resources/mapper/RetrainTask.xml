@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pcl.dao.RetrainTaskDao">
+	
+	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.RetrainTask" >
+		<result column="id" property="id"/>
+		<result column="task_name" property="task_name"/>
+		<result column="task_start_time" property="task_start_time"/>
+		<result column="task_finish_time" property="task_finish_time"/>
+		<result column="task_status" property="task_status"/>
+		<result column="task_status_desc" property="task_status_desc"/>
+		<result column="alg_model_id" property="alg_model_id"/>
+		<result column="pre_predict_task_id" property="pre_predict_task_id"/>
+		<result column="user_id" property="user_id"/>
+		<result column="pid" property="pid"/>
+		<result column="confPath" property="confPath"/>
+		<result column="modelPath" property="modelPath"/>
+		<result column="retrain_type" property="retrain_type"/>
+		<result column="retrain_data" property="retrain_data"/>
+		<result column="detection_type" property="detection_type"/>
+		<result column="detection_type_input" property="detection_type_input"/>
+		<result column="retrain_model_name" property="retrain_model_name"/>
+		<result column="testTrainRatio" property="testTrainRatio"/>
+	</resultMap>
+  
+    <select id="queryRetrainTask" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_retraintasks  
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id}
+        </if>
+        order by task_start_time desc   limit #{currPage}, #{pageSize}
+    </select>  
+    
+    <select id="queryRetrainTaskCount" resultType="java.lang.Integer" parameterType="Map">    
+        SELECT count(1) FROM tasks_retraintasks
+         <if test="user_id !=null and user_id !=''">
+           where user_id = #{user_id}
+        </if>
+    </select> 
+    
+    <select id="queryLastRetrainTask" resultMap="BaseResultMap" parameterType="Map">    
+        SELECT * FROM tasks_retraintasks where 1=1
+        <if test="alg_model_id !=null and usealg_model_idr_id !=''">
+           and alg_model_id = #{alg_model_id}
+        </if>
+        <if test="task_status !=null and task_status !=''">
+           and task_status = #{task_status}
+        </if>
+
+    </select> 
+    
+     <select id="queryRetrainTaskById" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_retraintasks  where id=#{id}
+    </select>  
+    
+    <select id="queryRetrainTaskByStatus" resultMap="BaseResultMap" parameterType="String">    
+        SELECT * FROM tasks_retraintasks where task_status=#{task_status}
+    </select>  
+    
+    <delete id="deleteRetrainTaskById"  parameterType="String">    
+        delete FROM tasks_retraintasks where id=#{id}
+    </delete> 
+    
+     <update id="updateRetrainTask"  parameterType="Map">    
+        update tasks_retraintasks set 
+        <if test="task_start_time != null and task_start_time != ''">
+        	task_start_time=#{task_start_time},
+        </if>
+        <if test="task_finish_time != null and task_finish_time != ''">
+        	task_finish_time=#{task_finish_time},
+        </if>
+         <if test="task_status_desc != null and task_status_desc != ''">
+        	task_status_desc=#{task_status_desc},
+        </if>
+        <if test="pid != null and pid != ''">
+        	pid=#{pid},
+        </if>
+        <if test="confPath != null and confPath != ''">
+        	confPath=#{confPath},
+        </if>
+        <if test="modelPath != null and modelPath != ''">
+        	modelPath=#{modelPath},
+        </if>
+        task_status=#{task_status}
+        where id=#{id}
+    </update> 
+    
+     <insert id="addRetrainTask"  parameterType="com.pcl.pojo.mybatis.RetrainTask">
+        insert into tasks_retraintasks(id,task_name,task_start_time,task_finish_time,task_status,task_status_desc,alg_model_id,pre_predict_task_id,user_id,pid,modelPath,confPath,retrain_type,retrain_data,detection_type,detection_type_input,retrain_model_name,testTrainRatio)
+         values (#{id}, #{task_name},#{task_start_time},#{task_finish_time},#{task_status},#{task_status_desc},#{alg_model_id},#{pre_predict_task_id},#{user_id},#{pid},#{modelPath},#{confPath},#{retrain_type},#{retrain_data},#{detection_type},#{detection_type_input},#{retrain_model_name},#{testTrainRatio})
+    </insert>
+</mapper>
