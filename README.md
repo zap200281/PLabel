@@ -3,3 +3,6 @@
 
 # Install
 参见doc目录下环境搭建word文档，有疑问可以直接联系zouap@pcl.ac.cn
+
+# Usage
+参见doc目录下《半自动标注系统介绍_V1.3》，有疑问可以直接联系zouap@pcl.ac.cn
