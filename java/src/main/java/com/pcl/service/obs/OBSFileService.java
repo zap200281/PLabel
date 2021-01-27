@@ -72,11 +72,11 @@ public class OBSFileService implements ObjectFileService{
 
 	private static Logger logger = LoggerFactory.getLogger(OBSFileService.class);
 
-	@Value("${obs.ak:KPF87KAHV3SYJEOXXE1B}")
-	private String accessKey = "KPF87KAHV3SYJEOXXE1B"; //取值为获取的AK
+	@Value("${obs.ak}")
+	private String accessKey = ""; //取值为获取的AK
 
-	@Value("${obs.sk:yTaIvccNL6X9F56H6FN1bTG45g4eIY1pnXnKOh7b}")
-	private String securityKey = "yTaIvccNL6X9F56H6FN1bTG45g4eIY1pnXnKOh7b";  //取值为获取的SK
+	@Value("${obs.sk}")
+	private String securityKey = "";  //取值为获取的SK
 
 	@Value("${obs.region:cn-north-4}")
 	private String region = "cn-north-4"; // 取值为规划桶所在的区域

@@ -1021,7 +1021,7 @@ public class LabelTaskService {
 				logger.info("this is a directory:" + path);
 				continue;
 			}
-			if(!(path.toLowerCase().endsWith(".svs") || path.toLowerCase().endsWith(".tif"))) {
+			if(path.toLowerCase().endsWith(".svs") || path.toLowerCase().endsWith(".tif")) {
 				continue;
 			}
 			count++;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -42,6 +43,9 @@ public class FileController {
 
 	@Autowired
 	private HttpServletResponse response; 
+	
+	@Autowired
+	HttpServletRequest request;
 
 	@ResponseBody
 	@ApiOperation(value="上传多个文件接口", notes="返回文件接口")
@@ -209,11 +213,31 @@ public class FileController {
 	@ApiOperation(value="下载文件接口", notes="返回文件接口")
 	@RequestMapping(value ="/multi-reid-data-download", method = RequestMethod.GET)
 	public Result multiReIdDownFile(@RequestParam("reid_task_id_list") String reIdTaskIdList,@RequestParam("needPicture") String type) {
-
+		logger.info("reIdTaskIdList=" +reIdTaskIdList);
 		Result result = new Result();
 		try {
 			result.setCode(0);
 			result.setMessage(labelExportService.downloadReIdTaskListFile(reIdTaskIdList, type));
+		} catch (IOException e) {
+			e.printStackTrace();
+			result.setCode(1);
+			result.setMessage(e.getMessage());
+		}
+		return result;
+
+	}
+	
+	
+	@ResponseBody
+	@ApiOperation(value="导出所有ReID标注数据接口", notes="导出所有ReID标注数据接口")
+	@RequestMapping(value ="/multi-all-data-export", method = RequestMethod.GET)
+	public Result multiReIdAllDownFile(@RequestParam("needPicture") String type) {
+		logger.info("type=" +type);
+		Result result = new Result();
+		try {
+			String token = request.getHeader("authorization");
+			result.setCode(0);
+			result.setMessage(labelExportService.multiReIdAllDownFile(token, type));
 		} catch (IOException e) {
 			e.printStackTrace();
 			result.setCode(1);

@@ -85,7 +85,7 @@ public class ReportSchedule {
 				}
 			}
 		}
-		logger.info("start to move log file. count=" + logFileMoveCount);
+		logger.info("end to move log file. count=" + logFileMoveCount);
 		
 		
 		//1、清除半年前的记录。

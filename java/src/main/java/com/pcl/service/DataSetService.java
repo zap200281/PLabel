@@ -177,7 +177,7 @@ public class DataSetService {
 				displayDataSet.setCamera_number(getDisplayValue(dataSet.getCamera_number()));
 				displayDataSet.setCamera_gps(getDisplayValue(dataSet.getCamera_gps()));
 				displayDataSet.setCamera_date(getDisplayValue(dataSet.getCamera_date()));
-				
+				displayDataSet.setZip_object_name(dataSet.getZip_object_name());
 				if(dataSet.getVideoSet() != null && dataSet.getVideoSet().length() > 0) {
 					displayDataSet.setVideoSet(JsonUtil.getList(dataSet.getVideoSet()));
 				}
@@ -377,7 +377,7 @@ public class DataSetService {
 	}
 
 
-	public void chouZhen(String dataSetId,Map<String,String> para) {
+	private void chouZhen(String dataSetId,Map<String,String> para) {
 		DataSet dataSet = dataSetDao.queryDataSetById(dataSetId);
 		if(dataSet == null) {
 			return;
@@ -884,7 +884,7 @@ public class DataSetService {
 		para.put("-s", body.getWidthHeight());
 		para.put("isDeleteVideo", String.valueOf(body.getIsDeleteVideo()));
 		para.put("createAutoLabelTask", String.valueOf(body.getCreateAutoLabelTask()));
-		
+		para.put("filenamePrefix", body.getFilenamePrefix());
 		chouZhen(dataSetId, para);
 
 		return "";

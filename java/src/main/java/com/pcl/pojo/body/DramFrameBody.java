@@ -19,6 +19,8 @@ public class DramFrameBody implements Serializable{
 	
 	private String baseDate;//视频基准时间
 	
+	private String filenamePrefix;
+	
 	private String widthHeight;
 	
 	private int isDeleteVideo;
@@ -87,6 +89,14 @@ public class DramFrameBody implements Serializable{
 
 	public void setCreateAutoLabelTask(int createAutoLabelTask) {
 		this.createAutoLabelTask = createAutoLabelTask;
+	}
+
+	public String getFilenamePrefix() {
+		return filenamePrefix;
+	}
+
+	public void setFilenamePrefix(String filenamePrefix) {
+		this.filenamePrefix = filenamePrefix;
 	}
 
 }

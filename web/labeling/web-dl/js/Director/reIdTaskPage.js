@@ -42,6 +42,8 @@ function reid_task_list(){
    });
 }
 
+
+
 function downloadMultiFile(){
 
 	var select = document.getElementById('multi_labeltaskid');
@@ -51,13 +53,41 @@ function downloadMultiFile(){
             str.push(select[i].value);
         }
     }
-	if(str.length == 0 || str.length > 10){
+	var isNeedPicture =  $('#isNeedPicture option:selected').val();
+	if(str.length == 0 && str.length > 10){
         alert("最多选择10个任务导出，最少选择1个任务。");
 		return;
 	}
+	console.log("str[0]=" + str[0] + "userName=" + userName);
+	if(str.length == 1 && str[0] == "all"){
+		//if(userName == "zouanping"){
+			$.ajax({
+	         type:"GET",
+	         url:ip + "/api/multi-all-data-export/",
+	         headers: {
+		        authorization:token,
+		     },
+	         dataType:"json",
+	         data:{
+              "needPicture": isNeedPicture
+		     },
+	         async:false,
+	         success:function(json){
+		        taskreturnid = json.message;
+		        console.log(json);
+	         },
+	        error:function(response) {
+		       redirect(response);
+             }
+            });
+			
+			return;
+		//}
+	}
+	
 	document.getElementById("predtask_id").setAttribute("disabled", true);
 	var labeltaskid = JSON.stringify(str);
-	var isNeedPicture =  $('#isNeedPicture option:selected').val();
+	
     var taskreturnid = "";
 	$.ajax({
 	   type:"GET",
@@ -170,15 +200,17 @@ function display_createlabelexportoption(sindex=-1){
   for (var i=0;i<reidtasklist.length;i++){
     if (i==sindex){
         var row = "<option value=\""+reidtasklist[i].id+
-              "\" selected=\"\">"+reidtasklist[i].task_name+
+              "\" selected=\"true\">"+reidtasklist[i].task_name+
               "</option>";
     }else{
         var row = "<option value=\""+reidtasklist[i].id+
-        "\">"+reidtasklist[i].task_name+
+        "\" >"+reidtasklist[i].task_name+
         "</option>";
       }
     html=html+row;
   }
+  var row = "<option value=\"all\" >全选</option>";
+  html=html+row;
   console.log(html);
   document.getElementById('multi_labeltaskid').innerHTML=html;
   $('#multi_labeltaskid').val('');

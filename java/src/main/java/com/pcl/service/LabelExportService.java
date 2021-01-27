@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -341,6 +339,9 @@ public class LabelExportService {
 			writeJson(item,zos,dataSetInfo,typeOrColorMapName);
 			if(type == 2) {
 				try(InputStream intpuStream = minioFileService.getImageInputStream(item.getPic_image_field())){
+					if(intpuStream == null) {
+						return;
+					}
 					String name = item.getPic_image_field().substring(item.getPic_image_field().lastIndexOf("/") + 1);
 					zos.putNextEntry(new ZipEntry("img/" + name));
 					byte buffer[] = new byte[2048];
@@ -588,6 +589,10 @@ public class LabelExportService {
 					}
 
 					try(InputStream intpuStream = minioFileService.getImageInputStream(imgPath)){
+						if(intpuStream == null) {
+							logger.info("the imagepath stream is null. imgpath=" + imgPath);
+							continue;
+						}
 						zos.putNextEntry(new ZipEntry(item.getReid_name() + "/" + entryFileName));
 						byte buffer[] = new byte[2048];
 						while(true) {
@@ -700,6 +705,10 @@ public class LabelExportService {
 					}
 
 					try(InputStream intpuStream = minioFileService.getImageInputStream(imgPath)){
+						if(intpuStream == null) {
+							logger.info("the imagepath stream is null. imgpath=" + imgPath);
+							continue;
+						}
 						zos.putNextEntry(new ZipEntry(datasetName + "-" + reidName + "/" + entryFileName));
 						byte buffer[] = new byte[2048];
 						while(true) {
@@ -811,6 +820,10 @@ public class LabelExportService {
 						}
 						writeJson(jsonMap, item.getPic_image_field(), zos, entry.getKey());
 						try(InputStream intpuStream = minioFileService.getImageInputStream(item.getPic_image_field())){
+							if(intpuStream == null) {
+								logger.info("the imagepath stream is null. imgpath=" + item.getPic_image_field());
+								continue;
+							}
 							String name = item.getPic_image_field().substring(item.getPic_image_field().lastIndexOf("/") + 1);
 							zos.putNextEntry(new ZipEntry(entry.getKey() + "/" + name));
 							byte buffer[] = new byte[2048];
@@ -1116,6 +1129,10 @@ public class LabelExportService {
 
 				if(isNeedPicture) {
 					try(InputStream intpuStream = minioFileService.getImageInputStream(item.getPic_image_field())){
+						if(intpuStream == null) {
+							logger.info("the imagepath stream is null. imgpath=" + item.getPic_image_field());
+							continue;
+						}
 						String name = item.getPic_image_field().substring(item.getPic_image_field().lastIndexOf("/") + 1);
 						zos.putNextEntry(new ZipEntry("img/" + name));
 						byte buffer[] = new byte[2048];
@@ -1214,6 +1231,10 @@ public class LabelExportService {
 			String relativeFileName = item.getPic_image_field();
 			String entryFileName = relativeFileName.substring(relativeFileName.lastIndexOf("/") +1);
 			try(InputStream intpuStream = minioFileService.getImageInputStream(relativeFileName)){
+				if(intpuStream == null) {
+					logger.info("the imagepath stream is null. imgpath=" + item.getPic_image_field());
+					continue;
+				}
 				zos.putNextEntry(new ZipEntry(entryFileName));
 				byte buffer[] = new byte[2048];
 				while(true) {
@@ -1466,10 +1487,17 @@ public class LabelExportService {
 		//pro.setProgress(100l);
 		updateProgress(pro.getId(), 100);
 	}
-
+	
+	
 	public String downloadReIdTaskListFile(String reIdTaskIdList, String type) throws IOException {
 		List<String> reidList = JsonUtil.getList(reIdTaskIdList);
-
+		return downloadReIdTaskListFile(reidList, type, LabelDataSetMerge.getUserDataSetPath(),true);
+	}
+	
+	
+	private String downloadReIdTaskListFile(List<String> reidList, String type,String tmpPath,boolean isNeedNanoTime) throws IOException {
+		
+		logger.info("reidList size=" + reidList.size());
 		String key = UUID.randomUUID().toString().replaceAll("-","") + REID_POSTFIX;
 
 		List<String> fileNameList = new ArrayList<>();
@@ -1483,32 +1511,39 @@ public class LabelExportService {
 
 
 		for(String reIdTaskId : reidList) {
-
+			logger.info("query reIdTaskId=" + reIdTaskId);
+			String prefix = "";
+			if(isNeedNanoTime) {
+				prefix = System.nanoTime() + File.separator;
+			}
 			ReIDTask reIdtask = reIdTaskDao.queryReIDTaskById(reIdTaskId);
 			String taskName = FileUtil.getRemoveChineseCharName(reIdtask.getTask_name());
-			String relatedName =  System.nanoTime() + File.separator + taskName + "_ReID" + ".zip";
+			String relatedName =  prefix + taskName + "_ReID" + ".zip";
 			if(type.equals(Constants.REID_EXPORT_TYPE_REID_PICTURE)) {
-				relatedName =  System.nanoTime() + File.separator + taskName + "_ReID_CutImage" + ".zip";
+				relatedName =  prefix + taskName + "_ReID_CutImage" + ".zip";
 			}else if(type.equals(Constants.REID_EXPORT_TYPE_REID_PICTURE_RENAME)) {
-				relatedName =  System.nanoTime() + File.separator + taskName + "_ReID_CutImage_DS" + ".zip";
+				relatedName =  prefix + taskName + "_ReID_CutImage_DS" + ".zip";
 			}
 			fileNameList.add(relatedName);
 		}
-		pro.setRelatedFileName(JsonUtil.toJson(fileNameList));
+		String fileJsonStr = JsonUtil.toJson(fileNameList);
+		if(fileJsonStr.length() > 10000) {
+			fileJsonStr = "";
+		}
+		pro.setRelatedFileName(fileJsonStr);
 		putProgress(pro);
 
 		ThreadSchedule.execExportThread(()->{
 			try {
 				double base = 0.0;
 				for(int i = 0; i <reidList.size(); i++) {
-					logger.info("start deal " + (i + 1) + "task.");
+					logger.info("start deal " + (i + 1) + " task.");
 					String reIdTaskId = reidList.get(i);
 					ReIDTask reIdtask = reIdTaskDao.queryReIDTaskById(reIdTaskId);
 
 					String relatedName = fileNameList.get(i);
 
-					String fileName = LabelDataSetMerge.getUserDataSetPath() + File.separator + relatedName;
-
+					String fileName = tmpPath + File.separator + relatedName;
 
 					downloadReIdTaskFileWriter(reIdtask,type, fileName, pro);
 
@@ -1526,6 +1561,26 @@ public class LabelExportService {
 		});
 		return key;
 
+	}
+
+
+	
+	public String multiReIdAllDownFile(String token, String type) throws IOException {
+		
+		int userId = TokenManager.getUserIdByToken(TokenManager.getServerToken(token));
+		
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("user_id", userId);
+		List<ReIDTask> labelTaskList = reIdTaskDao.queryReIDTaskByUser(paramMap);
+		
+		List<String> reIdList = new ArrayList<>();
+		for(ReIDTask task : labelTaskList) {
+			
+			reIdList.add(task.getId());
+		}
+		String tmpPath = LabelDataSetMerge.getAllDownLoadFilePath();
+		
+		return downloadReIdTaskListFile(reIdList, type, tmpPath,false);
 	}
 
 

@@ -470,8 +470,14 @@
                                                                   <label for="exampleInputEmail1">每秒抽帧数量</label>
                                                                   <input type="" class="form-control" id="chouzhen_num_persecond" disabled="true" placeholder="每秒抽帧数量，1代表每秒抽1帧，0.2代表每5秒抽一帧。">
                                                            </div> 
+														   
+														   <div class="form-group">
+                                                                  <label for="exampleInputEmail1">抽帧图片前缀</label>
+                                                                  <input type="" class="form-control" id="chouzhen_filename_prefix">
+                                                           </div> 
+														   
                                                           <div class="form-group">
-                                                                  <label for="exampleInputEmail1">抽帧图片命名规则<font color=red>*</font></label>
+                                                                  <label for="exampleInputEmail1">抽帧图片后续命名<font color=red>*</font></label>
                                                                   <select class="form-control"  id="chouzhen_filename_type" onchange="chouzhen_filename_type_sele_Change(this)">
 																       <option value="0">以数字为后缀</option> 
                                                                        <option value="1">以视频播放时间为后缀</option>   

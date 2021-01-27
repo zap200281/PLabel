@@ -35,6 +35,7 @@ import com.pcl.dao.PrePredictTaskDao;
 import com.pcl.dao.PrePredictTaskResultDao;
 import com.pcl.exception.LabelSystemException;
 import com.pcl.pojo.DcmObj;
+import com.pcl.pojo.FileResult;
 import com.pcl.pojo.mybatis.AlgInstance;
 import com.pcl.pojo.mybatis.AlgModel;
 import com.pcl.pojo.mybatis.DataSet;
@@ -51,6 +52,7 @@ import com.pcl.util.GpuInfoUtil;
 import com.pcl.util.JsonUtil;
 import com.pcl.util.ProcessExeUtil;
 import com.pcl.util.TimeUtil;
+import com.pcl.util.VideoUtil;
 import com.pcl.util.VocAnnotationsUtil;
 
 @Service
@@ -227,109 +229,49 @@ public class LabelForPictureSchedule {
 
 			File imageDirFile = new File(imageDir);
 			imageDirFile.mkdirs();
-
-			//下载图片
+			
 			Map<String,String> pictureNameMap = new HashMap<>();
-
 			Map<String,String> pictureNameForItemMap = new HashMap<>();
+			boolean predictVideo = false;
+			if(dataSet.getTotal() == 0 && dataSet.getDataset_type() == Constants.DATASET_TYPE_VIDEO) {
+				predictVideo = true;
+				logger.info("start to down load video.");
+				String tmpPath = LabelDataSetMerge.getUserDataSetPath() + File.separator + "video_" +  System.nanoTime();
+				new File(tmpPath).mkdirs();
+				String existVideoPath = fileService.downLoadFileFromMinio(dataSet.getZip_bucket_name(), dataSet.getZip_object_name(), tmpPath);
+				//抽帧
+				logger.info("start to draw frame.");
+				Map<String,String> param = new HashMap<>();
+				param.put("fps", "4");
+				param.put("drawFrameType", Constants.CHOUZHEN_PERSECOND_FRAME);
+				param.put("filenamePrefix", "");
+				VideoUtil.chouZhen(new File(existVideoPath), imageDir, param);
+				logger.info("finished video draw frame.");
+				
+				
+			}else {
+				//下载图片
+				Map<String,Object> itemParamMap = new HashMap<>();
+				itemParamMap.put("label_task_id", dataSetId);
+				itemParamMap.put("user_id", TokenManager.getUserTablePos(prePredictTask.getUser_id(), UserConstants.LABEL_TASK_SINGLE_TABLE));
+				logger.info("itemParamMap ==" + itemParamMap.toString());
+				int count = labelTaskItemDao.queryLabelTaskItemPageCountByLabelTaskId(itemParamMap);
+				logger.info("query count ==" + count);
+				int pageSize = 100;
+				itemParamMap.put("pageSize", pageSize);
+				
+				paramMap.put("task_status", Constants.PREDICT_TASK_STATUS_PROGRESSING);
+				paramMap.put("task_status_desc", "下载图片中，总数量：" + count + "张");
+				prePredictTaskDao.updatePrePredictTaskStatus(paramMap);
 
-			Map<String,Object> itemParamMap = new HashMap<>();
-			itemParamMap.put("label_task_id", dataSetId);
-			itemParamMap.put("user_id", TokenManager.getUserTablePos(prePredictTask.getUser_id(), UserConstants.LABEL_TASK_SINGLE_TABLE));
-
-			logger.info("itemParamMap ==" + itemParamMap.toString());
-
-			int count = labelTaskItemDao.queryLabelTaskItemPageCountByLabelTaskId(itemParamMap);
-			logger.info("query count ==" + count);
-			int pageSize = 100;
-			itemParamMap.put("pageSize", pageSize);
-			int totalPictureSize = 0;
-			
-			paramMap.put("task_status", Constants.PREDICT_TASK_STATUS_PROGRESSING);
-			paramMap.put("task_status_desc", "下载图片中，总数量：" + count + "张");
-			prePredictTaskDao.updatePrePredictTaskStatus(paramMap);
-
-			String json = dataSet.getMainVideoInfo();
-			Map<String,Object> mainVideoMap = JsonUtil.getMap(json);
-
-			boolean isExistTmpFrame = false;
-			if(mainVideoMap.get("tmpFramePath") != null) {
-				existFramePath =  mainVideoMap.get("tmpFramePath").toString();
-				if(new File(existFramePath).exists()) {
-					isExistTmpFrame = true;
-				}
+				existFramePath = downDowdPictureFromObjectDb(existFramePath, dataSet, imageDir, pictureNameMap,
+						pictureNameForItemMap, itemParamMap, count, pageSize);
 			}
 			
-			for(int i = 0; i < (count / pageSize) + 1; i++) {
-				itemParamMap.put("currPage", i * pageSize);
-				List<LabelTaskItem> list = labelTaskItemDao.queryLabelTaskItemPageByLabelTaskId(itemParamMap);
-
-				for(LabelTaskItem item : list) {
-					String itemExtendName = item.getPic_image_field();
-					itemExtendName = itemExtendName.substring(itemExtendName.lastIndexOf("."));
-					String pictureName = imageDir + item.getId() + itemExtendName;
-					totalPictureSize ++;
-					String tmp[] = item.getPic_image_field().split("/");
-					int length = tmp.length;
-					File tmpPicFile = new File(existFramePath,tmp[length-1]);
-					if(isExistTmpFrame && tmpPicFile.exists()) {
-						//临时文件存在，重新命名即可。
-						tmpPicFile.renameTo(new File(pictureName));	
-						logger.info("rename " + tmp[length-1] +" to " + pictureName);
-					}else {
-						fileService.downLoadFileFromMinioAndSetPictureName(tmp[length-2], tmp[length-1], pictureName);
-					}
-					if(dataSet.getDataset_type() == Constants.DATASET_TYPE_DCM) {
-						//convertto dcm
-						DcmObj dcmObj = DcmUtil.getImageByDcmFile(pictureName);
-						if(dcmObj != null && dcmObj.getImage() != null) {
-							ImageIO.write(dcmObj.getImage(), "jpg", new File(pictureName));
-						}
-					}
-					
-					//logger.info("bucketname=" + tmp[length-2] + " objectname=" + tmp[length-1]);
-					pictureNameMap.put(item.getId() + itemExtendName, item.getPic_image_field());
-					pictureNameForItemMap.put(item.getPic_image_field(), item.getId() + itemExtendName);
-				}
-			}
-
-			logger.info("download picture size=" + totalPictureSize);
 
 			long tmp = System.currentTimeMillis();
 			if(prePredictTask.getDelete_similar_picture() > 0) {
-				double similar = 1;
-				if(1 == prePredictTask.getDelete_similar_picture()) {
-					similar = 0.98;
-				}else if(2 == prePredictTask.getDelete_similar_picture()) {
-					similar = 0.97;
-				}
-				
-				paramMap.put("task_status", Constants.PREDICT_TASK_STATUS_PROGRESSING);
-				paramMap.put("task_status_desc", "开始删除相似度大于" + similar + "图片");
-				prePredictTaskDao.updatePrePredictTaskStatus(paramMap);
-				
-		
-				ArrayList<String> list = new ArrayList<>();
-				list.addAll(pictureNameMap.values());
-				int countSimilar = 0;
-				Collections.sort(list);
-				FingerPrint first = new FingerPrint(ImageIO.read(new File(imageDir,pictureNameForItemMap.get(list.get(0))))); 
-				first.setName(list.get(0));
-
-				for(int i = 1; i <list.size(); i++) {
-					File pictureFile = new File(imageDir,pictureNameForItemMap.get(list.get(i)));
-					FingerPrint second = new FingerPrint(ImageIO.read(pictureFile));
-					second.setName(list.get(i));
-					double si = first.compare(second);
-					if(si > similar) {
-						countSimilar++;
-						pictureFile.delete();
-						//logger.info(second.getName() + " and " +  first.getName() + " similar is:" + first.compare(second)*100 + " %");
-					}else {
-						first = second;
-					}
-				}
-				logger.info("delete similar picture total is :" + countSimilar + " cost=" + (System.currentTimeMillis() - tmp));
+				deleteSimilarPicture(prePredictTask, paramMap, imageDir, pictureNameMap, pictureNameForItemMap, tmp);
 			}
 
 			paramMap.put("task_status", Constants.PREDICT_TASK_STATUS_PROGRESSING);
@@ -354,59 +296,48 @@ public class LabelForPictureSchedule {
 			//调用命令
 			ProcessExeUtil.execScript(script, algRootPath, length * 2 + 30);
 			//exeScript(script,algRootPath);
-
-			//读取Json文件，并保存
 			String jsonFile = outputDir + "result.json";
-			HashMap<String,PrePredictTaskResult> preResultMap = new HashMap<>();
-			if(new File(jsonFile).exists()) {
-				String jsonStr = FileUtil.getAllContent(jsonFile, "utf-8");
-				Map<String,Object> map = JsonUtil.getMap(jsonStr);
-				logger.info("delete exist predict task result.");
+			File jsonResultFile = new File(jsonFile);
+			if(predictVideo) {
+				//删除结果文件
+				if(jsonResultFile.exists()) {
+					jsonResultFile.delete();
+				}
+				String destVideoName = outputDir + prePredictTask.getId() + ".mp4";
 				String tableNamePos = TokenManager.getUserTablePos(prePredictTask.getUser_id(), UserConstants.PREDICT_SINGLE_TABLE);
-				prePredictTaskResultDao.deletePrePredictTaskResultById(tableNamePos,prePredictTask.getId());
-
-				logger.info("AUTO_DELETE_NO_LABEL_PICTURE=" + prePredictTask.getDelete_no_label_picture());
-
-				for(Entry<String,Object> entry : map.entrySet()) {
-
-					filterByThreshhold(prePredictTask, entry);
-
-					if(needDeleteBlankPicture(entry, prePredictTask)) {
-						continue;
-					}
-
-					String imagePath = pictureNameMap.remove(entry.getKey());
-					String labelInfo = gson.toJson(entry.getValue());
-
-					PrePredictTaskResult result = savePredictTaskResult(tableNamePos,labelInfo,prePredictTask.getId(),imagePath);
-
-					if(prePredictTask.getNeedToDistiguishTypeOrColor() == Constants.NEED_TO_DISTIGUISH) {
-						String diskImagePath = imageDir + entry.getKey();
-						String xmlPath = vocAnnotation.getXmlPathByImagePath(diskImagePath);
-						new File(xmlPath).getParentFile().mkdir();
-						objectDistinguish.saveToXml(labelInfo,diskImagePath,xmlPath,vocAnnotation);
-						preResultMap.put(diskImagePath, result);
-					}
+				//合并图片为mp4格式的视频。
+				VideoUtil.mergePictureToVideo(outputDir + "_", destVideoName, length); 
+				//上传结果视频到minio中
+				if(new File(destVideoName).exists()) {
+					logger.info("upload to minio: " + destVideoName);
+					FileResult fileResult = fileService.uploadVideoFile(new File(destVideoName));
+					
+					//保存minio路径到数据库中
+					PrePredictTaskResult result = new PrePredictTaskResult();
+					result.setId(UUID.randomUUID().toString().replaceAll("-",""));
+					result.setItem_add_time(TimeUtil.getCurrentTimeStr());
+					result.setPre_predict_task_id(prePredictTask.getId());
+					result.setPic_image_field("/minio" + fileResult.getPublic_url());
+					result.setUser_id(tableNamePos);
+					prePredictTaskResultDao.addPrePredictTaskResult(result);
 				}
+				//web界面需要能预览
+			}else {
+				//读取Json文件，并保存
+				HashMap<String,PrePredictTaskResult> preResultMap = new HashMap<>();
+				if(jsonResultFile.exists()) {
+					saveResultToDb(prePredictTask, tmpImageDir, imageDir, pictureNameMap, objectDistinguish, jsonFile,
+							preResultMap);
+				}
+
 				if(prePredictTask.getNeedToDistiguishTypeOrColor() == Constants.NEED_TO_DISTIGUISH) {
-					String testTxtPath = tmpImageDir + "/VOC2007/ImageSets/Main/test.txt";
-					objectDistinguish.saveImageSetTestTxt(testTxtPath, map);
-				}
-				
-				if(Constants.AUTO_DELETE_NO_LABEL_PICTURE_PRI == prePredictTask.getDelete_no_label_picture()) {
-					for(Entry<String,String> entry : pictureNameMap.entrySet()) {
-						String itemId = entry.getKey().substring(0,entry.getKey().lastIndexOf("."));
-						logger.info("delete primitive record:" + itemId);
-						labelTaskItemDao.deleteLabelTaskItemById(TokenManager.getUserTablePos(prePredictTask.getUser_id(), UserConstants.LABEL_TASK_SINGLE_TABLE),itemId);
-					}
+					dealDistinguishResult(gpuNum, tmpImageDir, algRootPath, outputDir, length, objectDistinguish,
+							preResultMap,prePredictTask);
+
 				}
 			}
-
-			if(prePredictTask.getNeedToDistiguishTypeOrColor() == Constants.NEED_TO_DISTIGUISH) {
-				dealDistinguishResult(gpuNum, tmpImageDir, algRootPath, outputDir, length, objectDistinguish,
-						preResultMap,prePredictTask);
-
-			}
+			
+			
 
 			//更新预检任务状态
 			paramMap.put("task_status", Constants.PREDICT_TASK_STATUS_FINISHED);
@@ -425,6 +356,141 @@ public class LabelForPictureSchedule {
 			}
 		}
 		prePredictTaskDao.updatePrePredictTaskStatus(paramMap);
+	}
+
+	private String downDowdPictureFromObjectDb(String existFramePath, DataSet dataSet, String imageDir,
+			Map<String, String> pictureNameMap, Map<String, String> pictureNameForItemMap,
+			Map<String, Object> itemParamMap, int count, int pageSize) throws LabelSystemException, IOException {
+		String json = dataSet.getMainVideoInfo();
+		Map<String,Object> mainVideoMap = JsonUtil.getMap(json);
+
+		boolean isExistTmpFrame = false;
+		if(mainVideoMap.get("tmpFramePath") != null) {
+			existFramePath =  mainVideoMap.get("tmpFramePath").toString();
+			if(new File(existFramePath).exists()) {
+				isExistTmpFrame = true;
+			}
+		}
+		int totalPictureSize = 0;
+		for(int i = 0; i < (count / pageSize) + 1; i++) {
+			itemParamMap.put("currPage", i * pageSize);
+			List<LabelTaskItem> list = labelTaskItemDao.queryLabelTaskItemPageByLabelTaskId(itemParamMap);
+
+			for(LabelTaskItem item : list) {
+				String itemExtendName = item.getPic_image_field();
+				itemExtendName = itemExtendName.substring(itemExtendName.lastIndexOf("."));
+				String pictureName = imageDir + item.getId() + itemExtendName;
+				totalPictureSize ++;
+				String tmp[] = item.getPic_image_field().split("/");
+				int length = tmp.length;
+				File tmpPicFile = new File(existFramePath,tmp[length-1]);
+				if(isExistTmpFrame && tmpPicFile.exists()) {
+					//临时文件存在，重新命名即可。
+					tmpPicFile.renameTo(new File(pictureName));	
+					logger.info("rename " + tmp[length-1] +" to " + pictureName);
+				}else {
+					fileService.downLoadFileFromMinioAndSetPictureName(tmp[length-2], tmp[length-1], pictureName);
+				}
+				if(dataSet.getDataset_type() == Constants.DATASET_TYPE_DCM) {
+					//convertto dcm
+					DcmObj dcmObj = DcmUtil.getImageByDcmFile(pictureName);
+					if(dcmObj != null && dcmObj.getImage() != null) {
+						ImageIO.write(dcmObj.getImage(), "jpg", new File(pictureName));
+					}
+				}
+				
+				//logger.info("bucketname=" + tmp[length-2] + " objectname=" + tmp[length-1]);
+				pictureNameMap.put(item.getId() + itemExtendName, item.getPic_image_field());
+				pictureNameForItemMap.put(item.getPic_image_field(), item.getId() + itemExtendName);
+			}
+		}
+
+		logger.info("download picture size=" + totalPictureSize);
+		return existFramePath;
+	}
+
+	private void saveResultToDb(PrePredictTask prePredictTask, String tmpImageDir, String imageDir,
+			Map<String, String> pictureNameMap, ObjectDistinguish objectDistinguish, String jsonFile,
+			HashMap<String, PrePredictTaskResult> preResultMap) {
+		String jsonStr = FileUtil.getAllContent(jsonFile, "utf-8");
+		Map<String,Object> map = JsonUtil.getMap(jsonStr);
+		logger.info("delete exist predict task result.");
+		String tableNamePos = TokenManager.getUserTablePos(prePredictTask.getUser_id(), UserConstants.PREDICT_SINGLE_TABLE);
+		prePredictTaskResultDao.deletePrePredictTaskResultById(tableNamePos,prePredictTask.getId());
+
+		logger.info("AUTO_DELETE_NO_LABEL_PICTURE=" + prePredictTask.getDelete_no_label_picture());
+
+		for(Entry<String,Object> entry : map.entrySet()) {
+
+			filterByThreshhold(prePredictTask, entry);
+
+			if(needDeleteBlankPicture(entry, prePredictTask)) {
+				continue;
+			}
+
+			String imagePath = pictureNameMap.remove(entry.getKey());
+			String labelInfo = gson.toJson(entry.getValue());
+
+			PrePredictTaskResult result = savePredictTaskResult(tableNamePos,labelInfo,prePredictTask.getId(),imagePath);
+
+			if(prePredictTask.getNeedToDistiguishTypeOrColor() == Constants.NEED_TO_DISTIGUISH) {
+				String diskImagePath = imageDir + entry.getKey();
+				String xmlPath = vocAnnotation.getXmlPathByImagePath(diskImagePath);
+				new File(xmlPath).getParentFile().mkdir();
+				objectDistinguish.saveToXml(labelInfo,diskImagePath,xmlPath,vocAnnotation);
+				preResultMap.put(diskImagePath, result);
+			}
+		}
+		if(prePredictTask.getNeedToDistiguishTypeOrColor() == Constants.NEED_TO_DISTIGUISH) {
+			String testTxtPath = tmpImageDir + "/VOC2007/ImageSets/Main/test.txt";
+			objectDistinguish.saveImageSetTestTxt(testTxtPath, map);
+		}
+		
+		if(Constants.AUTO_DELETE_NO_LABEL_PICTURE_PRI == prePredictTask.getDelete_no_label_picture()) {
+			for(Entry<String,String> entry : pictureNameMap.entrySet()) {
+				String itemId = entry.getKey().substring(0,entry.getKey().lastIndexOf("."));
+				logger.info("delete primitive record:" + itemId);
+				labelTaskItemDao.deleteLabelTaskItemById(TokenManager.getUserTablePos(prePredictTask.getUser_id(), UserConstants.LABEL_TASK_SINGLE_TABLE),itemId);
+			}
+		}
+	}
+
+	private void deleteSimilarPicture(PrePredictTask prePredictTask, Map<String, Object> paramMap, String imageDir,
+			Map<String, String> pictureNameMap, Map<String, String> pictureNameForItemMap, long tmp)
+			throws IOException {
+		double similar = 1;
+		if(1 == prePredictTask.getDelete_similar_picture()) {
+			similar = 0.98;
+		}else if(2 == prePredictTask.getDelete_similar_picture()) {
+			similar = 0.97;
+		}
+		
+		paramMap.put("task_status", Constants.PREDICT_TASK_STATUS_PROGRESSING);
+		paramMap.put("task_status_desc", "开始删除相似度大于" + similar + "图片");
+		prePredictTaskDao.updatePrePredictTaskStatus(paramMap);
+		
+
+		ArrayList<String> list = new ArrayList<>();
+		list.addAll(pictureNameMap.values());
+		int countSimilar = 0;
+		Collections.sort(list);
+		FingerPrint first = new FingerPrint(ImageIO.read(new File(imageDir,pictureNameForItemMap.get(list.get(0))))); 
+		first.setName(list.get(0));
+
+		for(int i = 1; i <list.size(); i++) {
+			File pictureFile = new File(imageDir,pictureNameForItemMap.get(list.get(i)));
+			FingerPrint second = new FingerPrint(ImageIO.read(pictureFile));
+			second.setName(list.get(i));
+			double si = first.compare(second);
+			if(si > similar) {
+				countSimilar++;
+				pictureFile.delete();
+				//logger.info(second.getName() + " and " +  first.getName() + " similar is:" + first.compare(second)*100 + " %");
+			}else {
+				first = second;
+			}
+		}
+		logger.info("delete similar picture total is :" + countSimilar + " cost=" + (System.currentTimeMillis() - tmp));
 	}
 
 	private void filterByThreshhold(PrePredictTask prePredictTask, Entry<String, Object> entry) {

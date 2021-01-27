@@ -9,7 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
+import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -511,9 +512,240 @@ public class ReIdTaskService {
 		return re;
 	}
 
+	
+	class ReIdInfo{
+		long time;
+		String reIdName;
+		String imgPath;
+	}
+	
+	Map<String,List<ReIdInfo>> reIdInfoCache = new HashMap<>();
+	
+	private long getTime(String primitiveImageName) {
+		String time = getStrTimeFromPrimitiveImageName(primitiveImageName);
+		if(time != null) {
+			try {
+				return Long.parseLong(time);
+			}catch (Exception e) {
+				logger.info("time format error=" + time);
+			}
+		}
+		return -1;
+	}
+	
+	private boolean isTime(String primitiveImageName) {
+		String time = getStrTimeFromPrimitiveImageName(primitiveImageName);
+		if(time != null && time.length() == 6) {
+			return true;
+		}
+		return false;
+	}
+	
+	private String getStrTimeFromPrimitiveImageName(String primitiveImageName) {
+		int index = primitiveImageName.lastIndexOf(".");
+		if(index != -1) {
+			primitiveImageName = primitiveImageName.substring(0,index);
+		}
+		index =  primitiveImageName.lastIndexOf("_");
+		String time = primitiveImageName.substring(index + 1);
+		if(time.length() < 6) {
+			primitiveImageName = primitiveImageName.substring(0,index);
+			index = primitiveImageName.lastIndexOf("_");
+		}
+		if(index != -1 && primitiveImageName.length() > (index + 1)) {
+			return primitiveImageName.substring(index + 1);
+		}
+		return null;
+	}
+	
+	private long getLongTimeFromCutImageName(String cutImageName) {
+		int index = cutImageName.lastIndexOf("_");
+		if(index != -1) {
+			cutImageName = cutImageName.substring(0,index);
+		}
+		index =  cutImageName.lastIndexOf("_");
+		String time = cutImageName.substring(index + 1);
+		if(time.length() < 6) {
+			cutImageName = cutImageName.substring(0,index);
+			index = cutImageName.lastIndexOf("_");
+		}
+		if(index != -1 && cutImageName.length() > (index + 1)) {
+			try {
+				return Long.parseLong(cutImageName.substring(index + 1));
+			}catch (Exception e) {
+				logger.info("cutImageName time format error=" + cutImageName.substring(index + 1));
+			}
+		}
+		return -1;
+	}
+	
+	//输入ReID任务Id及原始图片名称，开始在已有结果中查找相同时间点
+	public Map<String,String> queryNearReID(String token, String reTaskId,String primitiveImageName,long intervalTime){
+		logger.info("reTaskId=" + reTaskId + " primitiveImageName=" + primitiveImageName + " intervalTime=" + intervalTime);
+		Map<String,String> resultMap = new HashMap<>();
+		long currentTime = getTime(primitiveImageName);
+		if(currentTime == -1) {
+			return resultMap;
+		}
+		List<ReIdInfo> reIdInfoList = reIdInfoCache.get(reTaskId);
+		if(reIdInfoList == null) {
+			loadCacheFromDb(reTaskId);
+			reIdInfoList = reIdInfoCache.get(reTaskId);
+		}
+		if(!isTime(primitiveImageName)) {//如果不是时间格式，则按照1秒4张图片放大序号
+			intervalTime = intervalTime * 4;
+		}
+		if(reIdInfoList != null) {
+			//2分查找
+			int left = 0;
+			int right = reIdInfoList.size() - 1;
+			
+			while(left <= right) {
+				int middle = (right + left) / 2;
+				ReIdInfo info = reIdInfoList.get(middle);
+				if(Math.abs(info.time - currentTime) < intervalTime) {
+					addResultToMap(intervalTime, resultMap, currentTime, reIdInfoList, middle);
+					break;
+				}
+				if(info.time < currentTime) {
+					left = middle + 1;
+				}else {
+					right = middle - 1;
+				}
+			}
+		}
+		return resultMap;
+	}
+
+	private void addResultToMap(long intervalTime, Map<String, String> resultMap, long currentTime,
+			List<ReIdInfo> reIdInfoList, int middle) {
+		for(int j = middle; j < reIdInfoList.size(); j++) {
+			ReIdInfo tmp = reIdInfoList.get(j);
+			if(Math.abs(tmp.time - currentTime) < intervalTime) {
+				resultMap.put(tmp.reIdName, tmp.imgPath);
+			}else {
+				break;
+			}
+		}
+		
+		for(int j = middle - 1; j > 0; j--) {
+			ReIdInfo tmp = reIdInfoList.get(j);
+			if(Math.abs(tmp.time - currentTime) < intervalTime) {
+				resultMap.put(tmp.reIdName, tmp.imgPath);
+			}else {
+				break;
+			}
+		}
+	}
+	
+	private void addToCache(String reTaskId,List<ReIdInfo> reidInfoList) {
+		if(reIdInfoCache.size() > 10) {
+			//如果超过10个，随机清除一个
+			int random = new Random(10).nextInt();
+			random = random % 10;
+			Set<String> keySet = reIdInfoCache.keySet();
+			List<String> keyList = new ArrayList<>();
+			keyList.addAll(keySet);
+			String removeKey = keyList.get(random);
+			reIdInfoCache.remove(removeKey);
+		}
+		reIdInfoCache.put(reTaskId, reidInfoList);
+	}
+	
+	private void insertRightLocation(ReIdInfo reIdInfo,List<ReIdInfo> reidInfoList) {
+		boolean insert = false;
+		for(int i = 0; i < reidInfoList.size(); i++) {
+			if(reidInfoList.get(i).time > reIdInfo.time) {
+				reidInfoList.add(i, reIdInfo);
+				insert = true;
+				break;
+			}
+		}
+		if(!insert) {
+			reidInfoList.add(reIdInfo);
+		}
+	}
+	
+	private void loadCacheFromDb(String reTaskId) {
+		List<ReIDTaskShowResult> reList = reIDTaskShowResultDao.queryReIDShowTaskResultById(reTaskId);
+		List<ReIdInfo> reidInfoList = new ArrayList<>();
+		if(reList != null) {
+			for(ReIDTaskShowResult result :reList) {
+				String relatedInfo = result.getRelated_info();
+				Map<String,Object> map = JsonUtil.getMap(relatedInfo);
+				for(Entry<String,Object> entry : map.entrySet()) {
+					ReIdInfo reIdInfo = new ReIdInfo();
+					reIdInfo.reIdName = result.getReid_name();
+					reIdInfo.imgPath = entry.getKey();
+					reIdInfo.time = getLongTimeFromCutImageName(entry.getKey());
+					if(reIdInfo.time == -1) {
+						continue;
+					}
+					insertRightLocation(reIdInfo, reidInfoList);
+				}
+			}
+		}
+		addToCache(reTaskId, reidInfoList);
+		
+	}
+
 	private void dealNewBox(LabelTaskItem updateBody, LabelTaskItem oldLabelTaskItem) {
-		List<Map<String,Object>> oldLabelList = JsonUtil.getLabelList(oldLabelTaskItem.getLabel_info());
+		String reTaskId = oldLabelTaskItem.getLabel_task_id();
 		List<Map<String,Object>> newLabelList = JsonUtil.getLabelList(updateBody.getLabel_info());
+		for(Map<String,Object> label : newLabelList) {
+			Object idObj = label.get("id");
+			if(idObj == null || Strings.isBlank(idObj.toString())) {
+				logger.info("it exists error, id is null.  reTaskId=" + oldLabelTaskItem.getLabel_task_id() + " item.id=" + updateBody.getId());
+				continue; 
+			}
+			Object reIdObj = label.get(Constants.REID_KEY);
+			if(reIdObj == null || Strings.isBlank(reIdObj.toString())) {
+				continue;
+			}
+			//将新的reId标注图片保存到minio中
+			String tmpPicName =ReIDUtil.getLabel(oldLabelTaskItem.getPic_image_field(), idObj.toString());
+			String imgName = "/minio/" + reTaskId + "/" + tmpPicName;
+			if(!fileService.isExistMinioFile(reTaskId, tmpPicName)) {
+				logger.info("create new image to minio.imgName=" + imgName);
+				reIdSchedule.createImage(tmpPicName,label,oldLabelTaskItem.getPic_image_field(),reTaskId);
+				
+				Map<String,Object> newParamMap = new HashMap<>();
+				newParamMap.put("label_task_id", reTaskId);
+				newParamMap.put("reid_name", reIdObj.toString());
+				ReIDTaskShowResult newResult = reIDTaskShowResultDao.queryReIDShowTaskResult(newParamMap);
+
+				if(newResult != null) {
+					String relatedInfo = newResult.getRelated_info();
+					Map<String,Object> map = JsonUtil.getMap(relatedInfo);
+					map.put(imgName, updateBody.getId());
+					newParamMap.put("related_info", JsonUtil.toJson(map));
+					reIDTaskShowResultDao.updateShowResult(newParamMap);
+				}else {
+					Map<String,Object> map = new HashMap<>();
+					map.put(imgName, updateBody.getId());
+					ReIDTaskShowResult re = new ReIDTaskShowResult();
+					re.setLabel_task_id(reTaskId);
+					re.setReid_name(reIdObj.toString());
+					re.setRelated_info(JsonUtil.toJson(map));
+					reIDTaskShowResultDao.addBatchShowResultItem(Arrays.asList(re));
+				}
+				
+				ReIdInfo reIdInfo = new ReIdInfo();
+				reIdInfo.reIdName = reIdObj.toString();
+				reIdInfo.imgPath = imgName;
+				reIdInfo.time = getLongTimeFromCutImageName(imgName);
+				if(reIdInfo.time != -1) {
+					List<ReIdInfo> reidInfoList = reIdInfoCache.get(reTaskId);
+					if(reidInfoList == null) {
+						loadCacheFromDb(reTaskId);
+						reidInfoList = reIdInfoCache.get(reTaskId);
+					}
+					insertRightLocation(reIdInfo, reidInfoList);
+				}
+			}
+		}
+		
+		List<Map<String,Object>> oldLabelList = JsonUtil.getLabelList(oldLabelTaskItem.getLabel_info());
 		Map<String,Integer> resultMap = LabelInfoUtil.getCompareResult(oldLabelList, newLabelList);
 		//如果标注的框大小有变更，还需要更新扣图
 		if(resultMap.containsKey("box")) {
@@ -523,7 +755,7 @@ public class ReIdTaskService {
 					logger.info("it exists error, id is null.  reTaskId=" + oldLabelTaskItem.getLabel_task_id() + " item.id=" + updateBody.getId());
 					continue; 
 				}
-				String reTaskId = oldLabelTaskItem.getLabel_task_id();
+				
 				String tmpPicName =ReIDUtil.getLabel(oldLabelTaskItem.getPic_image_field(), idObj.toString());
 				String imgName = "/minio/" + reTaskId + "/" + tmpPicName;
 				if(fileService.isExistMinioFile(reTaskId, tmpPicName)) {
@@ -531,6 +763,7 @@ public class ReIdTaskService {
 					logger.info("box is change, so need delete minio kou tu picture.");
 					logger.info("create new image to minio.imgName=" + imgName);
 					reIdSchedule.createImage(tmpPicName,label,oldLabelTaskItem.getPic_image_field(),reTaskId);
+					
 				}
 			}
 		}
@@ -724,7 +957,7 @@ public class ReIdTaskService {
 		//异步的执行一次更新
 		if(timeMap.containsKey(reIdTaskId)) {
 			Long lasttime = timeMap.get(reIdTaskId);
-			if(Math.abs(lasttime - System.currentTimeMillis()) < 5000l) {
+			if(Math.abs(lasttime - System.currentTimeMillis()) < 60000l) {
 				return pageResult;
 			}
 		}

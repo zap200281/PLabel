@@ -4,10 +4,11 @@ var img=new Image();
 var imginfo = {};
 var ip = getIp();
 var token = getCookie("token");
-console.log("token=" + token)
-
-
+console.log("token=" + token);
 var previewtaskid = sessionStorage.getItem("predict_task_id");
+console.log("previewtaskid=" + previewtaskid);
+var datasetInfo;
+
 canvas = document.getElementById("myCanvas");
 context = canvas.getContext("2d");
 // canvas.width = document.getElementById("myCanvas").offsetWidth;
@@ -32,13 +33,57 @@ var tableData;
 var tablePageData;
 
 page(0,pageSize);
-loadimg();
-drawimage();
 
-  
-img.onload = function(){
-	 drawimage();
+
+if(!isEmpty(labeltastresult)){
+	if(labeltastresult.length == 1){
+		console.log("pic_image_field=" + labeltastresult[0].pic_image_field);
+		var tmpVideoName= labeltastresult[0].pic_image_field;
+		if(tmpVideoName.substring(tmpVideoName.length - 4) ==".mp4"){//视频预览
+			files  = ip + tmpVideoName;//"/minio/label-img/1586502176987-test111.mp4";
+            console.log("files:",files);
+			var filename = files.substring(files.lastIndexOf("/") + 1);
+			$("#videofilename").text(filename);
+			document.getElementById("myVideo_div").style.display="block";
+			document.getElementById("myCanvas_div").style.display="none";
+            document.getElementById("myBigImg_div").style.display="none";
+            $("#myVideo").attr("src", files);
+			
+		}
+		else{//图片预览
+		    document.getElementById("myVideo_div").style.display="none";
+			document.getElementById("myCanvas_div").style.display="block";
+            document.getElementById("myBigImg_div").style.display="none";
+            loadimg();
+            drawimage();
+		}
+	}
+  else{//图片预览
+	    document.getElementById("myVideo_div").style.display="none";
+	    document.getElementById("myCanvas_div").style.display="block";
+        document.getElementById("myBigImg_div").style.display="none";
+        loadimg();
+        drawimage();
+	}
+	
 }
+
+
+
+
+img.onload = function(){
+	
+    canvas.width = document.getElementById("win_canvas").offsetWidth;
+    canvas.height = document.getElementById("win_canvas").offsetWidth/1280*720;
+    //调整画布大小
+    if ((img.width/img.height)<(canvas.width/canvas.height)){
+      canvas.width=canvas.height * img.width / img.height;
+    }
+    else{
+      canvas.height=canvas.width * img.height / img.width;
+    }
+	drawimage();
+ }
 
 function point(x,y){
     this.x = x;
@@ -278,10 +323,11 @@ function showfilelist(){
     document.getElementById("filelist").innerHTML=htmlstr;
 }
  
+
  
  
 function list(current,pageSize){
-    $.ajax({
+	$.ajax({
        type:"GET",
        url:ip + "/api/pre-predict-task-item-page/",
        headers: {
@@ -391,15 +437,12 @@ function parse_labelinfo(labelinfo){
 function page(current,pageSize){
   list(current,pageSize);
   showfilelist();
-  loadimg();
+  //loadimg();
   setPage(tablePageData,pageSize);
 }
 
 function nextPage(){
    var current = $('#displayPage1').text();
-   if((tablePageData.current + 1) * pageSize >= tablePageData.total){
-	   return;
-   }
    console.log("current=" + current);
    page(current,pageSize);
 }
@@ -440,14 +483,16 @@ $("#goNum").keydown(function (e) {
     }
 });
 
+  
 function setPage(pageData,pageSize){
+  
   if (isEmpty(pageData)){
     return;
   }
   var startIndex = pageData.current * pageSize;
   if(pageData.total > 0){
 	  startIndex = startIndex + 1;
-  }
+  }	
   if(startIndex < 10){
 	  $('#startIndex').text(" " + (startIndex));
   }else{
@@ -490,7 +535,6 @@ function setPage(pageData,pageSize){
   }
   $("#totalPageNum").text(pageNum);
 }
- 
  
  
 

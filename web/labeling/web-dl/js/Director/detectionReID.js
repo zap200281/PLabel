@@ -321,20 +321,18 @@ function copyOneBox(){
     }
   }
 
-    // showPopup(bigLocY(x)+145, bigLocX(y) + 235,rectIndex,shapetype);
   for (var i=0;i<masks.length;i++){
       if (masks[i].isSelected==true){
         copymasks.push(masks[i]);
       }
   }
 
-
   for (var i=0;i<pointShapes.length;i++){
       if (pointShapes[i].isSelected==true){
         copyPointShapes.push(pointShapes[i]);
       }
   }
-   currentImage=true;
+  currentImage=true;
 }
 
 
@@ -342,7 +340,7 @@ function copy(){
 	copyrects = rects.slice();
     copymasks = masks.slice();
 	copyPointShapes = pointShapes.slice();
-  currentImage=true;
+    currentImage=true;
 }
 
 function paste(){
@@ -399,7 +397,7 @@ function paste(){
 		}
 	}
 	drawRect();
-  currentImage=true;
+    currentImage=true;
 }
 
 function undo(){//删除矩形框或者mask
@@ -720,9 +718,9 @@ function next(){
   }else{
 	  if((tablePageData.current + 1) * pageSize < tablePageData.total){
 		   if (loadFinished==true){
-          updatelabel(fileindex);
-       }
-       clearCache();
+              updatelabel(fileindex);
+           }
+           clearCache();
 		   nextPage();
 	  }
   }
@@ -2903,7 +2901,7 @@ function selectDataObj(){
 // selectDataObj();
 var idCache = {};
 var fileIndexCache = {};
-var  related_task_id;
+var related_task_id;
 function updateDisplayFiles(com){
   // console.log("testste");
   hidePopup();
@@ -3037,5 +3035,75 @@ function setFileIndexToCache(fileindex){
      }else{
 	    fileIndexCache["default"] = fileindex;
     }
-	
+}
+
+var nearImageData;
+function getNearImageFromDb(imgName){
+	 
+	 var intervalTime = $("#intervalTime").val();
+	 if(isEmpty(intervalTime)){
+		 intervalTime = 120;
+	 }
+	 
+	 $.ajax({
+	        type:"GET",
+	        url:ip + "/api/reId-near-imgs",
+	        headers: {
+	           authorization:token,
+	         },
+	        dataType:"json",
+	        data:{
+	         'reid_task_id':label_task_info.id,
+	         'pic_image_field':imgName,
+	         'intervalTime':intervalTime
+			 },
+	        async:false,
+	        success:function(json){
+	         nearImageData = json;
+	         console.log(json);
+	        },
+	        error:function(response) {
+		      redirect(response);
+            }
+	    });
+}
+
+function listNearImage(){
+	document.getElementById("nearimage_div").style.display="block";
+	var tmpImageName = labeltastresult[fileindex].pic_image_field;
+	if(!isEmpty(tmpImageName)){
+		getNearImageFromDb(tmpImageName);
+		showNearImage();
+	}
+}
+
+function showNearImage(){
+	 if(isEmpty(nearImageData)){
+		 console.log("nearImageData is null.");
+		 return;
+	 }
+     var row=" <div style=\"display:block\">";
+     var totalLength = nearImageData.length;
+	 if(totalLength == 0){
+         console.log("nearImageData is null.");
+         return; 
+	 }
+	 var maxImgs = $("#maxImgs").val();
+	 if(isEmpty(maxImgs)){
+		 maxImgs = 20;
+	 }
+	 var count = 0;
+	 for(var key in  nearImageData){
+		count ++;
+  		console.log("key=" + key + " value=" + nearImageData[key]);
+		var imageName = nearImageData[key];
+
+	    var tmp = "<td style=\"border-top:none;text-align:center\"> " + "<div><div style=\"word-break: break-all;word-wrap: break-word;text-align:center;font-weight: bold;color:#F00;font-size:20px\">" + key + "</div>" + "<img  src=" + ip + imageName + " id=\'reference_object\'/></div>"+"</td>";    
+        row = row+tmp;
+		if(count > maxImgs){
+			break;
+		}
+  	}
+	row += "</div>";
+    document.getElementById('autonearimage').innerHTML=row;
 }

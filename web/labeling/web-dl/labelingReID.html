@@ -605,6 +605,8 @@
                                   <li  style="font-size: 22px" onclick="undo()" title="撤销上次标注(Z)" ><i class="fa fa-undo" aria-hidden="true"></i></li>
 								  
 								  <li  style="font-size: 22px"  title="清空指定文件的标注" href="#deleteLabel" data-toggle="modal" data-backdrop="static" ><i class="fa fa-eraser" aria-hidden="true"></i></li>
+								  
+								  <li  style="font-size: 22px"  title="列出相近的ReID标注图像" onclick="listNearImage()" data-toggle="modal" data-backdrop="static" ><i class="fa fa-file-image-o" aria-hidden="true"></i></li>
                                   
                                </ul>
  
@@ -613,21 +615,7 @@
                              <div id=labeldefine>
                                  
                              </div>
-							 <!--
-                                <div class="container-fluid">
-                                  <ul class="nav navbar-nav">
-                                    <li><a href="javascript:void(0);" onclick="createlabel()">新建标注(W)</a></li>   
-                                    <li><a href="javascript:void(0);" onclick="cancel()">取消新建(ESC)</a></li>         
-                                    <li><a href="javascript:void(0);" onclick="deleterect()">删除(D)</a></li>
-                                    <li><a href="javascript:void(0);" onclick="save()">保存(S)</a></li>         
-                                    <li><a href="javascript:void(0);" onclick="clearCanvas()">清除画布</a></li>  
-                                    <li><a href="javascript:void(0);" onclick="last()">上一张(Q)</a></li>
-                                    <li><a href="javascript:void(0);" onclick="next()">下一张(E)</a></li>
-
-                                    <li><a href="javascript:void(0);">待开发</a></li>
-                                </ul>
-                                </div>
-								-->
+							
 								
                         </nav>
                         <div id="labelwin" width="100%" >
@@ -698,9 +686,21 @@
                             </div><!-- /.panel -->                           
                         </div><!-- /.col -->
                     </div><!-- /.row -->
+					
+					 <div class="form-group" id="nearimage_div" style="display:none">
+					      <div>
+					         <span>相近图片之间时间间隔（秒）：<input type="text" id="intervalTime" style="width: 50px;border-radius: 6px" maxlength="5" value="120" oninput="value=value.replace(/[^\d]/g,'')"></span>
+						     <span>显示已标注图片数量：<input type="text" id="maxImgs" style="width: 50px;border-radius: 6px" maxlength="5" value="20" oninput="value=value.replace(/[^\d]/g,'')"></span>
+						  </div>
+                          <table class="table table-hover" style="table-layout:fixed;width: 100%;word-break: break-all;word-wrap: break-word" id="autonearimage">
+
+                          </table>
+                     </div>
+					<!--
                     <div class="footer-main">
-                    Copyright &copy PCL, 2019-2021
-                  </div>
+                       Copyright &copy PCL, 2019-2021
+                    </div>
+					-->
                 </section><!-- /.content -->
                 
             </aside><!-- /.right-side -->

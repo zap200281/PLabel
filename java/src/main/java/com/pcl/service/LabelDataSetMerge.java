@@ -23,5 +23,15 @@ public class LabelDataSetMerge {
 		
 	}
 	
+	public static String getAllDownLoadFilePath() {
+		String os = System.getProperty("os.name"); 
+		if(os.toLowerCase().startsWith("win")){ 
+			return "D:\\media";
+		}else {
+			return  "/data/allfile";
+		}
+		
+	}
+	
 	
 }

@@ -44,6 +44,22 @@ public class VideoUtil {
     //time: 00:00:06.688
 	private static String ffmpegChouZheng = "ffmpeg -ss {time} -i {fileListName} -vframes 1 {pictureName}";
 	
+	private static String ffmpegMergeVideoCmd = "ffmpeg -y -r 16 -i {picturePath}%08d.jpg -vcodec h264 {videoFileName}";
+	
+	public static void mergePictureToVideo(String picturePath,String videoFileName,int pictureNum) {
+		String ffmpegMergeVideoExecCmd = ffmpegMergeVideoCmd.replace("{picturePath}", picturePath);
+		ffmpegMergeVideoExecCmd = ffmpegMergeVideoExecCmd.replace("{videoFileName}", videoFileName);
+		
+		int time = pictureNum / 22  + 60;
+		
+		try {
+			StringBuilder str = new StringBuilder();
+			ProcessExeUtil.execScriptReturnOutputNotAsyn(ffmpegMergeVideoExecCmd, new File(videoFileName).getParentFile().getAbsolutePath(), time, str);
+		}catch (Exception e) {
+			logger.info(e.getMessage(),e);
+		}
+	}
+	
 	public static String getPictureFromVideo(String time,File videoFile,String pictureName) {
 		
 		String ffmpegChouZhengCmd = ffmpegChouZheng.replace("{time}", time); 
@@ -166,6 +182,20 @@ public class VideoUtil {
 	
 
 	/**
+	 * 抽帧
+	 * @param videoFile 视频文件
+	 * @param imagePath 抽帧后目的路径
+	 * @param param 抽帧参数
+	 * @throws LabelSystemException
+	 */
+	public static void chouZhen(File videoFile,String imagePath,Map<String,String> param) throws LabelSystemException {
+		VideoInfo videoObj = VideoUtil.getVideoObj(videoFile);
+		
+		chouZhenForPath(videoObj, videoFile, param, imagePath);
+		
+	}
+	
+	/**
 	 * 抽关键帧
 	 * @param videoFile
 	 * @param param
@@ -176,6 +206,14 @@ public class VideoUtil {
 		String tmpFilePath = videoFile.getParentFile().getAbsolutePath() + File.separator + System.nanoTime() + File.separator;
 		new File(tmpFilePath).mkdir();
 
+		chouZhenForPath(videoObj, videoFile, param, tmpFilePath);
+		
+		return tmpFilePath;
+	}
+
+
+	private static void chouZhenForPath(VideoInfo videoObj, File videoFile, Map<String, String> param,
+			String tmpFilePath) throws LabelSystemException {
 		String drawFrameType = param.get("drawFrameType");
 		String script = null;
 
@@ -184,12 +222,14 @@ public class VideoUtil {
 			fps = "0.5";//默认每2秒抽一帧
 		}
 		double fpsDouble = Double.parseDouble(fps);
-
 		String videoName = videoFile.getName();
 		videoName = videoName.substring(0,videoName.lastIndexOf("."));
-
+		if(param.get("filenamePrefix") != null) {
+			videoName = param.get("filenamePrefix");
+		}
+		
 		String widthHeight = param.get("-s");
-		if(widthHeight != null && widthHeight.length() == 0) {
+		if(widthHeight == null || widthHeight.length() == 0) {
 			widthHeight = "";
 		}else {
 			widthHeight = " -s " + widthHeight;
@@ -229,7 +269,6 @@ public class VideoUtil {
 				reNameFile(param, tmpFilePath, drawFrameType, fpsDouble, videoName, fileNameFormate, frameCsv);
 			}
 		}
-		return tmpFilePath;
 	}
 
 

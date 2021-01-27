@@ -375,7 +375,7 @@ public class ReIDSchedule {
 			for(LabelTaskItem item : itemList) {
 				List<Map<String,Object>> labelList = ReIDUtil.getLabelList(item.getLabel_info());
 				if(labelList.isEmpty()) {
-					logger.info("jsonLabelInfo is null. jsonLabelInfo=" + item.getLabel_info());
+					logger.info("jsonLabelInfo is null. image=" + item.getPic_object_name());
 					continue;
 				}
 				for(Map<String,Object> label : labelList) {
@@ -424,7 +424,7 @@ public class ReIDSchedule {
 					paramMap.put("label_task_id",  reTaskId);
 					paramMap.put("reid_name", reIdName);
 					paramMap.put("related_info", gson.toJson(relatedMap));
-					logger.info("update relatedMap=" + paramMap);
+					//logger.info("update relatedMap=" + paramMap);
 					reIDTaskShowResultDao.updateShowResult(paramMap);
 				}else {
 					//create

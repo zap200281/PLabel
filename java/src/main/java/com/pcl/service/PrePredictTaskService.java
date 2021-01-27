@@ -96,9 +96,12 @@ public class PrePredictTaskService {
 		
 		//增加限制，如果没有图片，则不能创建。
 		DataSet dataSet = dataSetDao.queryDataSetById(body.getDataSetId());
-		if(dataSet.getTotal() == 0) {
-			throw new LabelSystemException("数据集中图片数量为0，不能创建自动标注。");
-		}
+//		if(dataSet.getTotal() == 0 && dataSet.getDataset_type() == Constants.DATASET_TYPE_VIDEO) {
+//			//如果是视频自动标注，则抽
+//			
+//			
+//			throw new LabelSystemException("数据集中图片数量为0，不能创建自动标注。");
+//		}
 		
 		int re = prePredictTaskDao.addPrePredictTask(prePredictTask);
 		

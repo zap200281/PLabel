@@ -895,6 +895,27 @@ function chou_zhen(index){
 	$('#chou_zhen_hidedatasetid').val( tableData[index].id);
 	$('#chouzhen_datasetname').val( tableData[index].task_name);
 	$('#chouzhen_camera_date').val( tableData[index].camera_date);
+	
+	var zip_object_name = tableData[index].zip_object_name;
+	console.log("zip_object_name=" + zip_object_name);
+	if(isEmpty(zip_object_name)){
+		zip_object_name = tableData[index].task_name;
+	}else{
+		var i = zip_object_name.indexOf("_");
+		if(i != -1){
+			var sub = zip_object_name.substring(0,i);
+			if(sub.length == 16 || sub.length == 15){
+				zip_object_name = zip_object_name.substring(i+1);
+			}
+		}
+		i = zip_object_name.lastIndexOf(".");
+		if(i != -1){
+			zip_object_name = zip_object_name.substring(0,i);
+		}
+	}
+	console.log("chouzhen_filename_prefix=" + zip_object_name);
+	$('#chouzhen_filename_prefix').val( zip_object_name);
+	
 	$('#chouzhen_option').val("0");//默认抽关键帧
 	$('#chouzhen_num_persecond').attr("disabled","true");
     $('#chouzhen_num_persecond').val("0.5");//默认每秒抽一帧
@@ -946,6 +967,7 @@ function submit_chouzhen(){
 　　　　}
 	}
 	 var isDeleteVideo = $('#isDeleteVideo option:selected').val();
+	 var filename_prefix = $('#chouzhen_filename_prefix').val();
 	 $.ajax({
        type:"POST",
        contentType:'application/json',
@@ -962,6 +984,7 @@ function submit_chouzhen(){
 							'baseDate':chouzhen_camera_date,
 							'widthHeight':widthHeight,
 							'isDeleteVideo':isDeleteVideo,
+							'filenamePrefix':filename_prefix,
 							'createAutoLabelTask':createAutoLabelTask
 							
            }),

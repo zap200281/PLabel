@@ -124,6 +124,20 @@ public class ReIDTaskController {
 		return reIdTaskService.queryReIdDestImagePage(reTaskId,pic_image_field,labelId);		
 	}
 	
+	
+	@ApiOperation(value="根据时间算法查询与标注框相似的所有标注框信息", notes="根据时间算法查询与标注框相似的所有标注框信息")
+	@RequestMapping(value="/reId-near-imgs", method = RequestMethod.GET)
+	public Map<String,String> queryReIdNearImagePage(@RequestParam("reid_task_id") String reTaskId, @RequestParam("pic_image_field") String pic_image_field, @RequestParam("intervalTime") long intervalTime) throws LabelSystemException{
+		
+		String token = request.getHeader("authorization");
+		if(token == null) {
+			throw new LabelSystemException("user not login.");
+		}
+		logger.info("queryReIdNearImagePage  token =" + token +" reid_task_id=" + reTaskId + " pic_image_field=" +pic_image_field + " intervalTime=" + intervalTime);
+
+		return reIdTaskService.queryNearReID(token, reTaskId, pic_image_field, intervalTime);
+	}
+	
 	@ApiOperation(value="更新通用图片标注信息", notes="")
 	@RequestMapping(value="/reId-label-task-item", method = RequestMethod.PATCH)
 	public int updateReIDLabelTaskItem(@RequestBody LabelTaskItem body) throws LabelSystemException{
