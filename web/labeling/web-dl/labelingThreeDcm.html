@@ -574,9 +574,9 @@ ul.region_shape .selected { fill:#ffffff; stroke:#ff0000; }
                                 
                                   <li id="skip" style="font-size: 24px" onclick="skipLast()" title="跳转至上次标注的地方"><i class="fa fa-share" aria-hidden="true"></i></li>
 								  
-								  <!--<li  style="font-size: 26px" onclick="setAutoModel()" title="自动标注"  href="#autoLabel" data-toggle="modal" ><i class="fa fa-tag" aria-hidden="true"></i></li> -->
+								  <li  style="font-size: 26px" onclick="setAutoModel()" title="自动标注"  href="#autoLabel" data-toggle="modal" ><i class="fa fa-tag" aria-hidden="true"></i></li>
 
-                                  <!--<li  style="font-size: 26px" onclick="set3DModel()" title="切换到3D显示"  ><i class="fa fa-crosshairs" aria-hidden="true"></i></li>  -->
+                                  <li  style="font-size: 26px" onclick="set3DModel()" title="切换到3D显示"  ><i class="fa fa-crosshairs" aria-hidden="true"></i></li>  
                                   <li  style="font-size: 26px" onclick="setLightContrast()" title="亮度对比度调整"  href="#labeldefine"> <i class="fa fa-adjust" aria-hidden="true"></i></li> 
                                </ul>
  
@@ -585,24 +585,31 @@ ul.region_shape .selected { fill:#ffffff; stroke:#ff0000; }
                              <div id=labeldefine>
                                  
                              </div>
-							 
+							 <!--
+                                <div class="container-fluid">
+                                  <ul class="nav navbar-nav">
+                                    <li><a href="javascript:void(0);" onclick="createlabel()">新建标注(W)</a></li>   
+                                    <li><a href="javascript:void(0);" onclick="cancel()">取消新建(ESC)</a></li>         
+                                    <li><a href="javascript:void(0);" onclick="deleterect()">删除(D)</a></li>
+                                    <li><a href="javascript:void(0);" onclick="save()">保存(S)</a></li>         
+                                    <li><a href="javascript:void(0);" onclick="clearCanvas()">清除画布</a></li>  
+                                    <li><a href="javascript:void(0);" onclick="last()">上一张(Q)</a></li>
+                                    <li><a href="javascript:void(0);" onclick="next()">下一张(E)</a></li>
+
+                                    <li><a href="javascript:void(0);">待开发</a></li>
+                                </ul>
+                                </div>
+								-->
 								
                             </nav>
-							
-							
-					
-							
-						
-                            <div id="labelwin" width="1140" height="642">
+                            <div id="labelwin" width="1140" height="642" style="display: inline-block;border: none;">
                                <div id = "show_region"   style="position: absolute;width: 0px;height: 0px;">                              
                                 </div>
-								<!--
                                 <div id='divMyCanvas' style="display: inline-block;border:1px solid #5a5a5a;border: none;background: #000000">
                                  <canvas id="myCanvas" width="1140" height="642" style=";display: inline-block;">
                                  </canvas>
                                 </div>
 
-                             
                                 <div id ='divRender' style="display: inline-block;border:1px solid #5a5a5a;">
                                 </div> 
                                 <div id='divRadial'style="display: inline-block;border:1px solid #5a5a5a;vertical-align:text-bottom;border: none;background: #000000" >
@@ -614,22 +621,34 @@ ul.region_shape .selected { fill:#ffffff; stroke:#ff0000; }
                                  <canvas id="chordCanvas" width="1140" height="642" style="position: relative;vertical-align: middle;margin:auto;display: block; " >
                                   </canvas>  
                                 </div>  
-								-->
                           
-                                  <canvas id="myCanvas" width="1140" height="642" style="border:1px solid #5a5a5a;">
-                                 </canvas> 
-                                <div id="task_flow_verify">
+<!--                                  <canvas id="myCanvas" width="1140" height="642" style="border:1px solid #5a5a5a;">
+                                 </canvas> -->
+                            <div id="task_flow_verify">
 							   
-							    </div>
+							</div>
                         </div>
-						
                              <!-- 其他标注工具 -->
-                          <!--   -->
-                          <div id ='CTtools' style="display: inline-block;vertical-align:text-bottom;">
-                            </div>  
+                            <div id ='CTtools' style="display: inline-block;vertical-align:text-bottom;">
+<!--                                <div id = "LinearContrast" style="border: 2px solid #5a5a5a;border-radius:4px;width: 100%;height: 100px; ">
+                                <a style="margin:10px">Linear Contrast Adjustment</a><br>
+                                <label  style="margin: 10px" ">最小值</label> <input type="text" id = "minCT" value="-3000"  maxlength="7" onchange="changeValue()" style="border-radius:4px;width: 20%"> 
+                                <br>
+                                <label style="margin: 10px" >最大值</label> <input id ="maxCT" type="text" value="4000" maxlength="7" onchange="changeValue()" style="border-radius:4px;width: 20%"     
+                               </div>
+
+                                <div id = "slideContrast" style="border: 1px solid #5a5a5a;border-radius:4px;width: 100%;height: 50px;margin-top: 20px; ">
+                                 <div style="margin-top: 15px;">
+                                    <input id= 'rangeContrast' style="vertical-align:middle;margin-top:20px" class="range-slider" type="hidden" value="10,89" />
+                                </div>>
+
+                               </div> -->
+
+
+                            </div>
+                            
                         </div><!-- /.col -->
                         <div class="col-md-3">
-						    
                             <div class="panel" id = "panel_light">
                                 <header class="panel-heading">
                                     <p><span>任务名称:&nbsp;&nbsp;&nbsp;&nbsp;</span> <span id="task_info"></span></p>
