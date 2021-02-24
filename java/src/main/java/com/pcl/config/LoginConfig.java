@@ -28,6 +28,8 @@ public class LoginConfig implements WebMvcConfigurer {
     		registration.excludePathPatterns("/api/message/**"); 
     		registration.excludePathPatterns("/api/svsmessage/**"); 
     		registration.excludePathPatterns("/api/label-file-download/**"); 
+    		registration.excludePathPatterns("/api/task-export-label-property/**"); 
+    		
     	}
         
     }

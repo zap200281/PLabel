@@ -67,6 +67,9 @@ public class LargeImgToDziSchedule {
 	
 	@Value("${server.enable.bigimg:true}")
 	private boolean enable = true;
+	
+	@Value("${server.dzi.install.path:/home/image2dzi/}")
+	private String dziInstallPath;
 
 	public boolean addTask(DataSet dataSet) {
 		waitTime = 10;
@@ -84,6 +87,7 @@ public class LargeImgToDziSchedule {
 			return;
 		}
 		logger.info("start to load big image db data.");
+		logger.info("dziInstallPath=" + dziInstallPath);
 		
 		loadTaskFromDb();
 		
@@ -141,17 +145,19 @@ public class LargeImgToDziSchedule {
 			LargePictureUtil.zoomSvsFile(downloadFile.getAbsolutePath(), dataSet.getId(),msgresttype,msgrestip,port,String.valueOf(dziPort));
 			
 			logger.info("finished deal svs picture, cost " + (System.currentTimeMillis() - start) + " ms");
-			logger.info("wait to upload minio.");
-			String dziPath = "/home/image2dzi/" + downloadFile.getName() + ".dzi";
+			
+			String dziPath = dziInstallPath + downloadFile.getName() + ".dzi";
+			logger.info("dzipath= " + dziPath);
 			if(new File(dziPath).exists()) {
+				logger.info("wait to upload minio.");
 				Map<String,Object> dziMap = new HashMap<>();
 				
 				getDziInfo(dziMap, dziPath);
 				
-				String dzifilepath = "/home/image2dzi/"+ downloadFile.getName() + "_files";
+				String dzifilepath = dziInstallPath + downloadFile.getName() + "_files";
 				
 				uploadFileToMinio(dataSet.getId(), dziMap, dzifilepath);
-				
+				logger.info("finished to upload minio 2.");
 				if(dataSet.getVideoSet() != null && "autoAddLabelTask".equals(dataSet.getVideoSet())) {
 					logger.info("autoAddLabelTask is true.");
 					//更新标注任务状态
@@ -170,8 +176,10 @@ public class LargeImgToDziSchedule {
 						logger.info("not found large dataset.");
 					}
 				}
+			}else {
+				logger.info("not found dzi file. so it may be error.");
 			}
-			logger.info("finshed upload minio. total cost=" + (System.currentTimeMillis() - start) + " ms");
+			logger.info("finshed deal dzi. total cost=" + (System.currentTimeMillis() - start) + " ms");
 		}catch (Exception e) {
 			logger.info(e.getMessage(),e);
 		}finally {
@@ -231,6 +239,7 @@ public class LargeImgToDziSchedule {
 		paramMap.put("file_bucket_name", bucketName);
 		paramMap.put("total", 1);
 		paramMap.put("task_status", Constants.DATASET_PROCESS_PREPARE);
+		logger.info("update dataset total =1");
 		dataSetDao.updateDataSet(paramMap);
 		logger.info("finished upload file to minio.");
 		progressDao.deleteProgress(dataSetId);

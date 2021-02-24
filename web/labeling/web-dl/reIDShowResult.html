@@ -137,7 +137,7 @@
                         <div class="col-xs-12">
                             <div class="panel">
                               <header class="panel-heading">
-                                  ReID标注结果      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        <button type="button" onclick="reIdAuto()"  class="btn btn-primary">ReID标注结果重分类 </button>              
+                                  ReID标注结果      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        <button type="button" onclick="reIdAuto()"  class="btn btn-primary">ReID标注结果重分类 </button>        <button type="button" onclick="setTaskId()"  class="btn btn-primary">导出标注数据</button>        
                               </header>
 							
                             <div class="panel-body">
@@ -166,9 +166,7 @@
                                             </div>
                                             
                                      </div>
-                                     <div style="height: 30px;">
-										<button type="button" onclick="setTaskId()"  class="btn btn-primary">导出标注数据</button>
-                                    </div>
+                                     
                                 </div><!-- /.box-body -->
 
 
@@ -198,7 +196,8 @@
                                                               <option value="1" selected="">导出抠图及ReID信息</option>
 															  <option value="2">导出原图及标注</option>
 															  <option value="4">仅导出抠图</option>
-															  <option value="3">导出抠图及ReID信息并以数据集名称重命名</option>
+															  <!--<option value="3">导出抠图及ReID信息并以数据集名称重命名</option>-->
+															  <option value="5">导出异常事故检测事件级标注</option>
                                                            </select>
                                                       </div>
                                                       

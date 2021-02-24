@@ -1525,7 +1525,10 @@ function annotation_editor_update_metadata_html(recttype) {
     } else {
       if ( _via_display_area_content_name === VIA_DISPLAY_AREA_CONTENT_NAME.IMAGE ) {
         if ( _via_annotation_editor_mode === VIA_ANNOTATION_EDITOR_MODE.SINGLE_REGION ) {
-          ae.appendChild( annotation_editor_get_metadata_row_html(_via_user_sel_region_id,recttype) );
+		 
+			ae.appendChild( annotation_editor_get_metadata_row_html(_via_user_sel_region_id,recttype) );
+			  
+		  
         } else {
           for ( rindex = 0; rindex < regions.length; ++rindex ) {
             ae.appendChild( annotation_editor_get_metadata_row_html(rindex) );
@@ -1568,7 +1571,7 @@ function annotation_editor_get_metadata_row_html(row_id,recttype) {
   var row = document.createElement('div');
   row.setAttribute('class', 'row');
   row.setAttribute('id', 'ae_' + _via_metadata_being_updated + '_' + row_id);
-
+  console.log("row_id=" + row_id);
   if ( _via_metadata_being_updated === 'region' ) {
     var rid = document.createElement('span');
 
@@ -1585,23 +1588,11 @@ function annotation_editor_get_metadata_row_html(row_id,recttype) {
     row.appendChild(rid);
   }
 
-  if ( _via_metadata_being_updated === 'file' ) {
-    var rid = document.createElement('span');
-    rid.setAttribute('class', 'col');
-    switch(_via_display_area_content_name) {
-    case VIA_DISPLAY_AREA_CONTENT_NAME.IMAGE_GRID:
-      rid.innerHTML = 'Group of ' + _via_image_grid_selected_img_index_list.length + ' files';
-      break;
-    case VIA_DISPLAY_AREA_CONTENT_NAME.IMAGE:
-      rid.innerHTML = _via_image_filename_list[_via_image_index];
-      break;
-    }
-
-    row.appendChild(rid);
-  }
+ 
 
   var attr_id;
   for ( attr_id in _via_attributes[_via_metadata_being_updated] ) {
+
 	//console.log("attr_id row=" + attr_id);
 	if(attr_id =="verify" && userType !=2 ){//标注人员不需要看到审核列
 		continue;
@@ -1619,6 +1610,7 @@ function annotation_editor_get_metadata_row_html(row_id,recttype) {
     var attr_value = '';
     var attr_placeholder = '';
     if ( _via_display_area_content_name === VIA_DISPLAY_AREA_CONTENT_NAME.IMAGE ) {
+	  console.log("tt=" + _via_display_area_content_name);
       switch(_via_metadata_being_updated) {
       case 'region':
       if (regions[row_id]!==undefined){
@@ -1801,19 +1793,11 @@ function annotation_editor_get_metadata_row_html(row_id,recttype) {
 
     row.appendChild(col);
   }
-  // var col = document.createElement('span');
-  // col.setAttribute('class', 'col');
-  // var reId_button = document.createElement('button');
-  // reId_button.setAttribute('style', 'border-radius:8px');
- 
-  // reId_button.innerHTML = "点击查看";
-  //   reId_button.onclick=function () { 
-  //   showImage(row_id,recttype);
-  //   }
-  // col.appendChild(reId_button);
-  // row.appendChild(col);
+
   return row;
 }
+
+
 
 function annotation_editor_scroll_to_row(row_id) {
   if ( is_annotation_editor_visible() ) {

@@ -3107,3 +3107,74 @@ function showNearImage(){
 	row += "</div>";
     document.getElementById('autonearimage').innerHTML=row;
 }
+
+function export_attribute(){
+     var url = ip + "/api/task-export-label-property/";
+	 var $iframe = $('<iframe />');
+     var $form = $('<form  method="get" target="_self"/>');
+	$form.attr('action', url); //设置get的url地址
+
+	$form.append('<input type="hidden"  name="task_id" value="' + label_task_info.id + '" />');
+	$form.append('<input type="hidden"  name="type" value="reid" />');
+		
+	$iframe.append($form);
+	$(document.body).append($iframe);
+	$form[0].submit();//提交表单
+    $iframe.remove();//移除框架
+
+}
+
+
+function import_attribute(){
+   
+   $('#datasetModal').modal('show');
+
+}	
+
+function submit_import_property(){
+	var jsonContent = $("#jsoninput").val();
+	if(!isJSON(jsonContent)){
+		alert("输入格式非法。");
+		return;
+	}
+	$.ajax({
+         type:"POST",
+         url:ip + "/api/task-import-label-property/",
+         headers: {
+            authorization:token,
+          },
+         dataType:"json",
+         data:{
+           'jsonContent':jsonContent,
+		   'taskType':"reid",
+		   'taskId':reid_task_id
+         },
+         async:false,
+         success:function(json){
+           console.log(json);
+         },
+	     error:function(response) {
+		  redirect(response);
+         }
+     });
+	$('#datasetModal').modal('hide');
+}
+
+function isJSON(str) {
+    if (typeof str == 'string') {
+        try {
+            var obj=JSON.parse(str);
+            if(typeof obj == 'object' && obj ){
+                return true;
+            }else{
+                return false;
+            }
+
+        } catch(e) {
+            console.log('error：'+str+'!!!'+e);
+            return false;
+        }
+    }
+    console.log('It is not a string!');
+	return false;
+}

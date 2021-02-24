@@ -334,6 +334,47 @@ public class CocoAnnotationsUtil {
 		return null;
 	}
 
+	
+	public static String getStrValue(Map<String, Object> label,String key) {
+		Object obj = label.get(key);
+		if(obj != null && !Strings.isEmpty(obj.toString())) {
+			return obj.toString();
+		}else {
+			Object other = label.get("other");
+			if(other != null) {
+				Map<String,Object> otherMap = (Map<String,Object>)other;
+				Object region_attributesObj = otherMap.get("region_attributes");
+				if(region_attributesObj != null && region_attributesObj instanceof Map) {
+					Map<String,Object> region_attributesMap = (Map<String,Object>)region_attributesObj;
+					obj = region_attributesMap.get(key);
+					if(obj != null && !Strings.isEmpty(obj.toString())) {
+						return obj.toString();
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	public static Object getObjValue(Map<String, Object> label,String key) {
+		Object obj = label.get(key);
+		if(obj != null) {
+			return obj;
+		}else {
+			Object other = label.get("other");
+			if(other != null) {
+				Map<String,Object> otherMap = (Map<String,Object>)other;
+				Object region_attributesObj = otherMap.get("region_attributes");
+				if(region_attributesObj != null && region_attributesObj instanceof Map) {
+					Map<String,Object> region_attributesMap = (Map<String,Object>)region_attributesObj;
+					return region_attributesMap.get(key);
+				}
+			}
+		}
+		return null;
+	}
+	
 	public static float caculateArea(List<Object> maskList) {
 		Point vertex[] = new Point[maskList.size() / 2];
 		for(int i = 0; i < maskList.size(); i += 2) {
