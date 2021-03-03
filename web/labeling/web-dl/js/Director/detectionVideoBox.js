@@ -1898,15 +1898,31 @@ function updatelabel(fileindex){
       pauseToDo();
     
      var res = isExitLable();
-     var i = 0;
-     while(isEmpty(oneLabelResult.pic_image_field) ){ //确保获取到数据
-       isExitLable();
-    }
+     var count = 0;
+	 
+     while(isEmpty(oneLabelResult) || isEmpty(oneLabelResult.pic_image_field) ){ //确保获取到数据
+       sleep(20);
+	   isExitLable();
+	   count++;
+	   if(count > 200){
+		   console.log(count);
+		   break;
+	   }
+     }
      loadOneImg();
   }
   page(0,pageSize);
 }
 
+function sleep(numberMillis) {
+    var now = new Date();
+    var exitTime = now.getTime() + numberMillis;
+    while (true) {
+        now = new Date();
+        if (now.getTime() > exitTime)
+            return;
+    }
+}
 
 
 function update_labeltask(task_label_type_info){
@@ -2470,6 +2486,9 @@ function play(){
 
 
 function pauseToDo(){
+
+  console.log("to this.");	
+	
   fileindex=-1;
   clickLineMark = false;
   canvasShow.width = video.width;
@@ -2486,6 +2505,7 @@ function pauseToDo(){
   showDrawCanvas();
 
   if (isExitLable()){
+	console.log("to this 1.");	
     clickLineMark = true;
     loadOneImg();
   }
@@ -2536,9 +2556,10 @@ function get_init_atrribute(){
 
 
 function isExitLable(){
-
-    var time = time2strms(video.currentTime);   
-      $.ajax({
+    oneLabelResult = null;
+    var time = time2strms(video.currentTime);  
+    console.log("query time=" + time);	
+    $.ajax({
        type:"GET",
        url:ip + "/api/video-label-task-item-bytime",
        headers: {
@@ -2558,8 +2579,9 @@ function isExitLable(){
 		  redirect(response);
        }
    });
-
+  console.log("oneLabelResult =" + oneLabelResult)
   if (isEmpty(oneLabelResult)){
+	console.log("no the time label:" + time);
     return false;
   }
   return true;
