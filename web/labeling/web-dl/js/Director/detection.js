@@ -2649,6 +2649,7 @@ function setPage(pageData,pageSize){
     canvas.onmousemove =dragRect; 
     
 	var token = getCookieOrMessage("token");
+	console.log("page load token=" + token);
     if(!isEmpty(token)){
 		console.log("this is not null.token =" + token);
 		doLoad();

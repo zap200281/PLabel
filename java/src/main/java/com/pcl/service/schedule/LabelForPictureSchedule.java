@@ -298,13 +298,9 @@ public class LabelForPictureSchedule {
 			//exeScript(script,algRootPath);
 			String jsonFile = outputDir + "result.json";
 			File jsonResultFile = new File(jsonFile);
-			if(predictVideo) {//视频标注
+			if(predictVideo) {
 				//删除结果文件
-				String picUrl = null;
 				if(jsonResultFile.exists()) {
-					//保存结果文件到minio中
-					FileResult jsonResult = fileService.uploadVideoFile(jsonResultFile);
-					picUrl = jsonResult.getPublic_url();
 					jsonResultFile.delete();
 				}
 				String destVideoName = outputDir + prePredictTask.getId() + ".mp4";
@@ -322,7 +318,6 @@ public class LabelForPictureSchedule {
 					result.setItem_add_time(TimeUtil.getCurrentTimeStr());
 					result.setPre_predict_task_id(prePredictTask.getId());
 					result.setPic_image_field("/minio" + fileResult.getPublic_url());
-					result.setPic_url("/minio" + picUrl);
 					result.setUser_id(tableNamePos);
 					prePredictTaskResultDao.addPrePredictTaskResult(result);
 				}
@@ -631,7 +626,28 @@ public class LabelForPictureSchedule {
 
 
 
-
+	//	private void exeScript(String script, String algRootPath) throws LabelSystemException {
+	//		String os = System.getProperty("os.name"); 
+	//		if(!os.toLowerCase().startsWith("win")){
+	//			logger.info("start runtime exe script." + script);
+	//			File outputFile = new File(algRootPath);
+	//			try {
+	//				Process p = Runtime.getRuntime().exec(script, null, outputFile);
+	//				try(BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "utf-8"))){
+	//					String line = "";
+	//					while ((line = reader.readLine()) != null) {
+	//						logger.info(line + "\n");
+	//					}
+	//				}
+	//				logger.info("wait to 3 hours.");
+	//				p.waitFor(3, TimeUnit.HOURS);
+	//				p.destroyForcibly();
+	//			} catch (IOException | InterruptedException e) {
+	//				e.printStackTrace();
+	//				throw new LabelSystemException("Can not execute command." + e.getMessage());
+	//			} 
+	//		}
+	//	}
 
 	private String getScript(int algModelId) {
 		AlgModel algModel = algModelDao.queryAlgModelById(algModelId);

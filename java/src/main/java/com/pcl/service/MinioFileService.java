@@ -509,7 +509,4 @@ public class MinioFileService implements ObjectFileService{
 		return getPicture(bucketname, fileName);
 	}
 
-
-
-
 }

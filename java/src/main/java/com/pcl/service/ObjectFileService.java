@@ -55,5 +55,4 @@ public interface ObjectFileService {
 	public String downLoadFileFromMinioAndSetPictureName(String bucketName, String objectName,String pictureName) throws LabelSystemException;
 	
 	public List<String> listAllFile(String obsPath);
-
 }

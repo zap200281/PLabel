@@ -1323,11 +1323,4 @@ public class ReIdTaskService {
 		ThreadSchedule.execThread(()->{showResultSchedule.execReIDTaskNew(reTaskId);});
 	}
 
-	public String queryLabelProperty(String token, String reIDTaskId) {
-		ReIDTask task = reIDTaskDao.queryReIDTaskById(reIDTaskId);
-		
-		return task.getTask_label_type_info();
-		
-	}
-
 }

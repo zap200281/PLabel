@@ -925,3 +925,11 @@ INSERT INTO `labelsystem`.`alg_warehouse_algmodel` (`id`, `model_name`, `model_u
 ALTER TABLE `labelsystem`.`tasks_largepicturelabeltask` 
 ADD COLUMN `appid` VARCHAR(300) NULL DEFAULT NULL AFTER `mainVideoInfo`;
 
+
+-- 20210421
+INSERT INTO `labelsystem`.`alg_warehouse_alginstance` (`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('17', 'Segmentation', '2021-04-21 15:08:24.000000', '自动分割', '/deeplabv3/');
+INSERT INTO `labelsystem`.`alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`, `exec_script`, `type_list`, `auto_used`) VALUES ('100', 'Auto Segmentation', '17', 'python3 tools_forlabel.py', '[\"road\",\"sidewalk\",\"building\",\"wall\",\"fence\",\"pole\",\"trafficlight\",\"trafficsign\",\"vegetation\",\"terrain\",\"sky\",\"person\",\"rider\",\"car\",\"truck\",\"bus\",\"train\",\"motorcycle\",\"bicycle\",\"other\"]', '1');
+
+-- 20210422
+ALTER TABLE `labelsystem`.`alg_warehouse_algmodel` 
+ADD COLUMN `a_picture_cost_time` INT NULL AFTER `hand_label_used`;
