@@ -933,3 +933,8 @@ INSERT INTO `labelsystem`.`alg_warehouse_algmodel` (`id`, `model_name`, `alg_ins
 -- 20210422
 ALTER TABLE `labelsystem`.`alg_warehouse_algmodel` 
 ADD COLUMN `a_picture_cost_time` INT NULL AFTER `hand_label_used`;
+
+-- 20210609
+INSERT INTO `labelsystem`.`alg_warehouse_alginstance` (`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('19', 'MIAOD', '2021-06-09 15:08:24.000000', '主动分类', '/MIAL/');
+INSERT INTO `labelsystem`.`alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`, `train_script`) VALUES ('60', 'MIAOD', '19', 'python tools/train.py configs/MIAOD.py --work_directory {work_directory} --num_classes {num_classes}');
+
