@@ -654,34 +654,23 @@ CHANGE COLUMN `pid` `pid` INT(11) NULL ;
 
 
 INSERT INTO alg_warehouse_alginstance(id, alg_name, add_time, alg_type_name, alg_root_dir) VALUES ('4', 'FreeAnchor', '2020-01-08 17:44:24.000000', '目标检测', '/mmdetection/');
-INSERT INTO alg_warehouse_alginstance(id, alg_name, add_time, alg_type_name, alg_root_dir) values('6', 'MEB-Net(ReID)', '2020-03-28 17:44:24.000000', '行人再识别', '/MEB-Net/');
 INSERT INTO alg_warehouse_alginstance(id, alg_name, add_time, alg_type_name, alg_root_dir) VALUES ('5', 'Retinanet', '2020-01-08 17:44:24.000000', '目标检测', '/mmdetection/');
-INSERT INTO alg_warehouse_alginstance(`id`, `alg_name`, `add_time`, `alg_type_name`) VALUES ('7', 'WiseMedical', '2020-05-14 17:44:24.000000', '智慧医疗');
-INSERT INTO alg_warehouse_alginstance(`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('8', 'Face Detection', '2020-05-19 17:44:24.000000', '人脸检测', '/A-Light-and-Fast-Face-Detector-for-Edge-Devices/');
-INSERT INTO alg_warehouse_alginstance(`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('9', 'Tracking', '2020-05-25 17:44:24.000000', '目标跟踪', '/vision/SiamR-CNN/');
+
 INSERT INTO alg_warehouse_alginstance(`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('10', 'Tracking_pyECO', '2020-08-19 17:44:24.000000', '目标跟踪', '/pyECO/');
 INSERT INTO alg_warehouse_alginstance(`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('11', 'FastReID', '2020-08-19 17:44:24.000000', '目标重识别', '/fastreid/');
-INSERT INTO alg_warehouse_alginstance(`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('12', 'YOlOV3', '2020-06-18 17:44:24.000000', '目标检测', '/detection_tool/');
+
 
 
 
 INSERT INTO alg_warehouse_algmodel (id, conf_path, model_name, local_path, model_url, alg_instance_id, exec_script, train_script, type_list, threshold) VALUES ('4', 'configs/free_anchor/retinanet_free_anchor_r50_fpn_1x.py', 'FreeAnchor', '', 'model/retinanet_free_anchor_r50_fpn_1x/epoch_12.pth', '4', 'python3 demoForJava.py --cfg {configPath} --checkpoint {modelPath}', 'python3  tools/train.py {configPath}',NULL,NULL);
 
-INSERT INTO alg_warehouse_algmodel(id, conf_path, model_name, local_path, model_url, alg_instance_id, exec_script, train_script, type_list, threshold) VALUES ('5', 'configs/retinanet/retinanet_x101_64x4d_fpn_1x.py', 'Retinanet(person+car)', '', 'model/retinanet_x101_64x4d_fpn_1x/epoch_20.pth', '5', 'python3 demoForJava.py --cfg {configPath} --checkpoint {modelPath}', 'python3  tools/train.py {configPath}',NULL,NULL);
-INSERT INTO alg_warehouse_algmodel(id, conf_path, model_name, local_path, model_url, alg_instance_id, exec_script, train_script, type_list, threshold) VALUES ('6', 'configs/retinanet/retinanet_x101_64x4d_fpn_1x_car.py', 'Retinanet(car)', NULL, 'model/retinanet_x101_64x4d_fpn_1x/epoch_car_17.pth', '5', 'python3 demoForJava.py --cfg {configPath} --checkpoint {modelPath}', 'python3  tools/train.py {configPath}',NULL,NULL);
+
 INSERT INTO alg_warehouse_algmodel(id, conf_path, model_name, local_path, model_url, alg_instance_id, exec_script, train_script, type_list, threshold) VALUES ('7', 'configs/retinanet/retinanet_x101_64x4d_fpn_1x_car.py', 'Retinanet(all car)', NULL, 'model/retinanet_x101_64x4d_fpn_1x/epoch_9_car_new.pth', '5', 'python3 demoForJava.py --cfg {configPath} --checkpoint {modelPath}', 'python3  tools/train.py {configPath}',NULL,NULL);
 
-insert into alg_warehouse_algmodel(id, conf_path, model_name, local_path, model_url, alg_instance_id, exec_script, train_script, type_list, threshold) values('8', NULL, 'ReID(person)', NULL, NULL, '6', 'python3 main/model_test.py -b 256 -j 8  --dataset-target market1501 -a resnet50 --resume /MEB-Net/resnet50_best_person.pth.tar --data-dir {data_dir}', NULL, '[\"person\"]', NULL);
-
-insert into alg_warehouse_algmodel(id, conf_path, model_name, local_path, model_url, alg_instance_id, exec_script, train_script, type_list, threshold) values('9', NULL, 'ReID(car)', NULL, NULL, '6', 'python3 main/model_test.py -b 256 -j 8  --dataset-target market1501 -a resnet50 --resume /MEB-Net/model_best_car.pth.tar --data-dir {data_dir}', NULL, '[\"car\"]', NULL);
-
-INSERT INTO `alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`) VALUES ('10', 'WiseMedical(Cell)', '7');
-INSERT INTO `alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`, `exec_script`) VALUES ('11', 'Face Detection', '8', 'python3 face_detection/demo/demoForJava.py');
-INSERT INTO `alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`, `exec_script`) VALUES ('12', 'Tracking', '9', 'python3 tracking/do_tracking.py --main main_custom --custom_dataset_root_dir {data_dir} --custom_dataset_name {data_name}');
 
 INSERT INTO `alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`, `exec_script`) VALUES ('16', 'Tracking_pyECO', '10', 'python3 bin/demo_ECO_hc.py --video_dir  {data_dir} --custom_dataset_name  {data_name}');
 INSERT INTO `alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`, `exec_script`, `type_list`) VALUES ('17', 'FastReID(Person)', '11', 'python3 tools/test_net.py --config-file ./configs/Person/sbs_R101-ibn-test.yml --datadir  {data_dir} --json_path  {data_dir}/test.json', '[\"person\"]');
-INSERT INTO alg_warehouse_algmodel (`id`, `conf_path`, `model_name`, `alg_instance_id`, `exec_script`, `type_list`) VALUES ('18', '', 'YOLOV3', '12', 'python3 processYoLov3DemoForJava.py', '[\"person\"]');
+
 
 
 INSERT INTO `users_userprofile`(id,password,last_login,is_superuser,username,first_name,last_name,email,is_staff,is_active,date_joined,nick_name,address,mobile,company,parent_invite_code) VALUES ('5', '�R�\'�~2~�f#Vd`8�7V����;}�t\\h�', NULL, '0', 'LabelSystem01', null, null, 'zouap@pcl.com.cn', '0', '0', '2019-12-24 16:02:52.000000', 'admin', '鹏城实验室', '1235698755', '实验室', null);
@@ -833,11 +822,7 @@ CREATE TABLE `login_info` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 
--- ---------------------------------------
--- 0922
--- --------------------------------------
-INSERT INTO `labelsystem`.`alg_warehouse_alginstance` (`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('13', 'Distinguish', '2020-09-22 17:44:24.000000', '车辆识别', '/mmdetection/');
-INSERT INTO `labelsystem`.`alg_warehouse_algmodel` (`id`, `conf_path`, `model_name`, `model_url`, `alg_instance_id`, `exec_script`, `train_script`, `type_list`) VALUES ('19', 'configs/retinanet/faster_rcnn_r50_caffe_c4_1x.py', 'Car Distinguish', 'model/faster_rcnn_r50_caffe_c4_1x/epoch_48.pth', '13', 'python3 tools/pred_car_type.py --cfg {configPath} --checkpoint {modelPath}', '', '[\"car\"]');
+
 
 DROP TABLE IF EXISTS `user_extend`;
 CREATE TABLE `user_extend` (
@@ -849,13 +834,7 @@ CREATE TABLE `user_extend` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 
 
--- 1009
-INSERT INTO `labelsystem`.`alg_warehouse_alginstance` (`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('14', 'Multiple Target FairMOT Tracking ', '2020-10-09 17:44:24.000000', '多目标跟踪', '/FairMOT/');
-INSERT INTO `labelsystem`.`alg_warehouse_alginstance` (`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('15', 'Multiple Target CenterTrack Tracking ', '2020-10-09 17:44:24.000000', '多目标跟踪', '/CenterTrack/');
 
-INSERT INTO `labelsystem`.`alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`, `exec_script`, `type_list`) VALUES ('20', 'Multiple Target FairMOT Tracking', '14', 'python3 src/image_demo.py  mot --load_model models/fairmot_dla34.pth --conf_thres 0.6 --data_dir {data_dir} --out_file {output}', '[\"person\"]');
-
-INSERT INTO `labelsystem`.`alg_warehouse_algmodel` (`id`, `model_name`, `alg_instance_id`, `exec_script`, `type_list`) VALUES ('21', 'Multiple Target CenterTrack Tracking', '15', 'python3 src/demo.py tracking --load_model models/mot17_half.pth --num_class 1 --demo {data_dir} --save_results --vis_thresh 0.6 --out_file {output} --select_name {class_name}', '[\"car\",\"person\"]');
 
 ALTER TABLE `labelsystem`.`alg_warehouse_algmodel` 
 ADD COLUMN `model_type` INT(11) NULL DEFAULT NULL AFTER `threshold`;
@@ -914,11 +893,6 @@ ADD COLUMN `delete_similar_picture` INT(11) NULL AFTER `score_threshold`;
 ALTER TABLE `labelsystem`.`tasks_prepredicttasks` 
 CHANGE COLUMN `score_threshold` `score_threshhold` DOUBLE NULL DEFAULT NULL ;
 
-
--- 20201029
-INSERT INTO `labelsystem`.`alg_warehouse_alginstance` (`id`, `alg_name`, `add_time`, `alg_type_name`, `alg_root_dir`) VALUES ('16', 'Lung Auto Label', '2020-10-29 17:44:24.000000', '肺自动标注', '/Lung_Segmentation/');
-
-INSERT INTO `labelsystem`.`alg_warehouse_algmodel` (`id`, `model_name`, `model_url`, `alg_instance_id`, `exec_script`, `type_list`, `auto_used`) VALUES ('50', 'Lung Auto Label', 'checkpoints/no_normalize/CP_epoch50.pth', '16', 'python3 predict_for_autolabel.py --checkpoint {modelPath} ', '[\"Lung\"]', '1');
 
 
 -- 20201216
