@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>PCL数据标注平台V1.6</title>
+        <title>PCL数据标注平台V2.0</title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <meta name="description" content="Developed By M Abdur Rokib Promy">
         <meta name="keywords" content="Admin, Bootstrap 3, Template, Theme, Responsive">
@@ -44,7 +44,7 @@
         <!-- header logo: style can be found in header.less -->
         <header class="header">
             <a href="index.html" class="logo">
-                PCL数据标注平台V1.6
+                PCL数据标注平台V2.0
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -252,8 +252,22 @@
                                                                   <label for="exampleInputEmail2">模式</label>                                          
                                                                   <select class="form-control" name="模式" id="task_flow_type" onchange="flow_type_sele_Change(this)">
                                                                        <option value="1" select="true"> 标注工作模式</option>  
-                                                                       <option value="2"> 标注审核模式</option>  																	   
+                                                                       <option value="2"> 标注审核模式</option> 
+                                                                       <option value="3"> 主动分类学习模式</option>  																	   
                                                                   </select>
+                                                             </div>
+															 
+															  <div class="form-group">
+                                                                 <div class="form-group">
+																	  <label id = "labelInfo" for="exampleInputFile">标注类别属性，请输入符合格式Json字符串 </label>
+																<div>
+																	  <textarea id="jsoninput1" rows="8" cols="70" placeholder="可先不设置，在标注页面进行可视化添加，导出成Json文件后，在后续创建任务的时候粘贴到此框中">
+																	  
+																	  </textarea>
+                                                                </div>
+                                                                
+                                                                </div>                                          
+                                                                  
                                                              </div>
 															 
 															 <div id="related_task_list">
@@ -294,9 +308,18 @@
                                                                   <label for="exampleInputEmail1">人工标注任务名称<font color=red>*</font></label>
                                                                   <input type="" class="form-control" id="labeltaskname" placeholder="校验标注任务名称，不超过32个字符" maxlength="32">
                                                               </div>
-                                                             
+                                                             <div class="form-group">
+                                                                 
+																	  <label id = "labelInfo" for="exampleInputFile">标注类别属性，请输入符合格式Json字符串 </label>
+																      <div>
+																	      <textarea id="jsoninput2" rows="8" cols="70" placeholder="可先不设置，在标注页面进行可视化添加，导出成Json文件后，在后续创建任务的时候粘贴到此框中">
+																	   
+																	     </textarea>
+                                                                      </div>
+                                                                
+                                                            </div>    
                                         
-                                                              <button type="button"  onclick="submit_labeltask();">提交</button>
+                                                            <button type="button"  onclick="submit_labeltask();">提交</button>
                                                           
                                                       </div>
                                                   </div>

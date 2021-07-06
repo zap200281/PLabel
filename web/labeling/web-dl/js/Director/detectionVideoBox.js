@@ -2806,6 +2806,7 @@ function clock(tmpTime){
          oneLabelResult = json;
        },
 	   error:function(response) {
+		  
 		  redirect(response);
        }
    });

@@ -286,9 +286,10 @@ function drawimage() {
  
      
      for (var i=0; i<masks.length; i++){
+	   console.log("start to draw mask.");
        context.strokeStyle="purple"
        var mask =masks[i];
-       context.lineWidth = 2;
+       context.lineWidth = 1;
        for (var j=1; j<mask.points.length; j++){
          
          context.beginPath();
@@ -305,7 +306,7 @@ function drawimage() {
        for (var j=0; j<mask.points.length; j++){
          var p = mask.points[j]
          context.fillStyle = color_dict["point"];
-         context.fillRect(p.x-3,p.y-3,6,6);
+         context.fillRect(p.x-3,p.y-3,2,2);
        }
      }
  }
@@ -376,6 +377,7 @@ function parse_labelinfo(labelinfo){
 		
 		for(var i=0;i<label_arr.length;i++){
 		  if(!isEmpty(label_arr[i].mask)){
+			  console.log("start to parse mask.");
 			  cls=label_arr[i].class_name;
 			  var tmpMask = new maskar(getCanvasLocationX(label_arr[i].mask[0]),getCanvasLocationY(label_arr[i].mask[1]),cls);
 			  

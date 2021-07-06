@@ -3,7 +3,7 @@
 <html >
     <head>
         <meta charset="UTF-8">
-        <title>PCL数据标注平台V1.6</title>
+        <title>PCL数据标注平台V2.0</title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <meta name="description" content="Developed By M Abdur Rokib Promy">
         <meta name="keywords" content="Admin, Bootstrap 3, Template, Theme, Responsive">
@@ -436,7 +436,7 @@
         <!-- header logo: style can be found in header.less -->
         <header class="header" >
             <a href="index.html" class="logo">
-                PCL数据标注平台V1.6
+                PCL数据标注平台V2.0
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -608,6 +608,10 @@
 								  
 								  <li  style="font-size: 22px"  title="列出相近的ReID标注图像" onclick="listNearImage()" data-toggle="modal" data-backdrop="static" ><i class="fa fa-file-image-o" aria-hidden="true"></i></li>
                                   
+								  <li  style="font-size: 22px"  title="显示/隐藏ReID标注名称" onclick="showOrHide()" data-toggle="modal" data-backdrop="static" ><i class="fa fa-shower" aria-hidden="true"></i></li>
+								  
+								  <li  style="font-size: 22px"  title="复制指定标注框"  href="#copySomeLabel" data-toggle="modal" data-backdrop="static" ><i class="fa fa-clipboard" aria-hidden="true"></i></li>
+								  
                                </ul>
  
                              </div>
@@ -841,6 +845,34 @@
 													  </div>
                                                      
                                                       <button id="predtask_id" type="button"  onclick="submit_deletelabel();">提交</button>
+                                                  </form>
+                                              </div>
+                                          </div>
+                                      </div>
+                            </div>
+							
+							
+							<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="copySomeLabel" class="modal fade">
+                                      <div class="modal-dialog">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                  <h4 class="modal-title">复制指定标注框</h4>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <form role="form">
+                                                    
+													  <div id="some_name_div" class="form-group">
+															     <label for="exampleInputEmail1">输入指定标注框的ID,英文逗号隔开（如：1,3,4-9,11-20）</label>
+                                                                 <input type="" class="form-control" id="someLabelId" placeholder="英文逗号隔开多个，英文中划线表示区间，如：1,3,4-9,11-20">
+													  </div>
+													  
+													  <div id="dest_file_div" class="form-group">
+															     <label for="exampleInputEmail1">输入目标文件ID（对应文件列表中第几条）,英文逗号隔开,英文中划线表示区间（如：1,3,4-9,11-20）</label>
+                                                                 <input type="" class="form-control" id="destFileId" placeholder="填写此框，则直接更新到输入目标文件ID中。">
+													  </div>
+                                                     
+                                                      <button id="copySomeLabel_button_id" type="button"  onclick="copySomeLabel();">提交</button>
                                                   </form>
                                               </div>
                                           </div>

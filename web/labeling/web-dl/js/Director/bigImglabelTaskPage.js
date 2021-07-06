@@ -515,6 +515,8 @@ function clock(taskreturnid){
         console.log(json);
       },
 	    error:function(response) {
+		  progress = null;
+		  console.log('query return null.');
 		  redirect(response);
         }
    });

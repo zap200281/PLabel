@@ -152,6 +152,8 @@ function clockExport(taskreturnid){
          console.log(json);
        },
 	   error:function(response) {
+		  progress = null;
+		  console.log("query progress error");
 		  redirect(response);
        }
    });

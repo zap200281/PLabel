@@ -210,6 +210,8 @@ function clock(){
           console.log(json);
        },
 	   error:function(response) {
+		  tmpProgress = null;
+		  console.log('task has finished.');
 		  redirect(response);
        }
    });
@@ -537,6 +539,8 @@ function clockExport(taskreturnid){
          console.log(json);
        },
 	   error:function(response) {
+		  progress = null;
+		  console.log('query return null.');
 		  redirect(response);
        }
    });

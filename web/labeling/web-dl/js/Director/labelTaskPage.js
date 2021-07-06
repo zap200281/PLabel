@@ -180,8 +180,9 @@ function submit_datasettask(){
 	   alert("数据集对象不能为空。");
        return;
   }
+  var taskLabelTypeInfo = $('#jsoninput1').val();
   createsucced = true;
-  label_task_create(task_name, relate_task_id, 2,assign_user_id);
+  label_task_create(task_name, relate_task_id, 2,assign_user_id,taskLabelTypeInfo);
   if(createsucced){
 	 $("#labelDataModal").modal('hide');
   }
@@ -204,8 +205,9 @@ function submit_labeltask(){
   if(isEmpty(assign_user_id)){
 		assign_user_id = 0;
   }
+  var taskLabelTypeInfo = $('#jsoninput2').val();
   createsucced = true;
-  label_task_create(task_name, relate_task_id, 1,assign_user_id);
+  label_task_create(task_name, relate_task_id, 1,assign_user_id,taskLabelTypeInfo);
   if(createsucced){
 	  $("#labelModal").modal('hide');
   }
@@ -213,7 +215,7 @@ function submit_labeltask(){
 }
 
 
-function label_task_create(task_name, relate_task_id, taskType,assign_user_id){
+function label_task_create(task_name, relate_task_id, taskType,assign_user_id,taskLabelTypeInfo){
 	
     
     var task_flow_type = $('#task_flow_type option:selected').val();
@@ -245,6 +247,7 @@ function label_task_create(task_name, relate_task_id, taskType,assign_user_id){
                             'relate_task_id':relate_task_id,//task id
 							'relate_other_label_task': relate_other_label_task_jsonstr,
                             "taskType": taskType,
+							"taskLabelTypeInfo":taskLabelTypeInfo
            }),
        success:function(res){
 		   console.log(res);
@@ -736,6 +739,8 @@ function clock(taskreturnid){
         console.log(json);
        },
 	   error:function(response) {
+		  progress = null;
+		  console.log('query return null.');
 		  redirect(response);
        }
    });

@@ -10,11 +10,14 @@ var uploadres;
 
 var algModelList;
 
+var algPropertyModelList;
+
 var dataSetTaskData;
 
 
 function setModel(){
   loadModel();
+  loadPropertyModel();
   display_createlabel();
   
   setDataSetTask();
@@ -30,9 +33,43 @@ function display_createlabel(){
       html=html+row;
   }
   console.log(html);
-  document.getElementById('pre_predict_model').innerHTML=html; 
+   document.getElementById('pre_predict_model').innerHTML=html; 
+   
+  html="<option value=\"\" selected=\"\">请选择</option>";
+  for (var i=0;i<algPropertyModelList.length;i++){
+        var row = "<option value=\""+algPropertyModelList[i].id+
+        "\">"+algPropertyModelList[i].model_name+
+        "</option>";
+      
+      html=html+row;
+  }
+  
+  document.getElementById('needToDistiguishTypeOrColor').innerHTML=html; 
 }
 
+function loadPropertyModel(){
+
+  $.ajax({
+    type:"GET",
+    contentType:'application/json',
+    url: ip + "/api/queryAlgModelForProperty/",
+    dataType:"json",
+    async:false,
+    headers: {
+       // Accept: "text/html; q=1.0", 
+       authorization:token,
+     },
+    // enctype:"multipart/form-data",
+    success:function(jsonList){
+     console.log(jsonList);
+     algPropertyModelList = jsonList;
+     // return json.token;
+    },
+	error:function(response) {
+		redirect(response);
+    }
+});
+}
 
 
 function loadModel(){

@@ -13,6 +13,7 @@ var token = getCookie("token");
 console.log("token=" + token);
 var loadFinished=false; //判断是否加载完成，防止上下张快捷键过快，导致保存冲刷掉原有数据，保存空数据
 var currentImage=true;
+var showReIdInfo = true;
 //获取元素绝对位置 获取鼠标坐标
 function getElementLeft(element){
     var actualLeft = element.offsetLeft;
@@ -23,6 +24,8 @@ function getElementLeft(element){
     }
     return actualLeft;
 }
+
+
 
 function getSessionStorageMessage(key){
 	var value = sessionStorage.getItem(key);
@@ -309,6 +312,114 @@ function hidePopup() {
   drawRect();
 
   hideShowImage();
+}
+
+function copySomeLabel(){
+	var someLabelId = $('#someLabelId').val();
+	if(!isEmpty(someLabelId)){
+		copyrects=[];
+        copymasks=[];
+        copyPointShapes=[];
+		console.log("copy value=" + someLabelId);
+		var ids = someLabelId.split(",");
+		for(var k = 0; k <ids.length; k++){
+			var tId = ids[k];
+			console.log("tId11=" + tId);
+			if(isIntNum(tId)){
+				console.log("tId22=" + tId);
+				for (var i=0;i<rects.length;i++){
+                  if (rects[i].id == tId){
+					  console.log("copy rect id=" + tId);
+                      copyrects.push(rects[i]);
+					  break;
+                  }
+                }
+				for (var i=0;i<masks.length;i++){
+				  if (masks[i].id == tId){
+					copymasks.push(masks[i]);
+				  }
+			    }
+				for (var i=0;i<pointShapes.length;i++){
+				  if (pointShapes[i].id == tId){
+					copyPointShapes.push(pointShapes[i]);
+				  }
+				}
+			}else{
+				var spId = tId.split("-");
+				console.log("spId=" + spId);
+				if(spId.length == 2){
+					console.log("spId=" + spId);
+					var startId = spId[0];
+					var endId = spId[1];
+					for (var i=0;i<rects.length;i++){
+                      if (rects[i].id <= endId && rects[i].id >= startId){
+						 console.log("copy rect id=" + rects[i].id);
+                         copyrects.push(rects[i]);
+                      }
+                    }
+				    for (var i=0;i<masks.length;i++){
+					 if (masks[i].id <= endId && masks[i].id >= startId){
+					   copymasks.push(masks[i]);
+				     }
+			        }
+				    for (var i=0;i<pointShapes.length;i++){
+				      if (pointShapes[i].id <= endId && pointShapes[i].id >= startId){
+					     copyPointShapes.push(pointShapes[i]);
+				      }
+				    }
+				}
+			}
+		}
+		currentImage=true;
+	}
+	
+	var destFileId = $('#destFileId').val();
+	var label_list= getLabelInfo(copyrects,copymasks,copyPointShapes);
+	pasteToDestFile(label_list,destFileId);
+	
+	$("#copySomeLabel").modal('hide');
+	
+	var current = $('#displayPage1').text();
+	console.log("开始刷新页面。current=" + current);
+    if(current >= 1){
+         pageReload(current - 1,pageSize,fileindex);
+    }
+}
+
+function pasteToDestFile(label_list,destFileId){
+  
+  var labelinfo_jsonstr = JSON.stringify(label_list);
+  console.log("paste to dest file: " + destFileId + " retaskid=" + label_task_info.id);
+  $.ajax({
+       type:"PATCH",
+       url:ip + "/api/reId-label-task-copy-item/",
+       headers: {
+          authorization:token,
+        },
+       dataType:"json",
+       async:false,
+	   data:{
+		      'reid_task_id':label_task_info.id,
+              'label_info':labelinfo_jsonstr,
+              'destFileId': destFileId
+           },
+       success:function(json){
+		   return true;
+	   },
+	   error:function(response) {
+		  redirect(response);
+       }
+   });
+ 
+}
+
+function isIntNum(val){
+    var regPos = /^\d+$/; // 非负整数 
+    if(regPos.test(val)){
+        return true;
+    }else{
+        return false;
+    } 
 }
 
 function copyOneBox(){
@@ -946,7 +1057,7 @@ function drawRectShape(){
      // }else{
       context.strokeStyle=color_dict["rect"];
 
-      if(!isEmpty(rect.reId)){
+      if(showReIdInfo && !isEmpty(rect.reId)){
 		  context.lineWidth = 3;
 		  context.strokeStyle = color_person[1];
 	  }
@@ -976,10 +1087,12 @@ function drawRectShape(){
 }
 
 function setReIDText(rect,x,y){
-	if(!isEmpty(rect.other.region_attributes.reId)){
-	   context.font = "20px Arial";
-	   context.fillStyle= context.strokeStyle;
-	   context.fillText("reId: " + rect.other.region_attributes.reId, x,y-5);
+	if(showReIdInfo){
+		if(!isEmpty(rect.other.region_attributes.reId)){
+		   context.font = "20px Arial";
+		   context.fillStyle= context.strokeStyle;
+		   context.fillText("reId: " + rect.other.region_attributes.reId, x,y-5);
+		}
 	}
 }
 
@@ -1810,23 +1923,24 @@ function getCanvasLocationY(num){
 	return Math.round(num*canvas.height/parseInt(img.height));
 }
 
-function updatelabel(fileindex){
+function getLabelInfo(someRects,someMasks,somePointShapes){
+	
   var label_list=[]
-  for (var i=0;i<rects.length;i++){
-      x1y1x2y2=rects[i].getX1Y1X2Y2();
-      rects[i].type = '';//regions[i].other.["region_attributes"]["type"];
-	  var label= {'class_name':rects[i].type, "score":1.0};
-	  if(!isEmpty(rects[i].other.region_attributes.type)){
-		  label['class_name'] = rects[i].other.region_attributes.type;
+  for (var i=0;i<someRects.length;i++){
+      x1y1x2y2=someRects[i].getX1Y1X2Y2();
+      someRects[i].type = '';//regions[i].other.["region_attributes"]["type"];
+	  var label= {'class_name':someRects[i].type, "score":1.0};
+	  if(!isEmpty(someRects[i].other.region_attributes.type)){
+		  label['class_name'] = someRects[i].other.region_attributes.type;
 	  }
 
-      if(!isEmpty(rects[i].other.region_attributes.id)){
-         rects[i].id = rects[i].other.region_attributes.id;
+      if(!isEmpty(someRects[i].other.region_attributes.id)){
+         someRects[i].id = someRects[i].other.region_attributes.id;
       }
      
-      if(!isEmpty(rects[i].other.region_attributes.reId)){
-         rects[i].reId = trim(rects[i].other.region_attributes.reId);
-		 rects[i].other.region_attributes.reId = trim(rects[i].other.region_attributes.reId);
+      if(!isEmpty(someRects[i].other.region_attributes.reId)){
+         someRects[i].reId = trim(someRects[i].other.region_attributes.reId);
+		 someRects[i].other.region_attributes.reId = trim(someRects[i].other.region_attributes.reId);
       }
 
 	  var xmin = getRealLocationX(x1y1x2y2[0]);
@@ -1835,87 +1949,95 @@ function updatelabel(fileindex){
 	  var ymax = getRealLocationY(x1y1x2y2[3]);
       
       label['box']=[xmin,ymin, xmax,ymax];
-	  if(isEmpty(rects[i].id)){
+	  if(isEmpty(someRects[i].id)){
 	     label['id'] = i+'';
 	  }else{
-		 label['id'] = rects[i].id+''; 
+		 label['id'] = someRects[i].id+''; 
 	  }
-	  label['blurred']=rects[i].blurred;
-	  label['goodIllumination']=rects[i].goodIllumination;
-	  label['frontview']=rects[i].frontview;
-      label['other']=rects[i].other;
-      label['id'] = rects[i].id;
-      label['reId'] = rects[i].reId;
+	  label['blurred']=someRects[i].blurred;
+	  label['goodIllumination']=someRects[i].goodIllumination;
+	  label['frontview']=someRects[i].frontview;
+      label['other']=someRects[i].other;
+      label['id'] = someRects[i].id;
+      label['reId'] = someRects[i].reId;
 	  
       //console.log(label);
       label_list.push(label);
   }
 
   
-  for (var i=0;i<masks.length;i++){
-      masks[i].type = '';//regions[i].other.["region_attributes"]["type"];
-	  var label = {'class_name':masks[i].type, "score":1.0};
-	  if(!isEmpty(masks[i].other.region_attributes.type)){
-		  label['class_name'] = masks[i].other.region_attributes.type;
+  for (var i=0;i<someMasks.length;i++){
+      someMasks[i].type = '';//regions[i].other.["region_attributes"]["type"];
+	  var label = {'class_name':someMasks[i].type, "score":1.0};
+	  if(!isEmpty(someMasks[i].other.region_attributes.type)){
+		  label['class_name'] = someMasks[i].other.region_attributes.type;
 	  }
-      if(!isEmpty(masks[i].other.region_attributes.id)){
-          masks[i].id = masks[i].other.region_attributes.id;
+      if(!isEmpty(someMasks[i].other.region_attributes.id)){
+          someMasks[i].id = someMasks[i].other.region_attributes.id;
       }
      
-      if(!isEmpty(masks[i].other.region_attributes.reId)){
-          masks[i].reId = trim(masks[i].other.region_attributes.reId);
-		  masks[i].other.region_attributes.reId = trim(masks[i].other.region_attributes.reId);
+      if(!isEmpty(someMasks[i].other.region_attributes.reId)){
+          someMasks[i].reId = trim(someMasks[i].other.region_attributes.reId);
+		  someMasks[i].other.region_attributes.reId = trim(someMasks[i].other.region_attributes.reId);
       }
 	  var labelMaskList = [];
-	  for(var j = 0; j < masks[i].points.length; j++){
-		  labelMaskList.push(getRealLocationX(masks[i].points[j].x));
-		  labelMaskList.push(getRealLocationY(masks[i].points[j].y));
+	  for(var j = 0; j < someMasks[i].points.length; j++){
+		  labelMaskList.push(getRealLocationX(someMasks[i].points[j].x));
+		  labelMaskList.push(getRealLocationY(someMasks[i].points[j].y));
 	  }
 	  label['mask'] = labelMaskList;
-	  label['id'] = masks[i].id;
-	  label['blurred']=masks[i].blurred;
-	  label['goodIllumination']=masks[i].goodIllumination;
-	  label['frontview']=masks[i].frontview;
-      label['other']=masks[i].other;
-      label['id'] = masks[i].id+'';
-      label['reId'] = masks[i].reId;
+	  label['id'] = someMasks[i].id;
+	  label['blurred']=someMasks[i].blurred;
+	  label['goodIllumination']=someMasks[i].goodIllumination;
+	  label['frontview']=someMasks[i].frontview;
+      label['other']=someMasks[i].other;
+      label['id'] = someMasks[i].id+'';
+      label['reId'] = someMasks[i].reId;
       //console.log(label);
 	  label_list.push(label);
   }
   
-  for (var i=0;i<pointShapes.length;i++){
-      pointShapes[i].type =  '';//regions[i].other.["region_attributes"]["type"];
-	  var label = {'class_name':pointShapes[i].type, "score":1.0};
+  for (var i=0;i<somePointShapes.length;i++){
+      somePointShapes[i].type =  '';//regions[i].other.["region_attributes"]["type"];
+	  var label = {'class_name':somePointShapes[i].type, "score":1.0};
 	  
-	  if(!isEmpty(pointShapes[i].other.region_attributes.type)){
-		  label['class_name'] = pointShapes[i].other.region_attributes.type;
+	  if(!isEmpty(somePointShapes[i].other.region_attributes.type)){
+		  label['class_name'] = somePointShapes[i].other.region_attributes.type;
 	  }
-      if(!isEmpty(pointShapes[i].other.region_attributes.id)){
-         pointShapes[i].id = pointShapes[i].other.region_attributes.id;
+      if(!isEmpty(somePointShapes[i].other.region_attributes.id)){
+         somePointShapes[i].id = somePointShapes[i].other.region_attributes.id;
       }
      
-      if(!isEmpty(pointShapes[i].other.region_attributes.reId)){
-         pointShapes[i].reId = trim(pointShapes[i].other.region_attributes.reId);
-		 pointShapes[i].other.region_attributes.reId = trim(pointShapes[i].other.region_attributes.reId);
+      if(!isEmpty(somePointShapes[i].other.region_attributes.reId)){
+         somePointShapes[i].reId = trim(somePointShapes[i].other.region_attributes.reId);
+		 somePointShapes[i].other.region_attributes.reId = trim(somePointShapes[i].other.region_attributes.reId);
       }
 	  
 	  var pointList = [];
 	 
-	  pointList.push(getRealLocationX(pointShapes[i].x));
-	  pointList.push(getRealLocationY(pointShapes[i].y));
+	  pointList.push(getRealLocationX(somePointShapes[i].x));
+	  pointList.push(getRealLocationY(somePointShapes[i].y));
 	  pointList.push(2);//0表示这个关键点没有标注（这种情况下x=y=v=0），1表示这个关键点标注了但是不可见(被遮挡了），2 表示这个关键点标注了同时也可见
 	  label['keypoints'] = pointList;
-	  label['id'] = pointShapes[i].id+'';
-	  label['blurred']=pointShapes[i].blurred;
-	  label['goodIllumination']=pointShapes[i].goodIllumination;
-	  label['frontview']=pointShapes[i].frontview;
-      label['other']=pointShapes[i].other;
-      label['id'] = pointShapes[i].id;
-      label['reId'] = pointShapes[i].reId;
+	  label['id'] = somePointShapes[i].id+'';
+	  label['blurred']=somePointShapes[i].blurred;
+	  label['goodIllumination']=somePointShapes[i].goodIllumination;
+	  label['frontview']=somePointShapes[i].frontview;
+      label['other']=somePointShapes[i].other;
+      label['id'] = somePointShapes[i].id;
+      label['reId'] = somePointShapes[i].reId;
       //console.log(label);
 	  label_list.push(label);
   }
+  
+  return label_list;
+	
+	
+}
 
+function updatelabel(fileindex){
+  var label_list= getLabelInfo(rects,masks,pointShapes);
+  
   labelinfo_jsonstr = JSON.stringify(label_list);
   labeltastresult[fileindex].label_info=labelinfo_jsonstr;
   if(label_list.length > 0){
@@ -2058,7 +2180,7 @@ function submit_deletelabel(){
                'start_id':start_id,
                'end_id' : end_id,
 			   'one_reid_name':one_reid_name
-               },        
+         },        
          success:function(res){
              console.log('创建数据信息');
          },
@@ -2152,7 +2274,7 @@ function setIntervalToDo(){
 
 function clock(){
    count++;
-   if(count > 600 ){
+   if(count > 600 && !isEmpty(timeId)){
 	   console.log("清除定时器。timeId=" + timeId);
 	   window.clearInterval(timeId);
 	   timeId = null;
@@ -2174,6 +2296,8 @@ function clock(){
           console.log(json);
        },
 	   error:function(response) {
+		  progress = null;
+		  console.log("query progress error");
 		  redirect(response);
        }
    });
@@ -2968,7 +3092,7 @@ function list(current,pageSize,index=0){
 		   headers: {
 			  authorization:token,
 			},
-		   dataType:"json",
+		  dataType:"json",
 		  data:{
 			  'reid_task_id':label_task_info.id,
 			  'startPage':current,
@@ -3177,4 +3301,16 @@ function isJSON(str) {
     }
     console.log('It is not a string!');
 	return false;
+}
+
+function showOrHide(){
+	if(showReIdInfo){
+		showReIdInfo = false;
+	}else{
+		showReIdInfo = true;
+	}
+	var current = $('#displayPage1').text();
+    if(current >= 1){
+	   pageReload(current - 1,pageSize,fileindex);
+	}
 }

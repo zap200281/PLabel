@@ -1224,7 +1224,7 @@ function clickPointInRect(clickX,clickY){
       	    xy = rect.getX1Y1X2Y2();
       	    console.log("choose rect 2:  top=" + clickX + " left=" + clickY + " x1=" + xy[0] + " y1=" + xy[1] + " x2=" + xy[2] + " y2=" + xy[3] + " startx=" + startx + " starty=" + starty);
             select_only_region(i);
-            showPopup(bigLocY(xy[3])+5, bigLocX(xy[2])+5 , i,"rect");
+            showPopup(bigLocY(xy[1])+5, bigLocX(xy[2])+5 , i,"rect");
       		  // showPopup(bigLocY(xy[3])+145, bigLocX(xy[2]) + 235,i,"rect");
             document.getElementById("boxlabels").innerHTML=boxlabelshtml();
             document.getElementById("labelcounttable").innerHTML=boxlabelcounthtml();
@@ -1599,6 +1599,10 @@ function  showOrder(value){
   else if (value == "2"){
     orderType = 0;
     findLast  = 0;
+  }
+  else if (value == "3"){
+    orderType = 0;
+    findLast  = 3;
   }
 
   page(0,pageSize);  
@@ -2217,11 +2221,13 @@ function clock(){
 	   data:{'taskId': label_task},
        async:false,
        success:function(json){
-        progress = json;
-        console.log(json);
-      },
-	  error:function(response) {
-		  redirect(response);
+         progress = json;
+         console.log(json);
+       },
+	   error:function(response) {
+		 progress = null;
+		 console.log("query progress error");
+		 redirect(response);
       }
    });
    if(isEmpty(progress)){
@@ -2426,6 +2432,7 @@ function updatelabel(fileindex){
 }
 
 function get_labeltask(){
+	console.log('query labeltask info.');
     $.ajax({
        type:"GET",
        url:ip + "/api/label-task/"+label_task+"/",
@@ -2436,7 +2443,7 @@ function get_labeltask(){
        async:false,
        success:function(json){
          label_task_info = json;
-         console.log(label_task_info);
+		 console.log('return labeltask info.' + label_task_info);
 		 page(0,pageSize);
        },
 	   error:function(response) {
@@ -2798,6 +2805,7 @@ function submit_import_property(){
          }
      });
 	$('#datasetModal').modal('hide');
+	close_attribute();
 }
 
 function isJSON(str) {
