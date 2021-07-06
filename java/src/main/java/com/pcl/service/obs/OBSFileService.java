@@ -12,6 +12,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,9 +26,11 @@ import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.imageio.ImageIO;
+import javax.net.ssl.SSLContext;
 
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
@@ -35,10 +39,13 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.ssl.TrustStrategy;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -73,33 +80,57 @@ public class OBSFileService implements ObjectFileService{
 	private static Logger logger = LoggerFactory.getLogger(OBSFileService.class);
 
 	@Value("${obs.ak}")
-	private String accessKey = ""; //取值为获取的AK
+	private String accessKey; //取值为获取的AK
 
 	@Value("${obs.sk}")
-	private String securityKey = "";  //取值为获取的SK
+	private String securityKey;  //取值为获取的SK
 
-	@Value("${obs.region:cn-north-4}")
-	private String region = "cn-north-4"; // 取值为规划桶所在的区域
-
+	@Value("${obs.region}")
+	private String region; // 取值为规划桶所在的区域
+	
+	@Value("${obs.url}")
+	private String url;
+	
 	private String createBucketTemplate =
 			"<CreateBucketConfiguration " +
-					"xmlns=\"http://obs." + region + ".myhuaweicloud.com/doc/2015-06-30/\">\n" +
+					"xmlns=\"" + url + "/doc/2015-06-30/\">\n" +
 					"<Location>" + region + "</Location>\n" +
 					"</CreateBucketConfiguration>";
 
 	private static String MEDICAL_BUCKETNAME = "healthcare";
 	
-	CloseableHttpClient httpClient = HttpClients.createDefault();
+	CloseableHttpClient httpClient = getHttpClient();
 
-	//String endPoint= "https://obs.cn-north-4.myhuaweicloud.com";
+	ObsClient obsClient;
+	
+	@PostConstruct
+	public void init() {
+		obsClient = new ObsClient(accessKey, securityKey, url);
+		logger.info("obs client inited.url=" + url);
+	}
+	
+	private  CloseableHttpClient getHttpClient()  {
+		try {
+		SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
+			@Override
+			public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+				return true;
+			}
+		}).build();
 
-	ObsClient obsClient = new ObsClient(accessKey, securityKey, "http://obs." + region + ".myhuaweicloud.com");
+		return HttpClients.custom().setSSLContext(sslContext).
+				setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+		}catch (Exception e) {
+			logger.info(e.getMessage(), e);
+		}
+		return null;
+	}
+	 
 
 	public boolean createBucketNameBySDK(String bucketName) {
 		// 创建桶
 		try{
 			// 创建桶成功
-
 			HeaderResponse response = obsClient.createBucket(bucketName, region);
 
 			logger.info("create bucket success: " + response.getRequestId());
@@ -118,12 +149,22 @@ public class OBSFileService implements ObjectFileService{
 		return false;
 
 	}
+	
+	private String getUrl(String bucketName) {
+		int length = "https://".length();
+		
+		String newUrl =  url.substring(0,length) + bucketName + "." + url.substring(length);
+		logger.info("newUrl=" + newUrl);
+		
+		return newUrl;
+	}
 
 	public boolean createBucketName(String bucketName) {
 
 		String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
 		String contentType = "application/xml";
-		HttpPut httpPut = new HttpPut("http://"+ bucketName + ".obs." + region + ".myhuaweicloud.com");
+		
+		HttpPut httpPut = new HttpPut(getUrl(bucketName));
 
 		httpPut.addHeader("Date", requesttime);
 		httpPut.addHeader("Content-Type", contentType);
@@ -206,7 +247,7 @@ public class OBSFileService implements ObjectFileService{
 		List<Bucket> re = new ArrayList<>();
 
 		String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
-		HttpGet httpGet = new HttpGet("http://obs." + region + ".myhuaweicloud.com");
+		HttpGet httpGet = new HttpGet(url);
 
 
 		httpGet.addHeader("Date", requesttime);
@@ -255,7 +296,7 @@ public class OBSFileService implements ObjectFileService{
 
 				try(InputStream inputStream = new FileInputStream(file)){
 					String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
-					HttpPut httpPut = new HttpPut("http://" + bucketName + ".obs." + region + ".myhuaweicloud.com/" + file.getName());
+					HttpPut httpPut = new HttpPut(getUrl(bucketName) + "/" +  file.getName());
 
 					httpPut.addHeader("Date", requesttime);
 
@@ -305,7 +346,7 @@ public class OBSFileService implements ObjectFileService{
 
 
 		CloseableHttpResponse httpResponse = null;
-		HttpGet httpGet = new HttpGet("http://" + bucketName + ".obs." + region + ".myhuaweicloud.com/" + objectName);
+		HttpGet httpGet = new HttpGet(getUrl(bucketName) + "/" + objectName);
 
 		String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
 		httpGet.addHeader("Date", requesttime);
@@ -486,7 +527,7 @@ public class OBSFileService implements ObjectFileService{
 	public InputStream getPicture(String bucketName, String fileName) throws Exception {
 		//bucketName = BUCKETNAME;
 		CloseableHttpResponse httpResponse = null;
-		HttpGet httpGet = new HttpGet("http://" + bucketName + ".obs." + region + ".myhuaweicloud.com/" + fileName);
+		HttpGet httpGet = new HttpGet(getUrl(bucketName) + "/" + fileName);
 
 		String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
 		httpGet.addHeader("Date", requesttime);
@@ -637,7 +678,7 @@ public class OBSFileService implements ObjectFileService{
 	public boolean isExistMinioFile(String bucketName, String objectName) {
 		//bucketName = BUCKETNAME;
 		CloseableHttpResponse httpResponse = null;
-		HttpHead httpGet = new HttpHead("http://" + bucketName + ".obs." + region + ".myhuaweicloud.com/" + objectName);
+		HttpHead httpGet = new HttpHead(getUrl(bucketName) + "/" + objectName);
 
 		String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
 		httpGet.addHeader("Date", requesttime);
@@ -684,7 +725,7 @@ public class OBSFileService implements ObjectFileService{
 	public long getMinioObjectLength(String bucketName, String objectName) {
 		//bucketName = BUCKETNAME;
 		CloseableHttpResponse httpResponse = null;
-		HttpHead httpGet = new HttpHead("http://" + bucketName + ".obs." + region + ".myhuaweicloud.com/" + objectName);
+		HttpHead httpGet = new HttpHead(getUrl(bucketName) + "/" + objectName);
 
 		String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
 		httpGet.addHeader("Date", requesttime);
@@ -771,7 +812,7 @@ public class OBSFileService implements ObjectFileService{
 		try {
 			try(InputStream inputStream = new FileInputStream(file)){
 				String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
-				HttpPut httpPut = new HttpPut("http://" + bucketName + ".obs." + region + ".myhuaweicloud.com/" + objectName);
+				HttpPut httpPut = new HttpPut(getUrl(bucketName) + "/" + objectName);
 
 				httpPut.addHeader("Date", requesttime);
 
@@ -905,7 +946,7 @@ public class OBSFileService implements ObjectFileService{
 			throws UnsupportedEncodingException, IOException, ClientProtocolException {
 		//bucketName = BUCKETNAME;
 		String requesttime = formateHuaWeiCloudDate(System.currentTimeMillis());
-		HttpPut httpPut = new HttpPut("http://" + bucketName + ".obs." + region + ".myhuaweicloud.com/" + objectName);
+		HttpPut httpPut = new HttpPut(getUrl(bucketName) + "/" + objectName);
 
 		httpPut.addHeader("Date", requesttime);
 
@@ -1082,6 +1123,7 @@ public class OBSFileService implements ObjectFileService{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 
 

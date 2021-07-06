@@ -190,7 +190,7 @@ public class AutoLabelVideoSchedule {
 			logger.info("the file is not exist." + imageFullPath);
 		}
 		//生成Xml
-		ObjectDistinguish objectDistinguish = new ObjectDistinguish();
+		PredictCarDistinguish objectDistinguish = new PredictCarDistinguish();
 
 		String xmlPath = vocAnnotation.getXmlPathByImagePath(imageFullPath);
 		new File(xmlPath).getParentFile().mkdir();

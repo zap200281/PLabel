@@ -10,6 +10,8 @@ public class AlgModel {
 	
 	private String model_url;
 	
+	private int model_type;
+	
 	private String alg_instance_id;
 	
 	private String exec_script;
@@ -21,6 +23,8 @@ public class AlgModel {
 	private String type_list;
 	
 	private double threshold;
+	
+	private int a_picture_cost_time;
 
 	public int getId() {
 		return id;
@@ -100,6 +104,22 @@ public class AlgModel {
 
 	public void setThreshold(double threshold) {
 		this.threshold = threshold;
+	}
+
+	public int getA_picture_cost_time() {
+		return a_picture_cost_time;
+	}
+
+	public void setA_picture_cost_time(int a_picture_cost_time) {
+		this.a_picture_cost_time = a_picture_cost_time;
+	}
+
+	public int getModel_type() {
+		return model_type;
+	}
+
+	public void setModel_type(int model_type) {
+		this.model_type = model_type;
 	}
 	
 	

@@ -92,7 +92,7 @@ public class AlgManager {
 		
 	}
 	
-	@ApiOperation(value="查询所有的算法模型", notes="返回所有的算法模型")
+	@ApiOperation(value="查询所有目标跟踪算法模型", notes="返回所有的所有目标跟踪算法模型")
 	@RequestMapping(value="/queryAlgModelForTracking", method = RequestMethod.GET)
 	public List<AlgModel> queryAlgModelForTracking() throws LabelSystemException{
 		
@@ -103,6 +103,20 @@ public class AlgManager {
 		logger.info("queryAlgModelForTracking  token =" + token);
 
 		return algService.queryAlgModelForTracking();
+		
+	}
+	
+	@ApiOperation(value="查询所有属性识别算法模型", notes="返回所有属性识别算法模型")
+	@RequestMapping(value="/queryAlgModelForProperty", method = RequestMethod.GET)
+	public List<AlgModel> queryAlgModelForProperty() throws LabelSystemException{
+		
+		String token = request.getHeader("authorization");
+		if(token == null) {
+			throw new LabelSystemException("user not login.");
+		}
+		logger.info("queryAlgModelForProperty  token =" + token);
+
+		return algService.queryAlgModelForProperty();
 		
 	}
 	

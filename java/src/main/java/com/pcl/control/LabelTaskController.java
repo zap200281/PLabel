@@ -22,6 +22,7 @@ import com.pcl.pojo.body.LabelTaskBody;
 import com.pcl.pojo.display.DisplayLabelTask;
 import com.pcl.pojo.mybatis.LabelTaskItem;
 import com.pcl.service.LabelTaskService;
+import com.pcl.util.JsonUtil;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -191,7 +192,7 @@ public class LabelTaskController {
 	@ApiOperation(value="创建一个人工标注任务", notes="创建一个人工标注任务")
 	@RequestMapping(value="/label-task", method = RequestMethod.POST, produces ="application/json;charset=utf-8")
 	public Result addLabelTask(@RequestBody LabelTaskBody body){
-		logger.info("addLabelTask, body =" + body.getTaskName());
+		logger.info("addLabelTask, body =" +JsonUtil.toJson(body));
 
 		Result re = new Result();
 		try {

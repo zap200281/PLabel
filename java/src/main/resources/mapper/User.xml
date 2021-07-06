@@ -33,6 +33,10 @@
         UPDATE users_userprofile set nickName=#{nickName} WHERE id=#{id}
     </update>
     
+    <update id="updateUserIndentity" parameterType="com.pcl.pojo.mybatis.User">
+        UPDATE users_userprofile set is_superuser=#{is_superuser} WHERE id=#{id}
+    </update>
+    
     <update id="updateUserPassword" parameterType="com.pcl.pojo.mybatis.User">
         UPDATE users_userprofile set password=#{password} WHERE id=#{id}
     </update>

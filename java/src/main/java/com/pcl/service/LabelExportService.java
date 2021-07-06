@@ -555,6 +555,8 @@ public class LabelExportService {
 			writeReIDWithPrimitivePic(reIdtask, pro, zipFile, typeOrColorMapName);
 		}else if(type.equals(Constants.REID_EXPORT_TYPE_REID_ONLY_CUT)) {
 			writerReIDOnlyCutImage(reIdtask, pro, zipFile, typeOrColorMapName);
+		}else if(type.equals(Constants.REID_EXPORT_TYPE_LABEL)) {
+			writeReIDWithLabel(reIdtask, pro, zipFile, typeOrColorMapName);
 		}
 
 	}
@@ -788,6 +790,35 @@ public class LabelExportService {
 		updateProgress(pro, 100);
 
 	}
+	
+	private void writeReIDWithLabel(ReIDTask reIdtask, Progress pro, File zipFile,
+			Map<String, Object> typeOrColorMapName) {
+		int total = 0;
+		int count = 0;
+		List<LabelTaskItem> reList = reIdLabelTaskItemDao.queryLabelTaskItemByLabelTaskId(TokenManager.getUserTablePos(reIdtask.getUser_id(), UserConstants.REID_TASK_SINGLE_TABLE),reIdtask.getId());
+		total = reList.size();
+
+		try(ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
+			long start = System.currentTimeMillis();
+			//写json格式
+			for(int i = 0; i < total; i++) {
+				LabelTaskItem item = reList.get(i);
+				writeJson(item, zos, new HashMap<>(), typeOrColorMapName);
+				count ++;
+				if(count != total) {
+					//pro.setProgress((long)((count *1.0 / total) * 100));
+					updateProgress(pro, (long)((count *1.0 / total) * 100));
+				}
+			}
+			long end = System.currentTimeMillis();
+			logger.info("finished zip, cost: " + (end - start) +" ms");
+		} catch (Exception e) {
+			throw new RuntimeException("zip error from ZipUtils",e);
+		}
+		//pro.setProgress(100l);
+		updateProgress(pro, 100);
+	}
+	
 
 	private void writeReIDWithPrimitivePic(ReIDTask reIdtask, Progress pro, File zipFile,
 			Map<String, Object> typeOrColorMapName) {
@@ -1108,7 +1139,7 @@ public class LabelExportService {
 
 		File zipFile = new File(fileName) ;
 		zipFile.getParentFile().mkdirs();
-		int total = 0;
+		int total = reList.size();
 		int count = 0;
 
 		long start = System.currentTimeMillis();
@@ -1582,6 +1613,7 @@ public class LabelExportService {
 		
 		return downloadReIdTaskListFile(reIdList, type, tmpPath,false);
 	}
+
 
 
 }

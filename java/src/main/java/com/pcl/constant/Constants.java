@@ -27,6 +27,8 @@ public class Constants {
 	
 	public final static String REID_EXPORT_TYPE_REID_ONLY_CUT = "4";//仅仅导出抠图
 	
+	public final static String REID_EXPORT_TYPE_LABEL = "21";//仅仅导出标注信息
+	
 	public final static String AUTO_LABLE_PICTURE_TASK = "2";
 	
 	public final static String AUTO_LABLE_VIDEO_PICTURE_TASK = "1";
@@ -76,6 +78,8 @@ public class Constants {
 	public final static int LABEL_TASK_FLOW_TYPE_WORK = 1; // 标注工作模式
 	
 	public final static int LABEL_TASK_FLOW_TYPE_VERIFY = 2; //标注审核模式
+	
+	public final static int LABEL_TASK_FLOW_TYPE_MIAOD = 3; //主动学习标注模式
 	
 	public final static int RETRAINTASK_STATUS_FINISHED = 0;
 	
@@ -149,5 +153,9 @@ public class Constants {
 	
 	public final static int QUERY_ITEM_PAGE_FIND_LAST = 1;
 	
-	public final static int NEED_TO_DISTIGUISH = 1;
+	public final static int QUERY_ITEM_PAGE_MIAOD = 3;//主动学习分类
+	
+//	public final static int NEED_TO_DISTIGUISH_CAR_PROPERTY = 1;
+//	
+//	public final static int NEED_TO_DISTIGUISH_PERSON_PROPERTY = 2;
 }

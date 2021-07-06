@@ -27,4 +27,7 @@ public interface AlgModelDao {
 	
 	public List<AlgModel> queryAlgModelForAutoLabel();
 	
+	//属性识别的模型
+	public List<AlgModel> queryAlgModelForProperty();
+	
 }

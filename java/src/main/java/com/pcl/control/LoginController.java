@@ -45,7 +45,7 @@ public class LoginController {
 	public Result loginOut(@RequestParam("username") String userName,@RequestParam("token") String token) throws LabelSystemException {
 		Result re = new Result();
 		
-		loginService.loginOut(token, userName);
+		loginService.loginOut(token, userName,getRemoteIP(request));
 		
 		return re;
 	}

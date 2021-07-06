@@ -26,8 +26,8 @@ import com.pcl.pojo.body.AutoLabelBody;
 import com.pcl.pojo.mybatis.AlgInstance;
 import com.pcl.pojo.mybatis.AlgModel;
 import com.pcl.pojo.mybatis.LabelTaskItem;
-import com.pcl.service.MinioFileService;
 import com.pcl.service.ObjectFileService;
+import com.pcl.service.ReIdTaskService;
 import com.pcl.service.TokenManager;
 import com.pcl.util.FileUtil;
 import com.pcl.util.JsonUtil;
@@ -37,7 +37,7 @@ import com.pcl.util.TimeUtil;
 @Service
 public class TrackingSchedule {
 
-	private static Logger logger = LoggerFactory.getLogger(AutoLabelVideoSchedule.class);
+	private static Logger logger = LoggerFactory.getLogger(TrackingSchedule.class);
 
 
 	@Autowired
@@ -54,6 +54,9 @@ public class TrackingSchedule {
 
 	@Autowired
 	private ObjectFileService fileService;
+	
+	@Autowired
+	private ReIdTaskService reIdTaskService;
 	
 	private final static String REID_TASK_TRACKING = "4";
 
@@ -248,19 +251,31 @@ public class TrackingSchedule {
 
 
 	private void saveLabel(AutoLabelBody body, LabelTaskItem item, List<Map<String, Object>> currentLabelList) {
-		Map<String,Object> paramMap = new HashMap<>();
-		String time = TimeUtil.getCurrentTimeStr();
-
-		paramMap.put("id", item.getId());
-		paramMap.put("label_info", JsonUtil.toJson(currentLabelList));
-		paramMap.put("label_status", Constants.LABEL_TASK_STATUS_FINISHED);
-		paramMap.put("item_add_time", time);
+		
 		
 		
 		if(REID_TASK_TRACKING.equals(body.getTask_type())) {
-			paramMap.put("user_id", TokenManager.getUserTablePos(body.getUserId(), UserConstants.REID_TASK_SINGLE_TABLE));
-			reIDlabelTaskItemDao.updateLabelTaskItem(paramMap);
+			
+			
+			LabelTaskItem updateBodyItem = new LabelTaskItem();
+			updateBodyItem.setId(item.getId());
+			updateBodyItem.setLabel_info(JsonUtil.toJson(currentLabelList));
+			updateBodyItem.setPic_object_name(item.getPic_object_name());
+			updateBodyItem.setLabel_status(Constants.LABEL_TASK_STATUS_FINISHED);
+			
+			reIdTaskService.updateReIDLabelTaskItem(updateBodyItem, body.getUserId());
+			
+			//reIDlabelTaskItemDao.updateLabelTaskItem(paramMap);
+		
 		}else {
+			Map<String,Object> paramMap = new HashMap<>();
+			String time = TimeUtil.getCurrentTimeStr();
+
+			paramMap.put("id", item.getId());
+			paramMap.put("label_info", JsonUtil.toJson(currentLabelList));
+			paramMap.put("label_status", Constants.LABEL_TASK_STATUS_FINISHED);
+			paramMap.put("item_add_time", time);
+			
 			paramMap.put("user_id", TokenManager.getUserTablePos(body.getUserId(), UserConstants.LABEL_TASK_SINGLE_TABLE));
 			labelTaskItemDao.updateLabelTaskItem(paramMap);
 		}

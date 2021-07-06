@@ -71,7 +71,7 @@ public class DeleteNotNeedPicture {
 	
 	public static void main(String[] args) {
 
-		String srcPath = "D:\\BaiduNetdiskDownload\\PASCAL_VOC\\VOCdevkit\\VOC2012";
+		String srcPath = "D:\\2021文档\\主动学习分类\\VOC2007";
 
 		//deleteNotEqualAnnotation(srcPath);
 		

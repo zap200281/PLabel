@@ -10,10 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +22,7 @@ import com.pcl.pojo.Progress;
 import com.pcl.pojo.Result;
 import com.pcl.service.LabelExportService;
 import com.pcl.service.ObjectFileService;
+import com.pcl.service.PCLSpecialExportService;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -46,6 +43,9 @@ public class FileController {
 	
 	@Autowired
 	HttpServletRequest request;
+	
+	@Autowired
+	private PCLSpecialExportService pclSpecialExportService;
 
 	@ResponseBody
 	@ApiOperation(value="上传多个文件接口", notes="返回文件接口")
@@ -58,6 +58,9 @@ public class FileController {
 		}
 		return re;
 	}
+	
+	
+	
 
 	@ResponseBody
 	@ApiOperation(value="上传文件接口", notes="返回文件接口")
@@ -199,7 +202,12 @@ public class FileController {
 		Result result = new Result();
 		try {
 			result.setCode(0);
-			result.setMessage(labelExportService.downloadReIdTaskFile(reIdTaskId, type));
+			if(type.equals("5")) {
+				result.setMessage(pclSpecialExportService.exportExceptionFile(reIdTaskId, 5, response));
+			}else {
+				result.setMessage(labelExportService.downloadReIdTaskFile(reIdTaskId, type));
+			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			result.setCode(1);
@@ -217,7 +225,14 @@ public class FileController {
 		Result result = new Result();
 		try {
 			result.setCode(0);
-			result.setMessage(labelExportService.downloadReIdTaskListFile(reIdTaskIdList, type));
+			
+			if(type.equals("5")) {
+				result.setMessage(pclSpecialExportService.exportExceptionReIdTaskListFile(reIdTaskIdList, type));
+			}else {
+				result.setMessage(labelExportService.downloadReIdTaskListFile(reIdTaskIdList, type));
+			}
+			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			result.setCode(1);
@@ -246,6 +261,8 @@ public class FileController {
 		return result;
 
 	}
+	
+
 	
 
 

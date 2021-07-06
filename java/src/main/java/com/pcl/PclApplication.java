@@ -29,7 +29,7 @@ public class PclApplication {
 			properties.load(in);
 			isExistSelfProperties  = true;
 			
-			logger.info("run app used application-runtime.properties, version=2020/10/29:10:00:00");
+			logger.info("run app used application-runtime.properties, version=plabelv2.0,date=2021-06-29");
 			
 			SpringApplication app = new SpringApplication(PclApplication.class);
 			app.setDefaultProperties(properties);

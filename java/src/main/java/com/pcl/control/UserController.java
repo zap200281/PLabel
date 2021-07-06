@@ -68,6 +68,24 @@ public class UserController {
 		return re;
 	}
 	
+	@RequestMapping(value = "/updateMedicalUserPassword",method = RequestMethod.POST)
+	public Result updateMedicalUserPassword(@RequestParam("userName") String userName,@RequestParam("newPassword") String newPassword,@RequestParam("append") String append) throws LabelSystemException {
+		Result re = new Result();
+		if(!append.equals("72a7b30d-28ba-4c47-8448-e89f0dd0f716")) {
+			throw new LabelSystemException("非法的注册用户。");
+		}
+		try {
+			userService.updateMedicalUserPassword(userName,newPassword);
+			re.setCode(0);
+			re.setMessage("success");
+		} catch (LabelSystemException e) {
+			logger.info(e.getMessage());
+			re.setCode(1);
+			re.setMessage(e.getMessage());
+		}
+		return re;
+	}
+	
 	@RequestMapping(value = "/updateUserPassword",method = RequestMethod.POST)
 	public Result updateUserPassword(@RequestParam("user_id") int user_id,@RequestParam("newPassword") String newPassword,@RequestParam("oldPassword") String oldPassword) throws LabelSystemException {
 		Result re = new Result();
@@ -77,6 +95,32 @@ public class UserController {
 		}
 		try {
 			userService.updateUserPassword(token,user_id,newPassword,oldPassword);
+			re.setCode(0);
+			re.setMessage("success");
+		} catch (LabelSystemException e) {
+			logger.info(e.getMessage());
+			re.setCode(1);
+			re.setMessage(e.getMessage());
+		}
+		return re;
+	}
+	
+	/**
+	 * 
+	 * @param user_id  用户id
+	 * @param identity  1为标注人员，2为审核人员
+	 * @return
+	 * @throws LabelSystemException
+	 */
+	@RequestMapping(value = "/updateUserIdentity",method = RequestMethod.POST)
+	public Result updateUserIdentity(@RequestParam("user_id") int user_id,@RequestParam("identity") int identity) throws LabelSystemException {
+		Result re = new Result();
+		String token = request.getHeader("authorization");
+		if(token == null) {
+			throw new LabelSystemException("user not login.");
+		}
+		try {
+			userService.updateUserIdentity(token,user_id,identity);
 			re.setCode(0);
 			re.setMessage("success");
 		} catch (LabelSystemException e) {

@@ -73,10 +73,16 @@ public class GpuInfoUtil {
 	 * @throws LabelSystemException 
 	 */
 	public static List<int[]> getGPUInfo() throws LabelSystemException{
+		
+		List<String> commandOutputList = getCommandOutputInfo();
+		
+		return getGpuInfoFromStr(commandOutputList);
+	}
+
+	public static List<int[]> getGpuInfoFromStr(List<String> commandOutputList) {
 		ArrayList<int[]> re = new ArrayList<>();
 		boolean isStart = false;;
 		int gpuUtilStartLoc = -1;
-		List<String> commandOutputList = getCommandOutputInfo();
 		for(int i = 0; i < commandOutputList.size(); i++) {
 			String line = commandOutputList.get(i);
 
@@ -136,16 +142,16 @@ public class GpuInfoUtil {
 	}
 
 
-	public static void main(String[] args) {
-		//String filePath1 = "D:\\javaapp\\workspace\\labelSystem\\src\\main\\resources\\static\\gpu2.txt";
+	public static void main(String[] args) throws LabelSystemException {
+		String filePath1 = "D:\\javaapp\\workspace\\labelSystem\\src\\main\\resources\\static\\gpu3.txt";
 		
-		//List<String> list = FileUtil.getAllLineList(filePath1, "utf-8");
+		List<String> list = FileUtil.getAllLineList(filePath1, "utf-8");
 		
-		//List<int[]> result = GpuInfoUtil.getGPUInfo();
+		List<int[]> result = GpuInfoUtil.getGpuInfoFromStr(list);
 		
-		//for(int[] gpuInfo : result) {
-		//	System.out.println("gpuid:" + gpuInfo[0] + "   usage:" + gpuInfo[1]);
-		//}
+		for(int[] gpuInfo : result) {
+			System.out.println("gpuid:" + gpuInfo[0] + "   usage:" + gpuInfo[1]);
+		}
 	}
 
 }

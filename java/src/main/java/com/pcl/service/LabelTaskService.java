@@ -34,6 +34,7 @@ import com.pcl.pojo.mybatis.LabelTaskItem;
 import com.pcl.pojo.mybatis.LogInfo;
 import com.pcl.pojo.mybatis.PrePredictTask;
 import com.pcl.pojo.mybatis.PrePredictTaskResult;
+import com.pcl.service.schedule.miaod.MIAODSchedule;
 import com.pcl.util.JsonUtil;
 import com.pcl.util.TimeUtil;
 
@@ -68,6 +69,9 @@ public class LabelTaskService {
 	
 	@Autowired
 	private ObjectFileService fileService;
+	
+	@Autowired
+	private MIAODSchedule miaod;
 
 	private Gson gson = new Gson();
 	
@@ -409,6 +413,17 @@ public class LabelTaskService {
 		//		}
 		int userId = TokenManager.getUserIdByToken(TokenManager.getServerToken(token));
 
+		try {
+			if(body.getTaskLabelTypeInfo() != null && !body.getTaskLabelTypeInfo().isEmpty()) {
+				LabelPropertyService.checkLabelJson(body.getTaskLabelTypeInfo());
+			}else {
+				body.setTaskLabelTypeInfo(null);
+			}
+		}catch (Exception e) {
+			logger.info(e.getMessage());
+			body.setTaskLabelTypeInfo(null);
+		}
+		
 		LabelTask labelTask = new LabelTask();
 		labelTask.setId(UUID.randomUUID().toString().replaceAll("-",""));
 		labelTask.setRelate_task_id(body.getRelateTaskId());
@@ -424,7 +439,6 @@ public class LabelTaskService {
 		labelTask.setTask_flow_type(body.getTask_flow_type());
 		labelTask.setRelate_other_label_task(body.getRelate_other_label_task());
 		labelTask.setTask_status(0);
-
 
 		if(body.getTaskType() == Constants.LABEL_TASK_TYPE_ORIGIN) {
 
@@ -487,7 +501,17 @@ public class LabelTaskService {
 		}
 
 		labelTaskDao.addLabelTask(labelTask);
-
+		
+		//todo delete
+		if(labelTask.getTask_flow_type() == 3) {
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					miaod.doMIAOD();
+				}
+			}).start();;
+		}
 		return 1;
 	}
 
@@ -608,7 +632,13 @@ public class LabelTaskService {
 					pageResult.setCurrent(currPage);
 				}
 
-			}else {
+			}
+			
+			else {
+				if(findLast == Constants.QUERY_ITEM_PAGE_MIAOD) {
+					paramMap.put("orderType", 2);
+				}
+				
 				if(labelTask.getTask_type() == Constants.LABEL_TASK_TYPE_ORIGIN_DCM) {
 					int totalCount = labelDcmTaskItemDao.queryLabelTaskItemPageCountByLabelTaskId(paramMap);
 					List<LabelTaskItem> result = labelDcmTaskItemDao.queryLabelTaskItemPageByLabelTaskId(paramMap);

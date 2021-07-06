@@ -31,7 +31,8 @@ import com.pcl.pojo.mybatis.AlgModel;
 import com.pcl.pojo.mybatis.RetrainTask;
 import com.pcl.pojo.mybatis.RetrainTaskMsgResult;
 import com.pcl.pojo.mybatis.User;
-import com.pcl.service.schedule.RetrainTaskSchedule;
+import com.pcl.service.schedule.PredictPersonProperty;
+import com.pcl.service.schedule.retrain.RetrainTaskSchedule;
 import com.pcl.util.FileUtil;
 import com.pcl.util.TimeUtil;
 
@@ -273,20 +274,37 @@ public class RetrainTaskService {
 			
 			int algModelId = restrainTask.getAlg_model_id();
 			
-			AlgModel algModel = algModelDao.queryAlgModelById(algModelId);
-			
-			AlgInstance algInstance = algInstanceDao.queryAlgInstanceById(Integer.parseInt(algModel.getAlg_instance_id()));
-			
-			String algRootPath = LabelDataSetMerge.getAlgRootPath(algInstance.getAlg_root_dir());
-			
-			String confPy = restrainTask.getConfPath();
-			
-			String dir = getWorkDir(algRootPath,confPy);
-			
-			String lastLogJson = FileUtil.getLastModifiedFile(dir, null, ".log.json");
-			
-			return lastLogJson;
+			if(isPersonProperty(algModelId)) {
+				String logDir = restrainTask.getConfPath();
+				logger.info("json path=" + logDir + File.separator + "retrain/log/log_retrain.json");
+				return logDir + File.separator + "retrain/log/log_retrain.json";
+			}else {
+				AlgModel algModel = algModelDao.queryAlgModelById(algModelId);
+				AlgInstance algInstance = algInstanceDao.queryAlgInstanceById(Integer.parseInt(algModel.getAlg_instance_id()));
+				String algRootPath = LabelDataSetMerge.getAlgRootPath(algInstance.getAlg_root_dir());
+				String confPy = restrainTask.getConfPath();
+				String dir = getWorkDir(algRootPath,confPy);
+				String lastLogJson = FileUtil.getLastModifiedFile(dir, null, ".log.json");
+				return lastLogJson;
+			}
 		}
+	}
+	
+	private boolean isPersonProperty(int algModelId) {
+		AlgModel algModel = algModelDao.queryAlgModelById(algModelId);
+		if(algModel == null) {
+			return false;
+		}
+		
+		AlgInstance algInstance = algInstanceDao.queryAlgInstanceById(Integer.parseInt(algModel.getAlg_instance_id()));
+		if(algInstance == null) {
+			return false;
+		}
+		
+		if(algInstance.getId() == 18) {
+			return true;
+		}
+		return false;
 	}
 
 	private String getWorkDir(String algRootPath, String trainScript) {

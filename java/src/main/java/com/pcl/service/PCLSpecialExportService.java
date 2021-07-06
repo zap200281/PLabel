@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,7 +87,7 @@ public class PCLSpecialExportService {
 
 		ThreadSchedule.execExportThread(()->{
 			try {
-				downloadReIdTaskFileWriter(reIdtask,type, fileName, pro);
+				downloadReIdTaskFileWriter(reIdtask,String.valueOf(type), fileName, pro);
 			} catch (Exception e) {
 				pro.setId(e.getMessage());
 				logger.info(e.getMessage(),e);
@@ -138,7 +139,7 @@ public class PCLSpecialExportService {
 	}
 
 
-	public void downloadReIdTaskFileWriter(ReIDTask reIdtask,int type,String fileName1,Progress pro) throws IOException {
+	public void downloadReIdTaskFileWriter(ReIDTask reIdtask,String type,String fileName1,Progress pro) throws IOException {
 		File zipFile = new File(fileName1) ;
 		zipFile.getParentFile().mkdirs();
 		logger.info("start to write exception csv.fileName1=" + fileName1);
@@ -159,6 +160,9 @@ public class PCLSpecialExportService {
 				for(Map<String,Object> labelMap : labelList) {
 					String class_name = CocoAnnotationsUtil.getClassName(labelMap);
 					String reId = CocoAnnotationsUtil.getStrValue(labelMap,"reId");
+					if(reId == null) {
+						continue;
+					}
 					if(isExceptionType(class_name,reId)) {
 						
 						String number = getNumber(reId);
@@ -185,10 +189,10 @@ public class PCLSpecialExportService {
 							
 							if(tagMap.get("start") != null) {
 								record.put("start",frames);
+								record.put("box","\"" + CocoAnnotationsUtil.getStrValue(labelMap,"box") + "\"");
 							}
 							if(tagMap.get("end") != null) {
 								record.put("end",frames);
-								record.put("box","\"" + CocoAnnotationsUtil.getStrValue(labelMap,"box") + "\"");
 							}
 							if(tagMap.get("exception") != null) {
 								record.put("exception",frames);
@@ -255,9 +259,9 @@ public class PCLSpecialExportService {
 			zos.flush();
 
 			long end = System.currentTimeMillis();
-			logger.info("finished zip, cost: " + (end - start) +" ms");
+			logger.info("finished to writer csv, cost: " + (end - start) +" ms");
 		} catch (Exception e) {
-			throw new RuntimeException("zip error from ZipUtils",e);
+			throw new RuntimeException("writer csv error ",e);
 		}
 
 		updateProgress(pro, 100);
@@ -269,6 +273,76 @@ public class PCLSpecialExportService {
 		return reId.substring(1);
 	}
 
+	
+	public String exportExceptionReIdTaskListFile(String reIdTaskIdList, String type) throws IOException {
+		List<String> reidList = JsonUtil.getList(reIdTaskIdList);
+		return downloadReIdTaskListFile(reidList, type, LabelDataSetMerge.getUserDataSetPath(),true);
+	}
+	
+	
+	private String downloadReIdTaskListFile(List<String> reidList, String type,String tmpPath,boolean isNeedNanoTime) throws IOException {
+		
+		logger.info("reidList size=" + reidList.size());
+		String key = UUID.randomUUID().toString().replaceAll("-","") + REID_POSTFIX;
+
+		List<String> fileNameList = new ArrayList<>();
+
+		Progress pro = new Progress();
+		pro.setId(key);
+		pro.setStartTime(System.currentTimeMillis() / 1000);
+		pro.setExceedTime(10 * 60);
+
+		pro.setRatio(1.0/reidList.size());
+
+
+		for(String reIdTaskId : reidList) {
+			logger.info("query reIdTaskId=" + reIdTaskId);
+			String prefix = "";
+			if(isNeedNanoTime) {
+				prefix = System.nanoTime() + File.separator;
+			}
+			ReIDTask reIdtask = reIdTaskDao.queryReIDTaskById(reIdTaskId);
+			String taskName = FileUtil.getRemoveChineseCharName(reIdtask.getTask_name());
+			String relatedName =  prefix + taskName + "_exception" + ".csv";
+			
+			fileNameList.add(relatedName);
+		}
+		String fileJsonStr = JsonUtil.toJson(fileNameList);
+		if(fileJsonStr.length() > 10000) {
+			fileJsonStr = "";
+		}
+		pro.setRelatedFileName(fileJsonStr);
+		putProgress(pro);
+
+		ThreadSchedule.execExportThread(()->{
+			try {
+				double base = 0.0;
+				for(int i = 0; i <reidList.size(); i++) {
+					logger.info("start deal " + (i + 1) + " task.");
+					String reIdTaskId = reidList.get(i);
+					ReIDTask reIdtask = reIdTaskDao.queryReIDTaskById(reIdTaskId);
+
+					String relatedName = fileNameList.get(i);
+
+					String fileName = tmpPath + File.separator + relatedName;
+
+					downloadReIdTaskFileWriter(reIdtask,type, fileName, pro);
+
+					base+= pro.getRatio();
+
+					pro.setBase((long)(base * 100));
+
+				}
+			} catch (Exception e) {
+				pro.setId(e.getMessage());
+				logger.info(e.getMessage(),e);
+			}
+
+			updateProgress(pro,100);
+		});
+		return key;
+
+	}
 
 
 }

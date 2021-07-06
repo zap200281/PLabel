@@ -3,10 +3,12 @@ package com.pcl.service.schedule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,12 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.pcl.constant.Constants;
+import com.pcl.constant.UserConstants;
 import com.pcl.dao.AlgInstanceDao;
 import com.pcl.dao.AlgModelDao;
 import com.pcl.dao.ProgressDao;
+import com.pcl.dao.ReIDLabelTaskItemDao;
 import com.pcl.dao.ReIDTaskDao;
 import com.pcl.dao.ReIDTaskResultDao;
 import com.pcl.dao.ReIDTaskShowResultDao;
@@ -24,13 +29,16 @@ import com.pcl.exception.LabelSystemException;
 import com.pcl.pojo.Progress;
 import com.pcl.pojo.mybatis.AlgInstance;
 import com.pcl.pojo.mybatis.AlgModel;
+import com.pcl.pojo.mybatis.LabelTaskItem;
 import com.pcl.pojo.mybatis.ReIDTask;
 import com.pcl.pojo.mybatis.ReIDTaskResult;
 import com.pcl.pojo.mybatis.ReIDTaskShowResult;
 import com.pcl.service.MinioFileService;
 import com.pcl.service.ObjectFileService;
+import com.pcl.service.TokenManager;
 import com.pcl.util.FileUtil;
 import com.pcl.util.ProcessExeUtil;
+import com.pcl.util.ReIDUtil;
 
 @Service
 public class ReIDShowResultSchedule {
@@ -54,6 +62,9 @@ public class ReIDShowResultSchedule {
 	private ReIDTaskDao reIDTaskDao;
 	@Autowired
 	private ReIDTaskShowResultDao reIDTaskShowResultDao;
+	
+	@Autowired
+	private ReIDLabelTaskItemDao reIdLabelTaskItemDao;
 	
 	@Autowired
 	private ProgressDao progressDao;
@@ -127,6 +138,7 @@ public class ReIDShowResultSchedule {
 				logger.info("size = " + labelMap.size());
 
 				List<ReIDTaskResult> resultList = new ArrayList<>();
+				HashSet<String> imgReIDSet = new HashSet<>();
 				for(Entry<String,List<String>> entry : labelMap.entrySet()) {
 					String srcImgName = entry.getKey();
 
@@ -142,7 +154,10 @@ public class ReIDShowResultSchedule {
 						info.put(diskCutDestImgMinioPath, imageNameForReIdMap.get(tmp));
 						realList.add(info);
 					}
-
+					if(realList.size() == 0) {
+						logger.info("dest size =0");
+						continue;
+					}
 					ReIDTaskResult re = new ReIDTaskResult();
 					re.setId(reIDTask.getId());
 					re.setLabel_task_id("-1");
@@ -157,8 +172,10 @@ public class ReIDShowResultSchedule {
 				}else {
 					logger.info("error, size = 0");
 				}
+				
+				
 			}
-			FileUtil.delDir(everyDataDir);
+			//FileUtil.delDir(everyDataDir);
 			logger.info("Finished ReID show result auto deal, cost:" + ((System.currentTimeMillis() - start) / 1000) + "s");
 		}catch (Exception e) {
 			logger.error("ReId error: " + e.getMessage(),e);

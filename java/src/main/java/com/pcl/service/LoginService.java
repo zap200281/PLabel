@@ -56,7 +56,7 @@ public class LoginService {
 
 
 	public Token login(String userName,String password,String sourceIp) throws LabelSystemException {
-		logger.info("IP:"+ sourceIp + " user:" + userName + " start to valid password.");
+		logger.info("IP:"+ sourceIp + " user:" + userName + " start to valid password." + password);
 
 		List<Long> timeList = ipForTime.get(sourceIp);
 		if(timeList == null) {
@@ -92,6 +92,8 @@ public class LoginService {
 		}
 		
 		String encriptPass = SHAUtil.getEncriptStr(password);
+		logger.info("input password=" + encriptPass);
+		logger.info("db password=" + rightUser.getPassword());
 		if(encriptPass.equals(rightUser.getPassword())) {
 			Token token = new Token();
 			String tokenStr = TokenManager.getTokenByUserId(rightUser.getId());
@@ -115,7 +117,7 @@ public class LoginService {
 			token.setUserName(rightUser.getUsername());
 			token.setNickName(rightUser.getNick_name());
 			logger.info("user:" + userName + " login successfully.");
-			logSecService.addSecLogInfo(getLoginLogSecInfo(rightUser));
+			logSecService.addSecLogInfo(getLoginLogSecInfo(rightUser,sourceIp));
 			
 			if(loginInfo != null) {
 				loginInfo.setLast_login_time(TimeUtil.getCurrentTimeStr());
@@ -150,7 +152,7 @@ public class LoginService {
 		
 	}
 
-	public void loginOut(String token,String userName) throws LabelSystemException {
+	public void loginOut(String token,String userName,String sourceIP) throws LabelSystemException {
 		
 		logger.info("user:" + userName + " token:" + token + " start to login out.");
 		List<User> userList = userDao.queryUser(userName);
@@ -161,15 +163,15 @@ public class LoginService {
 		String serverToken = TokenManager.getServerToken(token);
 		TokenManager.removeToken(serverToken);
 		authTokenDao.delete(serverToken);
-		logSecService.addSecLogInfo(getLoginOutLogSecInfo(rightUser));
+		logSecService.addSecLogInfo(getLoginOutLogSecInfo(rightUser,sourceIP));
 		logger.info("token:" + token + " login  out successfully.");
 	}
 	
 	
-	private LogSecInfo getLoginLogSecInfo(User rightUser) {
+	private LogSecInfo getLoginLogSecInfo(User rightUser,String sourceIp) {
 		LogSecInfo logInfo = new LogSecInfo();
 		
-		logInfo.setLog_info("用户登录成功。");
+		logInfo.setLog_info("用户登录成功。IP:" + sourceIp);
 		logInfo.setUser_id(rightUser.getId());
 		logInfo.setOper_id("login");
 		logInfo.setOper_name("用户登录");
@@ -180,10 +182,10 @@ public class LoginService {
 		
 	}
 	
-	private LogSecInfo getLoginOutLogSecInfo(User rightUser) {
+	private LogSecInfo getLoginOutLogSecInfo(User rightUser,String sourceIp) {
 		LogSecInfo logInfo = new LogSecInfo();
 		
-		logInfo.setLog_info("用户退出登录成功。");
+		logInfo.setLog_info("用户退出登录成功。IP:" + sourceIp);
 		logInfo.setUser_id(rightUser.getId());
 		logInfo.setOper_id("loginout");
 		logInfo.setOper_name("用户退出登录");

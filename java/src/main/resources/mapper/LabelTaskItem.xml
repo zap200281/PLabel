@@ -133,6 +133,12 @@
         <if test="verify_status !=null">
         	verify_status=#{verify_status},
         </if>
+         <if test="display_order1 !=null">
+        	display_order1=#{display_order1},
+        </if>
+         <if test="display_order2 !=null">
+        	display_order2=#{display_order2},
+        </if>
         item_add_time=#{item_add_time} 
         where id=#{id}
     </update> 
@@ -143,8 +149,11 @@
         SELECT * FROM tasks_labeltaskitem${user_id} where 
         label_task_id=#{label_task_id}  
         order by 
-         <if test="orderType !=null and orderType == 0">
+        <if test="orderType !=null and orderType == 0">
            label_status desc,
+        </if>
+        <if test="orderType !=null and orderType == 2">
+           display_order2 desc,
         </if>
         pic_image_field asc 
         limit #{currPage}, #{pageSize}

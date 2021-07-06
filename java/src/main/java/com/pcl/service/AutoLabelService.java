@@ -78,6 +78,7 @@ public class AutoLabelService {
 			progress.setProgress((int)(proD * 100));
 			return progress;
 		}
+		logger.info("return null progress.");
 		return null;
 	}
 	

@@ -138,6 +138,20 @@ public class ReIDTaskController {
 		return reIdTaskService.queryNearReID(token, reTaskId, pic_image_field, intervalTime);
 	}
 	
+	@ApiOperation(value="复制标注信息到指定图片中", notes="")
+	@RequestMapping(value="/reId-label-task-copy-item", method = RequestMethod.PATCH)
+	public int copyReIDLabelToOhterItem(@RequestParam("reid_task_id") String reTaskId,@RequestParam("label_info") String label_info, @RequestParam("destFileId") String destFileId) throws LabelSystemException{
+		
+		String token = request.getHeader("authorization");
+		if(token == null) {
+			throw new LabelSystemException("user not login.");
+		}
+		logger.info("copyReIDLabelToOhterItem  token =" + token + " destFileId=" + destFileId + " label_info=" + label_info);
+
+		return reIdTaskService.copyReIDLabelToOhterItem(label_info,destFileId,token,reTaskId);
+	}
+	
+	
 	@ApiOperation(value="更新通用图片标注信息", notes="")
 	@RequestMapping(value="/reId-label-task-item", method = RequestMethod.PATCH)
 	public int updateReIDLabelTaskItem(@RequestBody LabelTaskItem body) throws LabelSystemException{
@@ -410,5 +424,5 @@ public class ReIDTaskController {
 		return re;
 	}
 	
-	
+
 }

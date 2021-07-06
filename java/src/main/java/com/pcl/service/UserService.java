@@ -259,6 +259,8 @@ public class UserService {
 		logSecInfo.setOper_name("更新用户");
 		logSecInfo.setOper_time_start(TimeUtil.getCurrentTimeStr());
 		logSecInfo.setOper_time_end(TimeUtil.getCurrentTimeStr());
+		
+		logSecService.addSecLogInfo(logSecInfo);
 	}
 
 
@@ -322,6 +324,64 @@ public class UserService {
 				}
 			}
 		}
+	}
+
+
+	public void updateMedicalUserPassword(String userName, String newPassword) throws LabelSystemException {
+		
+		List<User> loginUserList = userDao.queryUser(userName);
+		if(loginUserList == null || loginUserList.isEmpty()) {
+			return;
+		}
+		User loginUser = loginUserList.get(0);
+		logger.info("update password. user=" + loginUser.getUsername());
+		String savePasswordStr = SHAUtil.getEncriptStr(newPassword);
+		User user = new User();
+		user.setId(loginUser.getId());
+		user.setPassword(savePasswordStr);
+		userDao.updateUserPassword(user);
+		
+		LogSecInfo logSecInfo = new LogSecInfo();
+		logSecInfo.setOper_id("updateUser");
+		logSecInfo.setLog_info("更新用户密码成功，用户名称：" + loginUser.getUsername());
+		logSecInfo.setUser_id(loginUser.getId());
+		logSecInfo.setOper_name("更新用户");
+		logSecInfo.setOper_time_start(TimeUtil.getCurrentTimeStr());
+		logSecInfo.setOper_time_end(TimeUtil.getCurrentTimeStr());
+		
+		logSecService.addSecLogInfo(logSecInfo);
+	}
+
+
+	public void updateUserIdentity(String token, int user_id, int identity) throws LabelSystemException {
+		int userId = TokenManager.getUserIdByToken(TokenManager.getServerToken(token));
+		User loginUser = userDao.queryUserById(userId);
+		if(loginUser.getIs_superuser() != Constants.USER_SUPER) {
+			if(user_id != userId) {
+				throw new LabelSystemException("无权限修改。");
+			}
+		}
+		
+		if(!(identity == 1 || identity == 2)) {
+			throw new LabelSystemException("只能将用户身份修改成标注人员或者审核人员。");
+		}
+		
+		logger.info("update identity. user=" + loginUser.getUsername() + " identity=" + identity);
+
+		User user = new User();
+		user.setId(user_id);
+		user.setIs_superuser(identity);
+		userDao.updateUserIndentity(user);
+		
+		LogSecInfo logSecInfo = new LogSecInfo();
+		logSecInfo.setOper_id("updateUser");
+		logSecInfo.setLog_info("更新用户身份成功，用户身份：" + identity);
+		logSecInfo.setUser_id(userId);
+		logSecInfo.setOper_name("更新用户");
+		logSecInfo.setOper_time_start(TimeUtil.getCurrentTimeStr());
+		logSecInfo.setOper_time_end(TimeUtil.getCurrentTimeStr());
+		
+		logSecService.addSecLogInfo(logSecInfo);
 	}
 	
 

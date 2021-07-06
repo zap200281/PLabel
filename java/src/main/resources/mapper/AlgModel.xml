@@ -6,6 +6,8 @@
 	<resultMap id="BaseResultMap" type="com.pcl.pojo.mybatis.AlgModel" >
 		<result column="id" property="id"/>
 		<result column="model_name" property="model_name"/>
+		<result column="model_type" property="model_type"/>
+		
 		<result column="local_path" property="local_path"/>
 		<result column="model_url" property="model_url"/>
 		<result column="alg_instance_id" property="alg_instance_id"/>
@@ -18,8 +20,8 @@
   
 
   	<insert id="addAlgModel"  parameterType="com.pcl.pojo.mybatis.AlgModel">
-        insert into alg_warehouse_algmodel(model_name,local_path,model_url,alg_instance_id,exec_script,train_script,conf_path,type_list,threshold)
-         values (#{model_name}, #{local_path},#{model_url},#{alg_instance_id},#{exec_script},#{train_script},#{conf_path},#{type_list},#{threshold})
+        insert into alg_warehouse_algmodel(model_name,local_path,model_url,alg_instance_id,exec_script,train_script,conf_path,type_list,threshold,model_type)
+         values (#{model_name}, #{local_path},#{model_url},#{alg_instance_id},#{exec_script},#{train_script},#{conf_path},#{type_list},#{threshold},#{model_type})
     </insert>
     
     <delete id="delete" parameterType="Integer">
@@ -49,6 +51,10 @@
     
     <select id="queryAlgModelForTracking" resultMap="BaseResultMap">    
         SELECT * FROM alg_warehouse_algmodel where model_type=1 
+    </select> 
+    
+    <select id="queryAlgModelForProperty" resultMap="BaseResultMap">    
+        SELECT * FROM alg_warehouse_algmodel where model_type=2 
     </select> 
     
      <select id="queryAlgModelContainWiseMedical" resultMap="BaseResultMap">    

@@ -21,22 +21,22 @@ public class AlgService {
 
 	@Autowired
 	private AlgModelDao algModelDao;
-	
+
 	@Autowired
 	private AlgInstanceDao algInstanceDao;
-	
-	
+
+
 	public int addAlgModel(AlgModel algModel) {
 		logger.info("start add alg model, modelName=" + algModel.getModel_name());
 		return algModelDao.addAlgModel(algModel);
 	}
-	
+
 	public int deleteAlgModel(int id) {
 		logger.info("start delete alg model, alg model id=" + id);
 		return algModelDao.delete(id);
 	}
-	
-	
+
+
 	public List<AlgModel> queryAlgModel() {
 		logger.info("start query all alg model");
 		List<AlgModel> reList = algModelDao.queryAlgModelAll();
@@ -45,8 +45,8 @@ public class AlgService {
 		}
 		return reList;
 	}
-	
-	
+
+
 	public List<AlgModel> queryAlgModelContainWiseMedical() {
 		logger.info("start query queryAlgModelContainWiseMedical ");
 		List<AlgModel> reList = algModelDao.queryAlgModelContainWiseMedical();
@@ -55,19 +55,19 @@ public class AlgService {
 		}
 		return reList;
 	}
-	
-	
+
+
 	public int deleteAlgInstance(int id) {
 		logger.info("start delete alg instance, alg instance id=" + id);
 		return algInstanceDao.delete(id);
 	}
-	
-	
+
+
 	public int addAlgInstance(AlgInstance algInstance) {
 		logger.info("start add alg instance, alg name=" + algInstance.getAlg_name());
-		
+
 		algInstance.setAdd_time(TimeUtil.getCurrentTimeStr());
-		
+
 		return algInstanceDao.addAlgInstance(algInstance);
 	}
 
@@ -75,7 +75,7 @@ public class AlgService {
 		List<AlgModel> dbList = algModelDao.queryAlgModelAll();
 		List<AlgModel> returnList = new ArrayList<>();
 		for(AlgModel algModel : dbList) {
-			if(algModel.getTrain_script() != null) {
+			if(algModel.getTrain_script() != null && algModel.getTrain_script().length() > 0) {
 				returnList.add(algModel);
 			}
 		}
@@ -84,21 +84,26 @@ public class AlgService {
 
 	public List<AlgModel> queryAlgModelForTracking() {
 		List<AlgModel> dbList = algModelDao.queryAlgModelForTracking();
-		
+
 		return dbList;
 	}
-	
-	
+
+
 	public List<AlgModel> queryAlgModelForAutoLabel() {
 		List<AlgModel> dbList = algModelDao.queryAlgModelForAutoLabel();
-		
+
 		return dbList;
 	}
-	
+
 	public List<AlgModel> queryAlgModelForHandLabel() {
 		List<AlgModel> dbList = algModelDao.queryAlgModelForHandLabel();
-		
+
 		return dbList;
 	}
-	
+
+	public List<AlgModel> queryAlgModelForProperty() {
+		List<AlgModel> dbList = algModelDao.queryAlgModelForProperty();
+		return dbList;
+	}
+
 }

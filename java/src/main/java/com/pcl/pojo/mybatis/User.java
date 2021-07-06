@@ -11,7 +11,7 @@ public class User {
 	
 	private String nick_name;
 	
-	//0为超级用户，1为普通用户
+	//0为超级用户，1为标注用户，2为审核人员
 	private int is_superuser;
 	
 	private int is_staff;

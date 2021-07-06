@@ -2,6 +2,7 @@ package com.pcl.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,11 +62,16 @@ public class LabelPropertyService {
 	}
 
 	public Result importLabelPropertyJson(String token, String jsonContent, String taskType, String taskId) {
-		
-		
-		
-		
-		
+	
+		try {
+			checkLabelJson(jsonContent);
+		} catch (LabelSystemException e) {
+			Result re = new Result();
+			re.setCode(1);
+			re.setMessage(e.getMessage());
+			return re;
+		}
+	
 		Map<String,Object> paramMap = new HashMap<>();
 		paramMap.put("id", taskId);
 		paramMap.put("task_label_type_info", jsonContent);
@@ -79,16 +85,31 @@ public class LabelPropertyService {
 		return re;
 	}
 	
-	private void checkLabelJson(String jsonContent) throws LabelSystemException{
+	public static void checkLabelJson(String jsonContent) throws LabelSystemException{
 		Map<String,Object> jsonMap = JsonUtil.getMap(jsonContent);
 		
 		if(jsonMap == null) {
 			throw new LabelSystemException("导入的Json非法。");
 		}
 		
+		if(jsonMap.get("id") == null) {
+			throw new LabelSystemException("导入的标注Json中必需包括id及type属性。");
+		}
+		
 		for(Entry<String,Object> entry :jsonMap.entrySet()) {
 			Object valueObj = entry.getValue();
+			if(!(valueObj instanceof Map)) {
+				throw new LabelSystemException("导入的标注Json中属性格式错误。");
+			}
 			
+			Map<String,Object> valueMap = (Map<String,Object>)valueObj;
+			if(valueMap.get("type") == null) {
+				throw new LabelSystemException("导入的标注Json中属性没有标注类别。");
+			}
+			String typeValue = valueMap.get("type").toString();
+			if(!Arrays.asList("dropdown","text","checkbox","radio").contains(typeValue)) {
+				throw new LabelSystemException("导入的标注Json中属性标注类别应该为：dropdown,text,checkbox,radio四种之一。");
+			}
 		}
 		
 	}

@@ -21,4 +21,12 @@ public class SHAUtil {
 		return password;
 	}
 	
+	public static void main(String[] args) {
+		
+		System.out.println( getEncriptStr("pcl123456"));
+		
+		
+		
+	}
+	
 }

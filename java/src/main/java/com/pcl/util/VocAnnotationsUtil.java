@@ -168,6 +168,8 @@ public class VocAnnotationsUtil {
 		return produceDocment(typeOrColorMapName, labelList, fileName, imageInfo);
 		
 	}
+	
+
 
 
 	private Document produceDocment(Map<String, Object> typeOrColorMapName, ArrayList<Map<String, Object>> labelList,
@@ -263,6 +265,19 @@ public class VocAnnotationsUtil {
 		if(labelList.isEmpty()) {
 			return null;
 		}
+		String relativeFileName = item.getPic_image_field();
+		String fileName = relativeFileName.substring(relativeFileName.lastIndexOf("/") +1);
+		Map<String, Object> imageInfo = getImageFileInfo(item);
+		
+		return produceDocment(typeOrColorMapName, labelList, fileName, imageInfo);
+	}
+	
+	public Document getXmlDocumentOrNotLabel(LabelTaskItem item,Map<String,Object> pictureInfo,Map<String,Object> typeOrColorMapName) {
+
+		String labelInfo = item.getLabel_info();
+
+		ArrayList<Map<String,Object>> labelList = JsonUtil.getLabelList(labelInfo);
+		
 		String relativeFileName = item.getPic_image_field();
 		String fileName = relativeFileName.substring(relativeFileName.lastIndexOf("/") +1);
 		Map<String, Object> imageInfo = getImageFileInfo(item);

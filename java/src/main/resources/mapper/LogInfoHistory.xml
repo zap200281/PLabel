@@ -25,7 +25,7 @@
     </insert>
     
   
-    <delete id="deleteLogInfo" parameterType="Integer">
+    <delete id="deleteLogInfo" parameterType="String">
         DELETE  FROM log_info_history WHERE id=#{id}
     </delete>
   

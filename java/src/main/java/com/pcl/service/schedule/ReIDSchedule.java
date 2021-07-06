@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.CropImageFilter;
 import java.awt.image.FilteredImageSource;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +52,7 @@ import com.pcl.service.ObjectFileService;
 import com.pcl.service.TokenManager;
 import com.pcl.util.CocoAnnotationsUtil;
 import com.pcl.util.FileUtil;
+import com.pcl.util.ImageCutUtil;
 import com.pcl.util.JsonUtil;
 import com.pcl.util.ProcessExeUtil;
 import com.pcl.util.ReIDUtil;
@@ -167,7 +167,7 @@ public class ReIDSchedule {
 			tmpParamMap.put("user_id", TokenManager.getUserTablePos(reIDTask.getUser_id(), UserConstants.REID_TASK_SINGLE_TABLE));
 			List<LabelTaskItem> srclabelTaskItemList = reIdLabelTaskItemDao.queryLabelTaskItemByReIdAndLabelTaskId(tmpParamMap);
 			int srcLabelItemNum = srclabelTaskItemList.size() ;
-
+			logger.info("srcLabelItemNum=" + srcLabelItemNum);
 			int reIdStartNum = 0;
 
 			Map<String,Integer> reIdNumMap = new HashMap<>();
@@ -193,6 +193,7 @@ public class ReIDSchedule {
 				tmpParamMap.put("pic_url", destId);
 				List<LabelTaskItem> destTaskItemList = reIdLabelTaskItemDao.queryLabelTaskItemByReIdAndLabelTaskId(tmpParamMap);
 				int destLabelItemNum = destTaskItemList.size();
+				logger.info("destLabelItemNum=" + destLabelItemNum);
 				String labelTaskName = getLabelTaskName(destId,reIDTask);
 
 				Map<String,LabelTaskItem> imagesForDestLabelItemId = new HashMap<>();
@@ -375,7 +376,7 @@ public class ReIDSchedule {
 			for(LabelTaskItem item : itemList) {
 				List<Map<String,Object>> labelList = ReIDUtil.getLabelList(item.getLabel_info());
 				if(labelList.isEmpty()) {
-					logger.info("jsonLabelInfo is null. image=" + item.getPic_object_name());
+					//logger.info("jsonLabelInfo is null. image=" + item.getPic_object_name());
 					continue;
 				}
 				for(Map<String,Object> label : labelList) {
@@ -651,7 +652,7 @@ public class ReIDSchedule {
 		int size = labelTaskItemList.size();
 		for(int i = start; i < end && i < size; i++) {
 			LabelTaskItem item = labelTaskItemList.get(i);
-			count += cutImageToPath(item, destDir);
+			count += ImageCutUtil.cutImageToPath(item, destDir,fileService);
 		}
 		return count;
 	}
@@ -666,7 +667,7 @@ public class ReIDSchedule {
 		for(LabelTaskItem item : labelTaskItemList) {
 			String taskId = item.getPic_url();
 			if(destId.equals(taskId)) {
-				count += cutImageToPath(item, destImagePath);
+				count += ImageCutUtil.cutImageToPath(item, destImagePath,fileService);
 			}
 		}
 		return count;
@@ -683,7 +684,7 @@ public class ReIDSchedule {
 		for(LabelTaskItem item : labelTaskItemList) {
 			String taskId = item.getPic_url();
 			if(srcTaskId.equals(taskId)) {
-				count += cutImageToPath(item, srcCutImagePath);
+				count += ImageCutUtil.cutImageToPath(item, srcCutImagePath,fileService);
 			}
 		}
 		return count;
@@ -752,78 +753,7 @@ public class ReIDSchedule {
 		return dataDir +  "/market1501/test/query/";
 	}
 
-	private int cutImageToPath(LabelTaskItem item, String destCutImagePath) {
-		int count = 0;
-		String jsonLabelInfo = item.getLabel_info();
-		if(Strings.isBlank(jsonLabelInfo)) {
-			logger.info("jsonLabelInfo is null. jsonLabelInfo=" + jsonLabelInfo);
-			return count;
-		}
-		ArrayList<Map<String,Object>> labelList = gson.fromJson(jsonLabelInfo, new TypeToken<ArrayList<Map<String,Object>>>() {
-			private static final long serialVersionUID = 1L;}.getType());
-		if(labelList.isEmpty()) {
-			logger.info("jsonLabelInfo is empty. jsonLabelInfo=" + jsonLabelInfo);
-			return count;
-		}
 
-		BufferedImage bufferImage = fileService.getBufferedImage(item.getPic_image_field());
-		if(bufferImage == null) {
-			logger.info("image is null. path=" + item.getPic_image_field());
-			return count;
-		}
-
-		String imageName = item.getPic_image_field();
-		imageName = imageName.substring(imageName.lastIndexOf("/") + 1);
-		imageName = imageName.substring(0,imageName.length() - 4);
-		for(Map<String,Object> label : labelList) {
-
-			Object idObj = label.get("id");
-			if(idObj == null) {
-				continue;
-			}
-			String id = idObj.toString();
-
-			List<Object> boxList = (List<Object>)label.get("box");
-			if(boxList != null) {//矩形标注
-				int xmin = CocoAnnotationsUtil.getIntStr(String.valueOf(boxList.get(0)));
-				int ymin = CocoAnnotationsUtil.getIntStr(String.valueOf(boxList.get(1)));
-				int xmax = CocoAnnotationsUtil.getIntStr(String.valueOf(boxList.get(2)));
-				int ymax = CocoAnnotationsUtil.getIntStr(String.valueOf(boxList.get(3)));
-				if(xmax-xmin <=0 || ymax - ymin <=0) {
-					continue;
-				}
-				if(xmin < 0) {
-					xmin = 0;
-				}
-				if(xmax <= 0) {
-					xmax = 1;
-				}
-				if(xmax >= bufferImage.getWidth()) {
-					xmax =  bufferImage.getWidth();
-				}
-				if(xmin >= bufferImage.getWidth()) {
-					xmin = bufferImage.getWidth() - 1;
-				}
-				if(ymax >= bufferImage.getHeight()) {
-					ymax = bufferImage.getHeight();
-				}
-				if(ymin >= bufferImage.getHeight()) {
-					ymin = bufferImage.getHeight() - 1;
-				}
-				BufferedImage subImage = bufferImage.getSubimage(xmin, ymin, xmax-xmin, ymax-ymin);
-				String name = imageName + "_" + id + ".jpg";
-				try {
-					//logger.info("cut img  name=" + name);
-					ImageIO.write(subImage, "jpg", new File(destCutImagePath,name));
-					count++;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return count;
-
-	}
 
 
 }
