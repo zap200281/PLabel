@@ -2115,8 +2115,8 @@ function display_createlabel(){
   document.getElementById("tracking_startid_div").style.display="none";
   document.getElementById("tracking_endid_div").style.display="none";
   document.getElementById("label_id_div").style.display="none";
-  //document.getElementById("labelOption_div").style.display="none";
-  document.getElementById("labelOption").innerHTML="<option value=\"2\" selected=\"\">请选择</option> <option value=\"3\">识别车的类型与颜色</option>";
+  document.getElementById("labelOption_div").style.display="none";
+  //document.getElementById("labelOption").innerHTML="<option value=\"2\" selected=\"\">请选择</option> <option value=\"3\">识别车的类型与颜色</option>";
   document.getElementById('predtask_id').disabled=false; 
   
   $('#label_id').val('1');
@@ -2140,7 +2140,7 @@ function submit_predtask(){
 	var start_id = 0;
 	var end_id = 0;
 	var label_id = 1;
-	var label_option = $('#labelOption').val();
+	var label_option = null;
 	if(predict_model_val == 12 || predict_model_val == 16 || predict_model_val == 20 || predict_model_val == 21){
 		task_type = "2";
 		start_id = $('#tracking_startid').val();
@@ -2733,6 +2733,7 @@ function model_sele_Change(event){
 	if(modelid == 12 || modelid == 16 || modelid == 20 || modelid == 21){
 		document.getElementById("tracking_startid_div").style.display="block";
 		document.getElementById("tracking_endid_div").style.display="block";
+		document.getElementById("labelOption_div").style.display="block";
 		if(modelid == 12 || modelid == 16){
 		    document.getElementById("label_id_div").style.display="block";
 		}else{
@@ -2750,8 +2751,9 @@ function model_sele_Change(event){
 		document.getElementById("tracking_startid_div").style.display="none";
 		document.getElementById("tracking_endid_div").style.display="none";
 		document.getElementById("label_id_div").style.display="none";
+		document.getElementById("labelOption_div").style.display="none";
 		if(modelid == 5 || modelid == 6 || modelid == 7 ){
-		   document.getElementById("labelOption").innerHTML="<option value=\"2\" selected=\"\">请选择</option> <option value=\"3\">识别车的类型与颜色</option>";
+		   //document.getElementById("labelOption").innerHTML="<option value=\"2\" selected=\"\">请选择</option> <option value=\"3\">识别车的类型与颜色</option>";
 		}
 	}
 }
