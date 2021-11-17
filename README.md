@@ -27,7 +27,7 @@ docker exec -it PLabelHand /bin/bash
 
 运行系统：
 ./server.sh
-再进行回车，一直到出现命令界面。
+再进行回车，一直到出现命令终端。
 
 在web浏览器中输入：
 http://ip:8008/
