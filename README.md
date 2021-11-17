@@ -1,4 +1,4 @@
-本开源系统已经迁移到  https://git.openi.org.cn/OpenIOSSG/PLabel  进行开发，这里可以存储超大文件，包括docker镜像，可以直接下载。
+本开源系统已经迁移到  https://git.openi.org.cn/OpenIOSSG/PLabel  进行开发，这里可以存储超大文件，包括docker镜像，可以直接下载。如果对标注系统有需求的，可以在https://git.openi.org.cn/OpenIOSSG/PLabel 这个地址的“任务”栏创建任务，如果工作量不是很大，可能1、2天之内响应。
 
 # PLabel V3.0
 预计将在2021年12月底发布，将彻底修改架构，将各个自动标注算法全docker化，按照指定的流程发布标注算法的docker，就可以接入标注系统。另外将增加文本标注功能。
