@@ -10,7 +10,7 @@ PLabel发布, 主要是升级mmdetection平台到V2.3.0,重训人车检测模型
 半自动标注系统是基于BS架构，纯Web页面操作，由鹏城实验室叶齐祥、曾炜、田永鸿教授团队自主研发，由工程师邹安平维护，集成视频抽帧，目标检测、视频跟踪、ReID分类、人脸检测等算法，实现了对图像，视频的自动标注，并可以对自动算法的结果进行人工标注，最终得到标注结果，同时也可以对视频、图片、医疗（包括dicom文件及病理图像）相关的数据进行人工标注，标注结果支持COCO及VOC格式。支持多人协同标注。 半自动标注系统主要功能有：用户管理，数据集管理，自动标注，人工标注，ReID标注，车流统计，视频标注，医疗CT标注，超大图像标注，模型管理与重训，报表管理。数据标注过程一个非常重要的因素是数据安全，在标注使用中防止数据泄露，采用基于web标注工具是有效避免数据泄露的措施之一。 半自动标注系统以保证性能的情况下最小化人工标注代价为目标，不断提升自动标注效率，减少人工标注和人工参与过程。
 
 # Install
-新增最简单的方式安装： 下载此docker镜像：https://git.openi.org.cn/attachments/39dd8b12-e5e9-448e-a3bd-53f5e209f44c
+新增最简单的方式安装： 下载此docker镜像：https://git.openi.org.cn/attachments/a0e05531-43a5-4fa6-99ee-b31b3b3f2430
 加载镜像 docker load --input pcl_label_hand_v2.tar
 运行容器： docker run --name PLabelHand -p 8008:8008 -p 9009:9000 --shm-size 4G -i -t -v /data1/PLabelHand:/data 09dcbf3d1f58 /bin/bash
 注意：必需使用8008端口映射，如果要修改，则需要进入docker容器修改nginx下plabel.conf文件中的端口。9009端口用于将容器minio对外暴露，用于基于CPU的自动算法yolov5_auto_label_v1镜像使用。
