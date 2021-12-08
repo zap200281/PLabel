@@ -54,7 +54,7 @@ java -jar labelSystem.jar
 
 java命令可以增加-Xmx等jvm参数，根据自己的内存自行增加。
 
-#Backup
+# Backup
 标注系统的数据主要是两个部分，一个minio存储，一个数据库，备好这两个就可以了。
 minio存储数据位置：/data/minio/data/
 mysql数据库：mysql -uroot -p 登录之后，进行备份即可。
