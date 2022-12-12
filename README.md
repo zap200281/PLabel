@@ -1,5 +1,42 @@
 本开源系统已经迁移到  https://git.openi.org.cn/OpenIOSSG/PLabel  进行开发，这里可以存储超大文件，包括docker镜像，可以直接下载。如果对标注系统有需求的，可以在https://git.openi.org.cn/OpenIOSSG/PLabel 这个地址的“任务”栏创建任务，如果工作量不是很大，可能1、2天之内响应。
 
+
+# PLabel V4.0
+增加如下特性：
+
+1、Yolov5自动标注容器支持模型重训，重训完成后的模型自动出现在标注系统中。
+2、手工标注页面中工具按钮支持自动标注。
+3、新增基于GPU的分割自动标注镜像，可以基于一张已经分割标注好的图片去自动标注同类其它图片。
+4、新增线段标注，分割标注支持颜色覆盖。
+5、解决相关Bug。
+
+
+
+# 4.0 Install
+### 下载标注系统镜像[pcl_label_hand_v5.tar](https://openi.pcl.ac.cn/attachments/c9f77354-2bd2-4088-8e63-8ae9c71c743f?type=1)
+（1）加载镜像 docker load --input pcl_label_hand_v5.tar
+（2）运行容器： docker run --name PLabelHand -p 8008:8008 -p 9009:9000 --shm-size 4G -i -t -v /data1/PLabelHand:/data 2b26fb5f5be6 /bin/bash
+注意：2b26fb5f5be6为镜像ID，有可能变化，需要使用docker image list查看修改。必需使用8008端口映射，如果要修改，则需要进入docker容器修改nginx下plabel.conf文件中的端口。9009端口用于将容器minio对外暴露，用于基于CPU的自动算法yolov5_auto_label_v4、yolov5_auto_track_v1、object_segment_label_v1.tar镜像使用。/data1/PLabelHand 是宿主机磁盘，用来存储数据集内容，因此此目录要存储到空间比较大的磁盘上。
+（3）进入容器： docker exec -it PLabelHand /bin/bash
+（4）运行系统： ./server.sh  第一次需要稍等一会，mysql启动会比较慢。 使用ps -ef | grep java 查看labelsystem.jar是否启动成功。如果没有启动成功，重新运行./server.sh
+在web浏览器中输入： http://ip:8008/ 访问标注系统（注意：ip根据实际替换）。 初始用户名：LabelSystem01 / pcl123456
+
+### 接入基于CPU的yolov5自动标注镜像，支持模型重训，下载此docker镜像[yolov5_auto_label_v4.tar](https://openi.pcl.ac.cn/attachments/98eb806a-8398-4918-bb7c-a0564e18307d?type=1)
+（1）加载镜像：docker load --input yolov5_auto_label_v1.tar
+（2）运行容器：docker run --name yolov5_auto_label -p 8009:8009 --shm-size 4G -i -t -v /data1/PLabelHand:/data fcb6fe2c12a0 /bin/bash
+（3）切换到javaapp目录下，修改application-runtime.properties 里面的IP地址 192.168.62.129 为自己的IP地址，
+（4）然后运行：java -jar labelSystemForDocker.jar
+此后在界面上新建自动标注算法或者模型重训，就可以选择Yolov5算法了，目前默认标注为person，如需要修改标注类别，参见[YOLO_CLass.md](https://git.openi.org.cn/OpenIOSSG/PLabel/src/branch/master/YOLO_CLass.md)。
+
+### 接入基于GPU（CUDA10.1）的分割标注镜像，下载此docker镜像[object_segment_label_v1.tar](https://openi.pcl.ac.cn/attachments/e4ec46bb-b04d-4082-918a-51b2961025e9?type=1)
+（1）加载镜像：docker load --input object_segment_label_v1.tar
+（2）运行容器：docker run --runtime=nvidia --name pclobjectseg -p 8288:8288 --shm-size 4G -i -t   -v /data1/data:/data cae77bf6656e /bin/bash
+（3）切换到javaapp目录下，修改application-runtime.properties 里面的IP地址 192.168.62.129 为自己的IP地址，
+（4）然后运行：java -jar labelSystemForDocker.jar
+此后在人工标注页面的自动标注功能中，可以选择此算法，使用此算法是选择两张及以上的图片，并且需要标注第一张图片，算法会自动标注第二张及之后的图片。效果参见：
+[效果视频](https://openi.pcl.ac.cn/OpenIOSSG/PLabel/src/branch/master/doc/%e7%b3%bb%e7%bb%9f%e5%b8%ae%e5%8a%a9%e6%96%87%e6%a1%a3/%e8%87%aa%e5%8a%a8%e7%9b%ae%e6%a0%87%e5%88%86%e5%89%b2%e6%95%88%e6%9e%9c%e8%a7%86%e9%a2%91.mp4)
+
+
 # PLabel V3.0
 增加如下特性：
 
