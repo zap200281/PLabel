@@ -1,5 +1,7 @@
 本开源系统已经迁移到  https://git.openi.org.cn/OpenIOSSG/PLabel  进行开发，这里可以存储超大文件，包括docker镜像，可以直接下载。如果对标注系统有需求的，可以在https://git.openi.org.cn/OpenIOSSG/PLabel 这个地址的“任务”栏创建任务，如果工作量不是很大，可能1、2天之内响应。
 
+PLabel微信群：
+<img src="https://openi.pcl.ac.cn/OpenIOSSG/PLabel/src/branch/master/img/wechat.jpg" width=200px />
 
 # PLabel V4.0
 增加如下特性：
