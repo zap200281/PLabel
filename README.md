@@ -5,12 +5,14 @@ https://openi.pcl.ac.cn/OpenIOSSG/PLabel/src/branch/master/img/wechat.jpg
 
 # PLabel V4.0
 增加如下特性：
-
+0: 新增基于GPU的[Segment Anything](https://github.com/facebookresearch/segment-anything)分割自动标注镜像，可分割任意图片
 1、Yolov5自动标注容器支持模型重训，重训完成后的模型自动出现在标注系统中。
 2、手工标注页面中工具按钮支持自动标注。
 3、新增基于GPU的分割自动标注镜像，可以基于一张已经分割标注好的图片去自动标注同类其它图片。
 4、新增线段标注，分割标注支持颜色覆盖。
 5、解决相关Bug。
+6、通过等保三级安全渗透测试。
+
 
 
 
@@ -29,6 +31,14 @@ https://openi.pcl.ac.cn/OpenIOSSG/PLabel/src/branch/master/img/wechat.jpg
 （3）切换到javaapp目录下，修改application-runtime.properties 里面的IP地址 192.168.62.129 为自己的IP地址，
 （4）然后运行：java -jar labelSystemForDocker.jar
 此后在界面上新建自动标注算法或者模型重训，就可以选择Yolov5算法了，目前默认标注为person，如需要修改标注类别，参见[YOLO_CLass.md](https://git.openi.org.cn/OpenIOSSG/PLabel/src/branch/master/YOLO_CLass.md)。
+
+### 接入基于GPU（CUDA10.1）的大模型Segment Anything分割标注镜像，下载此docker镜像[segany_plabel.tar](https://openi.pcl.ac.cn/attachments/e481026b-edea-4b7b-b5dd-d05e50ef72e7?type=1)
+（1）加载镜像：docker load --input segany_plabel.tar
+（2）运行容器：docker run  --runtime=nvidia --name segany -p 8037:8037 --shm-size 4G -i -t   -v /data1/segany/:/data fc16e35e9caf /bin/bash
+（3）切换到javaapp目录下，修改application-runtime.properties 里面的IP地址 192.168.62.129 为自己的IP地址，同时修改minio.url中的9000端口为主容器映射的9009端口，确保可以连接上minio，修改：label_system_model_regist_url、label_system_model_receive_msg中的端口为主容器映射的 8008
+（4）进入pcl_label_hand 容器，更新labelSytsem.jar .
+（5）重新进入到segany_plabel容器中的javaapp目录，然后运行：java -jar labelSystemForDocker.jar
+此后在人工标注页面的自动标注功能中，可以选择算法segany，使用此算法是选择一到多张图片，使用第一张图片画的矩形框为基准，分割此矩形框中任意对象。目前只支持一个矩形框prompt，点和多个prompt都没有做。
 
 ### 接入基于GPU（CUDA10.1）的分割标注镜像，下载此docker镜像[object_segment_label_v1.tar](https://openi.pcl.ac.cn/attachments/e4ec46bb-b04d-4082-918a-51b2961025e9?type=1)
 （1）加载镜像：docker load --input object_segment_label_v1.tar
